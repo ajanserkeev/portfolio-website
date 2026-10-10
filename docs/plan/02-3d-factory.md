@@ -2297,7 +2297,7 @@ git commit -m "feat(art): add level shell, props, anchors and hit boxes"
 - Consumes: кит, `naming`, `face_cell_rect`, `BuildContext`.
 - Produces: `ACCESSORIES = ("headset", "stamp", "cap", "helmet", "none")`, `ACTIVITIES = ("typing", "sorting", "idle")`, `@dataclass RobotSpec(id, at, yaw_deg=0, accessory="none", activity="idle", body="robot", accent="teal", hover=0.25)`, `build_robot(spec, ctx) -> root`. Узлы: `dyn__<id>` (`role`, `activity`, `accessory` в extras), `dyn__<id>__body`, `__head` (с антенной и аксессуаром), `__face`, `__arm-l`, `__arm-r` (точка вращения — плечо).
 
-- [ ] **Step 1: Написать падающий тест**
+- [x] **Step 1: Написать падающий тест**
 
 `art/tests/blender/test_robot.py`:
 ```python
@@ -2356,12 +2356,12 @@ def test_unknown_accessory_is_rejected():
         raise AssertionError("expected ValueError")
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падает**
+- [x] **Step 2: Запустить и убедиться, что падает**
 
 Run: `pnpm art:test:blender test_robot`
 Expected: FAIL — нет модуля `towerlib.kit.robot`.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `art/blender/towerlib/kit/robot.py`:
 ```python
@@ -2465,12 +2465,12 @@ def build_robot(spec: RobotSpec, ctx: BuildContext) -> bpy.types.Object:
     return root
 ```
 
-- [ ] **Step 4: Запустить и убедиться, что проходит**
+- [x] **Step 4: Запустить и убедиться, что проходит**
 
 Run: `pnpm art:test:blender test_robot`
 Expected: `5/5 passed`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add art/blender/towerlib/kit/robot.py art/tests/blender/test_robot.py
