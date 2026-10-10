@@ -1,9 +1,36 @@
+import type { DatabaseSync } from 'node:sqlite';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { type ApiConfig, loadConfig } from './config';
+import { initDatabase } from './db';
+import { type CrmSync, RealCrmSync } from './integrations/crm';
+import { RealTelegramNotifier, type TelegramNotifier } from './integrations/telegram';
+import { createRateLimiter } from './limits';
+import { createLeadRoute } from './routes/lead';
 
-export function createApp(customConfig?: ApiConfig) {
-  const config = customConfig ?? loadConfig();
+export interface AppDependencies {
+  config?: ApiConfig;
+  db?: DatabaseSync;
+  telegramNotifier?: TelegramNotifier;
+  crmSync?: CrmSync;
+}
+
+export function createApp(options?: AppDependencies | ApiConfig) {
+  const isConfig = options && 'port' in options;
+  const config = isConfig
+    ? (options as ApiConfig)
+    : ((options as AppDependencies)?.config ?? loadConfig());
+  const db = isConfig
+    ? initDatabase(config.sqlitePath)
+    : ((options as AppDependencies)?.db ?? initDatabase(config.sqlitePath));
+  const telegramNotifier = isConfig
+    ? new RealTelegramNotifier(config.telegramBotToken, config.telegramChatId)
+    : ((options as AppDependencies)?.telegramNotifier ??
+      new RealTelegramNotifier(config.telegramBotToken, config.telegramChatId));
+  const crmSync = isConfig
+    ? new RealCrmSync(config.crmWebhookUrl)
+    : ((options as AppDependencies)?.crmSync ?? new RealCrmSync(config.crmWebhookUrl));
+
   const app = new Hono();
 
   // Middleware: Request ID
@@ -42,6 +69,26 @@ export function createApp(customConfig?: ApiConfig) {
       timestamp: new Date().toISOString(),
     });
   });
+
+  // Rate-limited routes
+  app.use(
+    '/api/lead',
+    createRateLimiter({
+      db,
+      windowMs: 60_000,
+      max: 20,
+    }),
+  );
+
+  // Mount routes
+  app.route(
+    '/api/lead',
+    createLeadRoute({
+      db,
+      telegramNotifier,
+      crmSync,
+    }),
+  );
 
   // Global not found handler
   app.notFound((c) => {

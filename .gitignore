@@ -14,3 +14,5 @@ lhci/
 !.env.example
 .DS_Store
 .lighthouseci/
+data/
+*.sqlite
