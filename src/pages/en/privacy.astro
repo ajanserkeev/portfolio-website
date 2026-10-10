@@ -1,0 +1,82 @@
+---
+import LegalPage from '../../components/LegalPage.astro';
+import { dict } from '../../i18n';
+import Base from '../../layouts/Base.astro';
+
+const d = dict('en');
+---
+<Base
+  lang="en"
+  title={`${d.legal.privacy} — ${d.brand}`}
+  description="Privacy Policy and personal data protection principles for Tower Studio in compliance with personal data laws and international standards."
+>
+  <LegalPage
+    locale="en"
+    title={d.legal.privacy}
+    lead="Principles of data collection, processing, storage, and protection for our website visitors and clients."
+    updatedAt="Revised: October 10, 2026"
+    otherLangHref="/privacy/"
+  >
+    <h2>1. General Provisions</h2>
+    <p>
+      This Privacy Policy (the "Policy") governs the collection, processing, and safeguarding of personal information provided by individuals ("Users") using the website and digital services of "Tower" automation studio ("Studio").
+    </p>
+    <p>
+      The Studio complies with the Law of the Republic of Kazakhstan No. 94-V dated May 21, 2013 "On Personal Data and its Protection" as well as international best practices for privacy and data security.
+    </p>
+
+    <h2>2. Categories of Personal Data We Process</h2>
+    <p>We only collect data that Users voluntarily provide through inquiry forms or direct correspondence:</p>
+    <ul>
+      <li>Full name;</li>
+      <li>Contact phone number (including WhatsApp);</li>
+      <li>Email address;</li>
+      <li>Telegram account handle;</li>
+      <li>Company name, professional role, and project specifications.</li>
+    </ul>
+
+    <h2>3. Purposes of Processing</h2>
+    <p>Collected data is processed strictly for legitimate operational purposes:</p>
+    <ul>
+      <li>Processing incoming requests and service inquiries;</li>
+      <li>Conducting technical consultations and providing project estimates;</li>
+      <li>Drafting development agreements and Non-Disclosure Agreements (NDAs);</li>
+      <li>Fulfilling contracted development obligations and ongoing technical support.</li>
+    </ul>
+
+    <h2 id="consent">4. Consent to Personal Data Processing</h2>
+    <p>
+      By submitting an inquiry form or communicating with the Studio via the website or messaging channels, the User provides free, informed, and explicit consent to the collection, storage, clarification, and lawful processing of their data under this Policy.
+    </p>
+    <p>
+      Consent remains valid indefinitely from the date of submission and may be withdrawn at any time upon written request.
+    </p>
+
+    <h2>5. Data Security and Confidentiality</h2>
+    <p>
+      We maintain rigorous administrative, technical, and cryptographic safeguards to protect User information against unauthorized access, alteration, disclosure, or destruction.
+    </p>
+    <p>
+      We never sell or distribute personal data to third parties. Data may only be shared with infrastructure cloud providers bound by strict confidentiality agreements or where required by law.
+    </p>
+
+    <h2>6. Cookies and Local Storage</h2>
+    <p>
+      This website does not use tracking or third-party marketing cookies. We store a single technical preference in browser <code>localStorage</code> (<code>tower_tier</code>) to adapt rendering quality and optimize frame rate on mobile devices.
+    </p>
+
+    <h2>7. User Rights</h2>
+    <p>Under applicable data privacy laws, Users retain the right to:</p>
+    <ul>
+      <li>Request information about how their personal data is processed;</li>
+      <li>Request correction of inaccurate or incomplete information;</li>
+      <li>Request the blocking or deletion of personal data;</li>
+      <li>Withdraw previously given consent at any time.</li>
+    </ul>
+
+    <h2>8. Contact & Inquiries</h2>
+    <p>
+      For any inquiries regarding data protection, consent revocation, or privacy rights, please contact us at <strong>hello@tower.dev</strong> or via our official Telegram channel.
+    </p>
+  </LegalPage>
+</Base>
