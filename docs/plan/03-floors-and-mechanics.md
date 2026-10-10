@@ -88,12 +88,12 @@
 - Produces: `CapsulePool`, `createCapsulePool(scene, towerConfig)`, `updateCapsules(timeSec, liftPosition)`
 - Ограничение: один `InstancedMesh`, ≤ 64 капсулы, 1 draw call. Цвета мессенджеров (зеленый WhatsApp, голубой Telegram, розовый Instagram).
 
-- [ ] **Step 1: Написать падающий тест**
-- [ ] **Step 2: Запустить тест и убедиться, что падает**
-- [ ] **Step 3: Реализовать `capsule-pool.ts`**
-- [ ] **Step 4: Запустить тест и убедиться, что проходит**
-- [ ] **Step 5: Проверить `pnpm verify`**
-- [ ] **Step 6: Commit**
+- [x] **Step 1: Написать падающий тест**
+- [x] **Step 2: Запустить тест и убедиться, что падает**
+- [x] **Step 3: Реализовать `capsule-pool.ts`**
+- [x] **Step 4: Запустить тест и убедиться, что проходит**
+- [x] **Step 5: Проверить `pnpm verify`**
+- [x] **Step 6: Commit**
 
 ---
 

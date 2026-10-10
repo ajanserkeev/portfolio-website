@@ -1,7 +1,10 @@
 import { Color, DirectionalLight, HemisphereLight, Scene, WebGLRenderer } from 'three';
 import { levelFiles, textureUrl } from './assets';
 import { CameraRig } from './camera-rig';
+import { createCapsulePool } from './capsules/capsule-pool';
+import type { CapsuleChannel } from './capsules/types';
 import { tower } from './config';
+import type { PainId } from './events';
 import { bus } from './events';
 import { median, sampleFrameIntervals } from './fps-probe';
 import { createGlbSource } from './glb-source';
@@ -106,6 +109,34 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   });
   const unbindDomHotspots = hotspots.bindDom(document);
 
+  const capsules = createCapsulePool(tower, shared.matcap);
+  scene.add(capsules.mesh);
+
+  const painChannelMap: Record<PainId, CapsuleChannel> = {
+    'lost-leads': 'whatsapp',
+    'manual-routine': 'telegram',
+    'need-site': 'default',
+    'need-booking': 'instagram',
+    browsing: 'default',
+  };
+
+  const unbindPain = bus.on('capsule:selected', (e) => {
+    const channel = painChannelMap[e.pain] ?? 'default';
+    capsules.setPersonalCapsule(rig.position, channel);
+    capsules.launchCapsule({ channel });
+    loop.invalidate(2);
+  });
+
+  const unbindDeal = bus.on('deal:run', () => {
+    capsules.launchCapsule({ channel: 'default', durationSec: 2.0 });
+    loop.invalidate(2);
+  });
+
+  const unbindChat = bus.on('chat:user-message', () => {
+    capsules.launchCapsule({ channel: 'telegram', durationSec: 2.0 });
+    loop.invalidate(2);
+  });
+
   const levels = new LevelManager(scene, source, tower.levels.length, () => {
     for (let i = 0; i < tower.levels.length; i++) {
       const levelId = tower.levels[i]?.id;
@@ -128,6 +159,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
     if (motion.ambient) {
       for (const index of levels.ready()) levels.asset(index)?.update?.(timeMs / 1000);
     }
+    capsules.update(timeMs / 1000, rig.position);
     renderer.render(scene, rig.camera);
     frames += 1;
     bus.emit({ type: 'lift:moved', position: rig.position });
@@ -272,6 +304,11 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
       for (const item of shared.keep) (item as { dispose?: () => void }).dispose?.();
       unbindDomHotspots();
       hotspots.dispose();
+      unbindPain();
+      unbindDeal();
+      unbindChat();
+      capsules.mesh.removeFromParent();
+      capsules.dispose();
       renderer.dispose();
       renderer.domElement.remove();
       stage.dataset.state = 'poster';
