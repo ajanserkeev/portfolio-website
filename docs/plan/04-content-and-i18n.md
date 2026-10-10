@@ -54,11 +54,11 @@
 - Create: `src/content.config.ts`, `src/content/cases/ru/*.mdx`, `src/content/cases/en/*.mdx`
 - Test: `tests/unit/cases.test.ts`
 
-- [ ] **Step 1: Написать тест валидации схемы кейсов `tests/unit/cases.test.ts`**
-- [ ] **Step 2: Создать `src/content.config.ts` со строгой zod-схемой кейса**
-- [ ] **Step 3: Наполнить коллекцию эталонными кейсами для каждого направления (агенты, CRM, веб, бронирование)**
-- [ ] **Step 4: Проверить валидацию и прохождение тестов `pnpm test && pnpm check`**
-- [ ] **Step 5: Commit**
+- [x] **Step 1: Написать тест валидации схемы кейсов `tests/unit/cases.test.ts`**
+- [x] **Step 2: Создать `src/content.config.ts` со строгой zod-схемой кейса**
+- [x] **Step 3: Наполнить коллекцию эталонными кейсами для каждого направления (агенты, CRM, веб, бронирование)**
+- [x] **Step 4: Проверить валидацию и прохождение тестов `pnpm test && pnpm check`**
+- [x] **Step 5: Commit**
 
 ---
 
