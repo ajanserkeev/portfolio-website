@@ -975,7 +975,7 @@ git commit -m "feat(art): add pure-Python core for coordinates, palette, UVs, na
 - Consumes: `to_blender`, `Vec3` (задача 2).
 - Produces: `ROLES`, `reset_scene()`, `collection(role)`, `link(obj, role)`, `objects_in(role)`, `select_only(obj)`, `join(objects, name)`; `ALBEDO = "albedo"`, `albedo_material()`, `emission_material(name, color, strength)`, `placeholder_material()`; `finish(...)`, `paint(mesh, color)`, `rounded_box(name, size, *, color, radius=0.04, segments=2, role, at, yaw_deg, parent)`, `cylinder(..., hang=False)`, `sphere(...)`, `capsule(...)`, `plane(name, size_xz, *, color, ...)`, `tube(name, points, *, radius, color, ...)`, `screen_plane(name, size, *, uv, glow, strength, role, at, yaw_deg, parent)`.
 
-- [ ] **Step 1: Раннер тестов внутри Blender**
+- [x] **Step 1: Раннер тестов внутри Blender**
 
 `art/tests/blender/run.py`:
 ```python
@@ -1029,7 +1029,9 @@ await runBlender(requireBlender(), ['--python', 'art/tests/blender/run.py', '--'
 "art:test": "pnpm art:test:py && pnpm art:test:blender"
 ```
 
-- [ ] **Step 2: Написать падающий тест**
+> `art/tests/conftest.py` adds `collect_ignore = ["blender"]` so standalone pytest ignores in-Blender tests requiring `bpy`.
+
+- [x] **Step 2: Написать падающий тест**
 
 `art/tests/blender/test_primitives.py`:
 ```python
@@ -1114,12 +1116,12 @@ def test_objects_land_in_their_role_collection():
     assert obj.name in [o.name for o in objects_in("dyn")]
 ```
 
-- [ ] **Step 3: Запустить и убедиться, что падает**
+- [x] **Step 3: Запустить и убедиться, что падает**
 
 Run: `pnpm art:test:blender test_primitives`
 Expected: FAIL — `ModuleNotFoundError: towerlib.kit`.
 
-- [ ] **Step 4: Реализация**
+- [x] **Step 4: Реализация**
 
 `art/blender/towerlib/kit/__init__.py`:
 ```python
@@ -1398,14 +1400,14 @@ def screen_plane(
     return _place(bpy.data.objects.new(name, mesh), role, at, yaw_deg, parent)
 ```
 
-- [ ] **Step 5: Запустить и убедиться, что проходит**
+- [x] **Step 5: Запустить и убедиться, что проходит**
 
 Run: `pnpm art:test:blender test_primitives`
 Expected: `9/9 passed`.
 
 > Если Blender 4.5 отклонит имя свойства (например, `render_color_index`), заменить его по документации 4.5 и перезапустить. Тест для этого и нужен.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add art/blender/towerlib/kit art/tests/blender art/scripts/test-blender.ts package.json

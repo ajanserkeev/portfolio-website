@@ -21,7 +21,9 @@
     "fixtures:camera": "tsx scripts/gen-camera-fixtures.ts && biome format --write scene/camera-fixtures.json",
     "budgets": "tsx scripts/check-budgets.ts",
     "art:doctor": "tsx art/scripts/doctor.ts",
-    "art:test:py": "tsx art/scripts/py.ts -m pytest art/tests -q"
+    "art:test:py": "tsx art/scripts/py.ts -m pytest art/tests -q",
+    "art:test:blender": "tsx art/scripts/test-blender.ts",
+    "art:test": "pnpm art:test:py && pnpm art:test:blender"
   },
   "dependencies": {
     "astro": "7.3.8",
