@@ -3,6 +3,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
+  site: 'https://tower.dev',
   i18n: {
     defaultLocale: 'ru',
     locales: ['ru', 'en'],

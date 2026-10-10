@@ -1,12 +1,15 @@
 ---
 import '../styles/global.css';
+import Seo from '../components/Seo.astro';
 
 interface Props {
   lang: 'ru' | 'en';
   title: string;
   description: string;
+  ogType?: 'website' | 'article';
+  image?: string;
 }
-const { lang, title, description } = Astro.props;
+const { lang, title, description, ogType, image } = Astro.props;
 ---
 <!doctype html>
 <html lang={lang} data-tier="pending" data-motion="full">
@@ -16,6 +19,7 @@ const { lang, title, description } = Astro.props;
     <meta name="theme-color" content="#f3ebdd" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <Seo lang={lang} title={title} description={description} ogType={ogType} image={image} />
     <link
       rel="preload"
       href="/fonts/unbounded-700-latin.woff2"

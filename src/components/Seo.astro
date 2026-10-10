@@ -1,0 +1,161 @@
+---
+interface Props {
+  lang: 'ru' | 'en';
+  title: string;
+  description: string;
+  ogType?: 'website' | 'article';
+  image?: string;
+}
+
+const { lang, title, description, ogType = 'website', image } = Astro.props;
+
+const siteUrl = Astro.site?.toString() ?? 'https://tower.dev/';
+const pathname = Astro.url.pathname;
+
+function normalize(path: string): string {
+  if (!path.endsWith('/')) {
+    return `${path}/`;
+  }
+  return path;
+}
+
+const currentNorm = normalize(pathname);
+let ruPath = currentNorm;
+let enPath = currentNorm;
+
+if (currentNorm.startsWith('/en/')) {
+  ruPath = currentNorm.replace(/^\/en/, '') || '/';
+  enPath = currentNorm;
+} else {
+  ruPath = currentNorm;
+  enPath = currentNorm === '/' ? '/en/' : `/en${currentNorm}`;
+}
+
+const canonicalUrl = new URL(currentNorm, siteUrl).toString();
+const ruUrl = new URL(ruPath, siteUrl).toString();
+const enUrl = new URL(enPath, siteUrl).toString();
+const imageUrl = image ? new URL(image, siteUrl).toString() : new URL('/favicon.svg', siteUrl).toString();
+
+const siteName = lang === 'ru' ? 'Башня — Студия автоматизации' : 'Tower — Automation Studio';
+const localeCode = lang === 'ru' ? 'ru_RU' : 'en_US';
+const altLocaleCode = lang === 'ru' ? 'en_US' : 'ru_RU';
+
+const schemaGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': 'https://tower.dev/#organization',
+      name: lang === 'ru' ? 'Башня' : 'Tower Studio',
+      alternateName: 'Tower Studio',
+      url: 'https://tower.dev/',
+      logo: 'https://tower.dev/favicon.svg',
+      description:
+        lang === 'ru'
+          ? 'Студия разработки автономных ИИ-агентов, CRM-систем, онлайн-записи и веб-приложений.'
+          : 'Digital studio building autonomous AI agents, CRM workflows, booking engines, and interactive web applications.',
+      email: 'hello@tower.dev',
+      address: {
+        '@type': 'PostalAddress',
+        addressCountry: 'KZ',
+        addressLocality: 'Алматы',
+      },
+      founder: [
+        { '@type': 'Person', name: 'Аман' },
+        { '@type': 'Person', name: 'Артём' },
+        { '@type': 'Person', name: 'Данияр' },
+      ],
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: lang === 'ru' ? 'Услуги студии Башня' : 'Tower Studio Services',
+        itemListElement: [
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: lang === 'ru' ? 'ИИ-агенты и LLM-автоматизация' : 'AI Agents & LLM Pipelines',
+              description:
+                lang === 'ru'
+                  ? 'Автономные чат-боты и голосовые агенты для WhatsApp и Telegram.'
+                  : 'Autonomous intelligent chatbots and voice agents for WhatsApp and Telegram.',
+            },
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: lang === 'ru' ? 'CRM-системы и интеграция процессов' : 'CRM Architecture & Workflow Automation',
+              description:
+                lang === 'ru'
+                  ? 'Сортировка лидов, интеграция с 1С, МойСклад, amoCRM и Bitrix24.'
+                  : 'Lead management, ERP, billing and CRM integrations.',
+            },
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: lang === 'ru' ? 'Онлайн-бронирование и запись' : 'Online Booking & Scheduling Engines',
+              description:
+                lang === 'ru'
+                  ? 'Модули онлайн-записи с оплатой для клиник, отелей и туризма.'
+                  : 'Online booking and scheduling engines with automated payments and reminders.',
+            },
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: lang === 'ru' ? 'Быстрые сайты и веб-приложения' : 'Websites & Interactive Web Apps',
+              description:
+                lang === 'ru'
+                  ? 'Высокопроизводительные сайты и клиентские порталы на чистом стеке.'
+                  : 'High-performance interactive websites and customer portals.',
+            },
+          },
+        ],
+      },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://tower.dev/#website',
+      url: 'https://tower.dev/',
+      name: lang === 'ru' ? 'Башня' : 'Tower Studio',
+      publisher: { '@id': 'https://tower.dev/#organization' },
+      inLanguage: ['ru', 'en'],
+    },
+    {
+      '@type': 'WebPage',
+      '@id': canonicalUrl,
+      url: canonicalUrl,
+      name: title,
+      description: description,
+      isPartOf: { '@id': 'https://tower.dev/#website' },
+      inLanguage: lang,
+    },
+  ],
+};
+---
+<link rel="canonical" href={canonicalUrl} />
+<link rel="alternate" hreflang="ru" href={ruUrl} />
+<link rel="alternate" hreflang="en" href={enUrl} />
+<link rel="alternate" hreflang="x-default" href={ruUrl} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:locale" content={localeCode} />
+<meta property="og:locale:alternate" content={altLocaleCode} />
+<meta property="og:image" content={imageUrl} />
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+
+<!-- Schema.org JSON-LD -->
+<script type="application/ld+json" set:html={JSON.stringify(schemaGraph)} />

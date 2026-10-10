@@ -123,9 +123,9 @@
 - Create: `src/components/Seo.astro`, `public/robots.txt`
 - Modify: `src/layouts/Base.astro`, `astro.config.mjs`
 
-- [ ] **Step 1: Создать компонент `Seo.astro` с мета-тегами, Open Graph, Twitter Cards, canonical и hreflang**
-- [ ] **Step 2: Реализовать генерацию структурированных данных Schema.org (Organization, Service, CreativeWork)**
-- [ ] **Step 3: Добавить `public/robots.txt` и настроить генерацию sitemap**
-- [ ] **Step 4: Написать e2e тест на валидность мета-тегов и json-ld разметки**
-- [ ] **Step 5: Проверить `pnpm verify`**
-- [ ] **Step 6: Commit**
+- [x] **Step 1: Создать компонент `Seo.astro` с мета-тегами, Open Graph, Twitter Cards, canonical и hreflang**
+- [x] **Step 2: Реализовать генерацию структурированных данных Schema.org (Organization, Service, CreativeWork)**
+- [x] **Step 3: Добавить `public/robots.txt` и настроить генерацию sitemap**
+- [x] **Step 4: Написать e2e тест на валидность мета-тегов и json-ld разметки**
+- [x] **Step 5: Проверить `pnpm verify`**
+- [x] **Step 6: Commit**
