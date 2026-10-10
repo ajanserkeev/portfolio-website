@@ -26,12 +26,12 @@
 **Files:**
 - Create: `api/src/db.ts`, `api/src/limits.ts`, `api/tests/db.test.ts`, `api/tests/limits.test.ts`
 
-- [ ] **Step 1: Написать юнит-тесты создания таблиц и сохранения записей в SQLite (memory и файл)**
-- [ ] **Step 2: Реализовать модуль `api/src/db.ts` на встроенном `node:sqlite` без внешних зависимостей**
-- [ ] **Step 3: Реализовать middleware лимитов `api/src/limits.ts` по IP и сессии**
-- [ ] **Step 4: Написать тесты на превышение лимита (HTTP 429 Too Many Requests)**
-- [ ] **Step 5: Проверить `pnpm verify`**
-- [ ] **Step 6: Commit**
+- [x] **Step 1: Написать юнит-тесты создания таблиц и сохранения записей в SQLite (memory и файл)**
+- [x] **Step 2: Реализовать модуль `api/src/db.ts` на встроенном `node:sqlite` без внешних зависимостей**
+- [x] **Step 3: Реализовать middleware лимитов `api/src/limits.ts` по IP и сессии**
+- [x] **Step 4: Написать тесты на превышение лимита (HTTP 429 Too Many Requests)**
+- [x] **Step 5: Проверить `pnpm verify`**
+- [x] **Step 6: Commit**
 
 ---
 
