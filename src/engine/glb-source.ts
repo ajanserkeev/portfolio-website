@@ -1,6 +1,8 @@
 import { type Object3D, SRGBColorSpace, type Texture, TextureLoader } from 'three';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { findRobots, RobotActor } from './actors/robot';
+import { seedFrom } from './actors/robot-pose';
 import { levelBaseY, type TowerConfig, tower } from './config';
 import { prepareLevel } from './glb-level';
 import { disposeObject3D, type LevelSource } from './level-asset';
@@ -70,11 +72,21 @@ export function createGlbSource(
     root.userData.source = 'glb';
     const baked = createBakedMaterial(lightmap);
     const { anchors, hits } = prepareLevel(root, baked, shared);
+    const actors = findRobots(root).map(
+      (robot) => new RobotActor(robot, shared.faces, seedFrom(robot.name)),
+    );
     return {
       root,
       anchors,
       hits,
+      update:
+        actors.length > 0
+          ? (timeSec: number) => {
+              for (const actor of actors) actor.update(timeSec);
+            }
+          : undefined,
       dispose: () => {
+        for (const actor of actors) actor.dispose();
         disposeObject3D(root, shared.keep);
         baked.dispose();
         lightmap.dispose();

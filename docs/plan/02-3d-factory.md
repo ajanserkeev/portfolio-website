@@ -4379,7 +4379,7 @@ git commit -m "feat(art): build the agent dispatch floor and calibrate it agains
 - Consumes: `FaceFrame`, `faceUvOffset` (задача 4); `SharedMaterials` (задача 10).
 - Produces: `type RobotActivity = 'typing' | 'sorting' | 'idle'`, `interface RobotPose { hover; headYaw; headPitch; armL; armR; face: FaceFrame }`, `robotPose(timeSec, seed, activity)`, `parseActivity(value)`, `seedFrom(name)`; `class RobotActor { constructor(root, faces, seed); update(timeSec); dispose() }`, `findRobots(root): Object3D[]`.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `src/engine/actors/robot-pose.test.ts`:
 ```ts
@@ -4481,12 +4481,12 @@ describe('findRobots', () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падают**
+- [x] **Step 2: Запустить и убедиться, что падают**
 
 Run: `pnpm vitest run src/engine/actors`
 Expected: FAIL — модулей `./robot-pose` и `./robot` нет.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `src/engine/actors/robot-pose.ts`:
 ```ts
@@ -4644,7 +4644,7 @@ export class RobotActor {
 ```
 Импорты: `import { findRobots, RobotActor } from './actors/robot';`, `import { seedFrom } from './actors/robot-pose';`.
 
-- [ ] **Step 4: Запустить и убедиться, что проходят**
+- [x] **Step 4: Запустить и убедиться, что проходят**
 
 Run: `pnpm vitest run src/engine`
 Expected: PASS.
@@ -4652,7 +4652,7 @@ Expected: PASS.
 Run: `pnpm build && pnpm budgets && pnpm e2e`
 Expected: всё зелёное. Вручную: `pnpm preview`, открыть `/?debug=1#agents` — роботы парят, печатают, моргают. При reduced motion (настройка ОС) роботы неподвижны.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/engine
