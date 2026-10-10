@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "level": { "width": 12, "depth": 6, "height": 4, "slab": 0.4 },
+  "levels": [
+    { "id": "roof", "kind": "roof" },
+    { "id": "agents", "kind": "floor" },
+    { "id": "crm", "kind": "floor" },
+    { "id": "booking", "kind": "floor" },
+    { "id": "workshop", "kind": "floor" },
+    { "id": "basement", "kind": "basement" }
+  ],
+  "camera": {
+    "fovDeg": 30,
+    "pitchDeg": 14,
+    "yawDeg": 22,
+    "targetHeight": 1.5,
+    "travelBulge": 0.12,
+    "portrait": { "fitWidth": 0.94, "centerX": 0.5, "centerY": 0.33 },
+    "landscape": { "fitWidth": 0.55, "centerX": 0.34, "centerY": 0.5, "minVisibleHeight": 5.4 }
+  },
+  "tube": { "x": 5.3, "z": 1.6, "radius": 0.2 }
+}
