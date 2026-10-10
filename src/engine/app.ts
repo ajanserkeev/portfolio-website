@@ -208,6 +208,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
       },
       loseContext: () => renderer.getContext().getExtension('WEBGL_lose_context')?.loseContext(),
     };
+    void import('./debug-hud').then(({ mountDebugHud }) => mountDebugHud(document.body));
   }
 
   return {
