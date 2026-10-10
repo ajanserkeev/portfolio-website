@@ -12,5 +12,5 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium webkit
-      - run: pnpm verify
+      - run: xvfb-run --auto-servernum pnpm verify
       - run: pnpm dlx @lhci/cli@0.15.1 autorun
