@@ -146,16 +146,9 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
     loop.invalidate();
   }
 
-  /** Content reflowed (rotation, fonts): re-measure, and keep the visitor on the same floor. */
+  /** Content reflowed (rotation, fonts): re-measure. src/ui/floor-keeper.ts keeps the floor. */
   function onLayoutChange(): void {
-    // The old travels are stale after a reflow, so use the last goal computed before it.
-    const before = Math.round(lastGoal);
     travels = measureTravels(document);
-    const after = Math.round(liftPosition(window.scrollY, travels));
-    if (after !== before) {
-      const id = tower.levels[before]?.id;
-      if (id) document.getElementById(id)?.scrollIntoView({ block: 'start', behavior: 'instant' });
-    }
     onScroll();
   }
 
