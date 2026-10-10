@@ -1,3 +1,4 @@
+@import "./fonts.css";
 @import "tailwindcss";
 
 @theme {
@@ -8,6 +9,10 @@
   --color-teal: #1fa59a;
   --color-mustard: #f2b33d;
   --color-brass: #c9a15b;
+
+  --font-heading: "Unbounded", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 }
 
 :root {
@@ -28,8 +33,24 @@ html[data-motion="reduced"] {
 
 body {
   margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-family: var(--font-body);
   line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+code,
+kbd,
+samp,
+pre,
+.font-mono {
+  font-family: var(--font-mono);
 }
 
 /* Fixed 3D layer. 100lvh keeps it from resizing when mobile browser bars show or hide. */

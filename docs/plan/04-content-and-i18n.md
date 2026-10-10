@@ -41,10 +41,10 @@
 - Create: `public/fonts/*`, `src/styles/fonts.css`
 - Modify: `src/styles/global.css`, `src/layouts/Base.astro`
 
-- [ ] **Step 1: Создать оптимизированные woff2 шрифты и font-face правила в `src/styles/fonts.css`**
-- [ ] **Step 2: Подключить preload заголовочного шрифта в `Base.astro` и настроить шрифтовые переменные**
-- [ ] **Step 3: Проверить бюджет первого экрана и отсутствие CLS через `pnpm verify`**
-- [ ] **Step 4: Commit**
+- [x] **Step 1: Создать оптимизированные woff2 шрифты и font-face правила в `src/styles/fonts.css`**
+- [x] **Step 2: Подключить preload заголовочного шрифта в `Base.astro` и настроить шрифтовые переменные**
+- [x] **Step 3: Проверить бюджет первого экрана и отсутствие CLS через `pnpm verify`**
+- [x] **Step 4: Commit**
 
 ---
 
