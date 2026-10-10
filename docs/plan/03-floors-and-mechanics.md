@@ -51,12 +51,12 @@
 - Produces: `interface HotspotOptions`, `createHotspotManager(options)`
 - Events: эмитит `hotspot:activated` с `{ level: LevelId, action: string }`
 
-- [ ] **Step 1: Написать падающий тест**
-- [ ] **Step 2: Запустить тест и убедиться, что падает**
-- [ ] **Step 3: Реализовать `createHotspotManager`**
-- [ ] **Step 4: Запустить тест и убедиться, что проходит**
-- [ ] **Step 5: Интегрировать в `app.ts` и проверить `pnpm verify`**
-- [ ] **Step 6: Commit**
+- [x] **Step 1: Написать падающий тест**
+- [x] **Step 2: Запустить тест и убедиться, что падает**
+- [x] **Step 3: Реализовать `createHotspotManager`**
+- [x] **Step 4: Запустить тест и убедиться, что проходит**
+- [x] **Step 5: Интегрировать в `app.ts` и проверить `pnpm verify`**
+- [x] **Step 6: Commit**
 
 ---
 

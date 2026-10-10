@@ -6,6 +6,7 @@ import { bus } from './events';
 import { median, sampleFrameIntervals } from './fps-probe';
 import { createGlbSource } from './glb-source';
 import { greyboxSource } from './greybox';
+import { createHotspotManager } from './interaction/hotspots';
 import { type LevelSource, withFallback } from './level-asset';
 import { LevelManager } from './level-manager';
 import { liftPosition, type Travel } from './lift';
@@ -98,7 +99,24 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   const source = options.source ?? withFallback(createGlbSource(levelFiles, shared), greyboxSource);
 
   const loop = new RenderLoop(renderFrame);
+  const hotspots = createHotspotManager({
+    canvas: renderer.domElement,
+    camera: rig.camera,
+    bus,
+  });
+  const unbindDomHotspots = hotspots.bindDom(document);
+
   const levels = new LevelManager(scene, source, tower.levels.length, () => {
+    for (let i = 0; i < tower.levels.length; i++) {
+      const levelId = tower.levels[i]?.id;
+      if (!levelId) continue;
+      const asset = levels.asset(i);
+      if (asset) {
+        hotspots.registerLevel(levelId, asset.hits);
+      } else {
+        hotspots.unregisterLevel(levelId);
+      }
+    }
     const animated = levels.ready().some((i) => levels.asset(i)?.update !== undefined);
     loop.setContinuous('ambient', motion.ambient && animated);
     loop.invalidate();
@@ -252,6 +270,8 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
       renderer.domElement.removeEventListener('webglcontextlost', onContextLost);
       levels.dispose();
       for (const item of shared.keep) (item as { dispose?: () => void }).dispose?.();
+      unbindDomHotspots();
+      hotspots.dispose();
       renderer.dispose();
       renderer.domElement.remove();
       stage.dataset.state = 'poster';
