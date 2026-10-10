@@ -122,12 +122,12 @@
 - Create: `art/blender/levels/roof.py`, `src/engine/levels/roof.ts`, `src/engine/levels/roof.test.ts`
 - Output: `src/assets/levels/roof.glb`, `src/assets/levels/roof.lightmap.webp`
 
-- [ ] **Step 1: Написать скрипт сборки крыши `roof.py` с антеннами и рычагом**
-- [ ] **Step 2: Собрать уровень через `pnpm art:build roof`**
-- [ ] **Step 3: Написать тест контроллера уровня `roof.test.ts`**
-- [ ] **Step 4: Реализовать логику дождя сообщений и рычага в `roof.ts`**
-- [ ] **Step 5: Проверить `pnpm verify && pnpm art:test`**
-- [ ] **Step 6: Commit**
+- [x] **Step 1: Написать скрипт сборки крыши `roof.py` с антеннами и рычагом**
+- [x] **Step 2: Собрать уровень через `pnpm art:build roof`**
+- [x] **Step 3: Написать тест контроллера уровня `roof.test.ts`**
+- [x] **Step 4: Реализовать логику дождя сообщений и рычага в `roof.ts`**
+- [x] **Step 5: Проверить `pnpm verify && pnpm art:test`**
+- [x] **Step 6: Commit**
 
 ---
 

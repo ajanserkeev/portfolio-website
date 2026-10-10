@@ -102,3 +102,67 @@ def coffee_counter(ctx: BuildContext, name: str, at: Vec3, *, yaw_deg: float = 0
 
 def pipe(ctx: BuildContext, name: str, points: list[Vec3], *, color: str = "brass", radius: float = 0.07) -> list:
     return [tube(name, round_corners(points, 0.25), radius=radius, color=ctx.palette[color])]
+
+
+def antenna_mast(ctx: BuildContext, name: str, at: Vec3, *, height: float = 2.6) -> list:
+    p = ctx.palette
+    return [
+        cylinder(f"{name}-base", radius=0.22, height=0.1, color=p["steel"], at=at),
+        cylinder(f"{name}-pole", radius=0.04, height=height, color=p["steel"], at=(at[0], at[1] + 0.1, at[2])),
+        cylinder(f"{name}-bar-1", radius=0.02, height=0.6, color=p["steel"], at=(at[0], at[1] + height * 0.6, at[2])),
+        cylinder(f"{name}-bar-2", radius=0.02, height=0.4, color=p["steel"], at=(at[0], at[1] + height * 0.85, at[2])),
+        sphere(f"{name}-beacon", radius=0.07, color=p["signal"], role="glow", at=(at[0], at[1] + height + 0.1, at[2])),
+    ]
+
+
+def satellite_dish(ctx: BuildContext, name: str, at: Vec3, *, yaw_deg: float = 0.0) -> list:
+    p = ctx.palette
+    return [
+        rounded_box(f"{name}-base", (0.6, 0.12, 0.6), color=p["steel"], radius=0.03, at=at, yaw_deg=yaw_deg),
+        cylinder(f"{name}-post", radius=0.06, height=0.7, color=p["steel"], at=place((0.0, 0.12, 0.0), at, yaw_deg)),
+        cylinder(f"{name}-dish", radius=0.5, height=0.08, color=p["white"], at=place((0.0, 0.8, -0.1), at, yaw_deg), yaw_deg=yaw_deg),
+        sphere(f"{name}-feed", radius=0.07, color=p["signal"], at=place((0.0, 0.95, 0.2), at, yaw_deg)),
+    ]
+
+
+def vent_unit(ctx: BuildContext, name: str, at: Vec3, *, yaw_deg: float = 0.0) -> list:
+    p = ctx.palette
+    return [
+        rounded_box(f"{name}-body", (1.4, 0.9, 0.9), color=p["steel"], radius=0.04, at=at, yaw_deg=yaw_deg),
+        cylinder(f"{name}-fan", radius=0.32, height=0.05, color=p["ink"], at=place((0.0, 0.9, 0.0), at, yaw_deg)),
+        rounded_box(f"{name}-grill", (0.5, 0.4, 0.02), color=p["ink"], radius=0.01, at=place((0.0, 0.25, 0.46), at, yaw_deg), yaw_deg=yaw_deg),
+    ]
+
+
+def hopper(ctx: BuildContext, name: str, at: Vec3) -> list:
+    p = ctx.palette
+    anchor("hopper", (at[0], at[1] + 0.65, at[2]))
+    return [
+        cylinder(f"{name}-neck", radius=0.22, height=0.3, color=p["brass"], at=at),
+        cylinder(f"{name}-funnel", radius=0.45, height=0.35, color=p["brass"], at=(at[0], at[1] + 0.3, at[2])),
+    ]
+
+
+def lever_prop(ctx: BuildContext, name: str, at: Vec3, *, action: str = "toggle-agent", yaw_deg: float = 0.0) -> list:
+    import bpy
+    from ..core.coords import to_blender
+    from .scene import join, link
+
+    p = ctx.palette
+    parts = [
+        rounded_box(f"{name}-base", (0.6, 0.35, 0.5), color=p["steel"], radius=0.03, at=at, yaw_deg=yaw_deg),
+        rounded_box(f"{name}-slot", (0.1, 0.05, 0.3), color=p["ink"], radius=0.01, at=place((0.0, 0.35, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+    ]
+
+    root = bpy.data.objects.new(f"dyn__{name}", None)
+    root.empty_display_type = "PLAIN_AXES"
+    root.location = to_blender(place((0.0, 0.35, 0.0), at, yaw_deg))
+    link(root, "dyn")
+
+    arm = cylinder(f"dyn__{name}__handle", radius=0.035, height=0.48, color=p["steel"], role="dyn", at=(0.0, 0.0, 0.0), parent=root)
+    knob = sphere(f"{name}-knob", radius=0.08, color=p["signal"], role="dyn", at=(0.0, 0.48, 0.0), parent=arm)
+    join([arm, knob], f"dyn__{name}__handle")
+
+    hitbox(name, (0.7, 1.2, 0.7), at, action=action, yaw_deg=yaw_deg)
+    return parts
+
