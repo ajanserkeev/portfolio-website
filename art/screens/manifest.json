@@ -1,0 +1,62 @@
+{
+  "width": 2048,
+  "height": 1312,
+  "screens": {
+    "calendar": {
+      "x": 836,
+      "y": 8,
+      "width": 512,
+      "height": 320,
+      "glow": "#d0d6c0"
+    },
+    "chat-instagram": {
+      "x": 1356,
+      "y": 8,
+      "width": 512,
+      "height": 320,
+      "glow": "#f1dee6"
+    },
+    "chat-telegram": {
+      "x": 8,
+      "y": 656,
+      "width": 512,
+      "height": 320,
+      "glow": "#c5deea"
+    },
+    "chat-whatsapp": {
+      "x": 528,
+      "y": 656,
+      "width": 512,
+      "height": 320,
+      "glow": "#cdd9c9"
+    },
+    "code": {
+      "x": 8,
+      "y": 8,
+      "width": 512,
+      "height": 640,
+      "glow": "#212428"
+    },
+    "crm-kanban": {
+      "x": 1048,
+      "y": 656,
+      "width": 512,
+      "height": 320,
+      "glow": "#eae7e0"
+    },
+    "dashboard": {
+      "x": 8,
+      "y": 984,
+      "width": 512,
+      "height": 320,
+      "glow": "#334f47"
+    },
+    "phone": {
+      "x": 528,
+      "y": 8,
+      "width": 300,
+      "height": 600,
+      "glow": "#d8d4cb"
+    }
+  }
+}

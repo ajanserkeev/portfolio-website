@@ -1429,13 +1429,13 @@ git commit -m "feat(art): add Blender primitive kit with an in-Blender test runn
 **Interfaces:**
 - Produces: `packAtlas(items, maxWidth, padding = 8): AtlasLayout`; `FACE_FRAMES`, `type FaceFrame`, `FACE_GRID = { cols: 4, rows: 2, cell: 128 }`, `faceUvOffset(frame): { x; y }`; `facePixels(frame)`, `faceSvg(frame)`. Манифест экранов: `{ width, height, screens: { [id]: { x, y, width, height, glow } } }`. Манифест лиц: `{ cols, rows, cell, frames }`.
 
-- [ ] **Step 1: Зависимость**
+- [x] **Step 1: Зависимость**
 
 ```bash
 pnpm add -D sharp@0.35.5
 ```
 
-- [ ] **Step 2: Написать падающие тесты**
+- [x] **Step 2: Написать падающие тесты**
 
 `art/scripts/atlas.test.ts`:
 ```ts
@@ -1539,12 +1539,12 @@ describe('faceUvOffset', () => {
 });
 ```
 
-- [ ] **Step 3: Запустить и убедиться, что падают**
+- [x] **Step 3: Запустить и убедиться, что падают**
 
 Run: `pnpm vitest run art/scripts/atlas.test.ts art/scripts/faces-lib.test.ts src/engine/actors/faces.test.ts`
 Expected: FAIL — модулей нет.
 
-- [ ] **Step 4: Реализация — чистые модули**
+- [x] **Step 4: Реализация — чистые модули**
 
 `src/engine/actors/faces.ts`:
 ```ts
@@ -1684,12 +1684,12 @@ export function faceSvg(frame: FaceFrame): string {
 }
 ```
 
-- [ ] **Step 5: Запустить и убедиться, что проходят**
+- [x] **Step 5: Запустить и убедиться, что проходят**
 
 Run: `pnpm vitest run art/scripts/atlas.test.ts art/scripts/faces-lib.test.ts src/engine/actors/faces.test.ts`
 Expected: PASS.
 
-- [ ] **Step 6: Исходники экранов (языконезависимые макеты)**
+- [x] **Step 6: Исходники экранов (языконезависимые макеты)**
 
 `art/screens/screen.css`:
 ```css
@@ -1818,7 +1818,7 @@ body { overflow: hidden; font-size: 0; }
 <div class="input"><div class="bar" style="width:120px"></div></div></body></html>
 ```
 
-- [ ] **Step 7: Генераторы**
+- [x] **Step 7: Генераторы**
 
 `art/scripts/screens.ts`:
 ```ts
@@ -1931,14 +1931,14 @@ console.log(`faces atlas ${cols * cell}x${rows * cell}`);
 "art:faces": "tsx art/scripts/faces.ts"
 ```
 
-- [ ] **Step 8: Сгенерировать и проверить глазами**
+- [x] **Step 8: Сгенерировать и проверить глазами**
 
 Run: `pnpm art:screens && pnpm art:faces`
 Expected: `screens atlas 2048xNNN, 8 screens`, `faces atlas 512x256`, созданы оба манифеста и два WebP.
 
 Открыть `src/assets/textures/screens.webp` и `faces.webp` и посмотреть. Экраны не должны содержать слов, лица — читаться на маленьком размере.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add art/scripts/atlas.ts art/scripts/atlas.test.ts art/scripts/faces-lib.ts art/scripts/faces-lib.test.ts art/scripts/screens.ts art/scripts/faces.ts art/screens art/faces src/engine/actors src/assets/textures package.json pnpm-lock.yaml

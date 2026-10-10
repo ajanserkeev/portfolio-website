@@ -23,7 +23,9 @@
     "art:doctor": "tsx art/scripts/doctor.ts",
     "art:test:py": "tsx art/scripts/py.ts -m pytest art/tests -q",
     "art:test:blender": "tsx art/scripts/test-blender.ts",
-    "art:test": "pnpm art:test:py && pnpm art:test:blender"
+    "art:test": "pnpm art:test:py && pnpm art:test:blender",
+    "art:screens": "tsx art/scripts/screens.ts",
+    "art:faces": "tsx art/scripts/faces.ts"
   },
   "dependencies": {
     "astro": "7.3.8",
@@ -36,6 +38,7 @@
     "@tailwindcss/vite": "4.3.3",
     "@types/node": "24.19.2",
     "@types/three": "0.186.0",
+    "sharp": "0.35.5",
     "tailwindcss": "4.3.3",
     "tsx": "4.23.15",
     "typescript": "6.0.3",

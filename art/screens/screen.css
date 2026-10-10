@@ -1,0 +1,61 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+body {
+  overflow: hidden;
+  font-size: 0;
+}
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bar {
+  height: 7px;
+  border-radius: 4px;
+  background: rgb(28 27 34 / 0.28);
+}
+.light .bar,
+.bar.light {
+  background: rgb(255 255 255 / 0.78);
+}
+.dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  flex: none;
+}
+.header {
+  height: 44px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.chat {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.bubble {
+  max-width: 62%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.in {
+  align-self: flex-start;
+  background: #fff;
+}
+.out {
+  align-self: flex-end;
+}
