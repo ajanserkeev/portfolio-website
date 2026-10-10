@@ -2778,13 +2778,13 @@ git commit -m "feat(art): bake, denoise and encode lightmaps with headroom"
 - Consumes: всё из задач 3–7.
 - Produces (Python): `finalize_for_export()`, `merge_role(role, name)`, `export_glb(path)`. Produces (TS): `createIO()`, `stripStaticNormals(doc)`, `optimizeLevel(input, output)`, `encodeLightmap(input, output)`; `NODE_NAME`, `interface LevelBudget`, `DEFAULT_LEVEL_BUDGET`, `interface ContractReport { errors: string[]; triangles: number }`, `checkLevelDocument(doc)`, `checkBudgets(report, sizes, budget?)`.
 
-- [ ] **Step 1: Зависимости**
+- [x] **Step 1: Зависимости**
 
 ```bash
 pnpm add -D @gltf-transform/core@4.5.1 @gltf-transform/functions@4.5.1 @gltf-transform/extensions@4.5.1 meshoptimizer@1.3.0
 ```
 
-- [ ] **Step 2: Написать падающие тесты**
+- [x] **Step 2: Написать падающие тесты**
 
 `art/scripts/level-contract.test.ts`:
 ```ts
@@ -2947,7 +2947,7 @@ def test_exported_glb_follows_the_level_contract():
     assert "sun" not in names and "lamp-light" not in names
 ```
 
-- [ ] **Step 3: Запустить и убедиться, что падают**
+- [x] **Step 3: Запустить и убедиться, что падают**
 
 Run: `pnpm vitest run art/scripts/level-contract.test.ts art/scripts/built-levels.test.ts`
 Expected: FAIL — модулей `./level-contract` и `./optimize` нет.
@@ -2955,7 +2955,7 @@ Expected: FAIL — модулей `./level-contract` и `./optimize` нет.
 Run: `pnpm art:test:blender test_export`
 Expected: FAIL — нет модуля `towerlib.export`.
 
-- [ ] **Step 4: Реализация**
+- [x] **Step 4: Реализация**
 
 `art/blender/towerlib/export.py`:
 ```python
@@ -3118,7 +3118,7 @@ export function checkBudgets(
 }
 ```
 
-- [ ] **Step 5: Запустить и убедиться, что проходят**
+- [x] **Step 5: Запустить и убедиться, что проходят**
 
 Run: `pnpm vitest run art/scripts/level-contract.test.ts art/scripts/built-levels.test.ts`
 Expected: PASS (тест готовых этажей пропущен — их пока нет).
@@ -3126,7 +3126,7 @@ Expected: PASS (тест готовых этажей пропущен — их �
 Run: `pnpm art:test:blender test_export`
 Expected: `1/1 passed`. Если экспортёр положил вершинные цвета не туда (нет `COLOR_0` у `static`) — сверить опции экспорта с выводом `pnpm art:doctor` и документацией 4.5.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add art/blender/towerlib/export.py art/scripts/optimize.ts art/scripts/level-contract.ts art/scripts/level-contract.test.ts art/scripts/built-levels.test.ts art/tests/blender/test_export.py package.json pnpm-lock.yaml
