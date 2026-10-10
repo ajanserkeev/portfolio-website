@@ -107,12 +107,12 @@
 - Produces: `relevantLevels(pain: PainId): readonly LevelId[]`, `getStoredPain()`, `setStoredPain(pain)`
 - Безопасное чтение/запись в `sessionStorage` в блоке `try/catch`.
 
-- [ ] **Step 1: Написать падающие тесты**
-- [ ] **Step 2: Запустить тесты и убедиться, что падают**
-- [ ] **Step 3: Реализовать `relevance.ts` и `pain-picker.ts`**
-- [ ] **Step 4: Запустить тесты и убедиться, что проходят**
-- [ ] **Step 5: Проверить `pnpm verify`**
-- [ ] **Step 6: Commit**
+- [x] **Step 1: Написать падающие тесты**
+- [x] **Step 2: Запустить тесты и убедиться, что падают**
+- [x] **Step 3: Реализовать `relevance.ts` и `pain-picker.ts`**
+- [x] **Step 4: Запустить тесты и убедиться, что проходят**
+- [x] **Step 5: Проверить `pnpm verify`**
+- [x] **Step 6: Commit**
 
 ---
 

@@ -54,4 +54,15 @@ export const ru = {
   cta: { discuss: 'Обсудить проект' },
   mode: { toStatic: 'Режим без 3D', toLive: 'Включить 3D' },
   lang: { switchTo: 'EN', href: '/en/', hreflang: 'en' },
+  pains: {
+    title: 'Что у вас сейчас горит?',
+    badge: 'Это про вас',
+    options: {
+      'lost-leads': 'Теряем заявки в мессенджерах',
+      'manual-routine': 'Менеджеры тонут в рутине',
+      'need-site': 'Нужен сайт или приложение',
+      'need-booking': 'Нужна онлайн-запись',
+      browsing: 'Просто смотрю',
+    },
+  },
 } as const;

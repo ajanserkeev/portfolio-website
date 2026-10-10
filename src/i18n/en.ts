@@ -56,4 +56,15 @@ export const en = {
   cta: { discuss: 'Discuss a project' },
   mode: { toStatic: 'No-3D mode', toLive: 'Turn on 3D' },
   lang: { switchTo: 'RU', href: '/', hreflang: 'ru' },
+  pains: {
+    title: 'What is your main challenge?',
+    badge: 'This is for you',
+    options: {
+      'lost-leads': 'Losing leads in messengers',
+      'manual-routine': 'Team buried in manual routine',
+      'need-site': 'Need a site or web app',
+      'need-booking': 'Need online booking',
+      browsing: 'Just exploring',
+    },
+  },
 } satisfies Dict;

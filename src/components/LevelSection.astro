@@ -8,12 +8,16 @@ interface Props {
   locale: Locale;
 }
 const { id, index, locale } = Astro.props;
-const copy = dict(locale).levels[id];
+const d = dict(locale);
+const copy = d.levels[id];
 ---
 <section class="level" data-level={id} data-index={index} aria-labelledby={`${id}-title`}>
   <div class="level__travel" data-lift-travel aria-hidden="true"></div>
   <div class="level__content" id={id}>
-    <p class="level__kicker">{copy.name}</p>
+    <div class="level__header">
+      <p class="level__kicker">{copy.name}</p>
+      <span class="level__badge-relevant" aria-label={d.pains.badge}>{d.pains.badge}</span>
+    </div>
     <h2 id={`${id}-title`} class="level__title">{copy.title}</h2>
     <p class="level__lead">{copy.lead}</p>
     <slot />
