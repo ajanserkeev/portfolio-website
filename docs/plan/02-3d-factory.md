@@ -1957,7 +1957,7 @@ git commit -m "feat(art): generate screen and robot face atlases"
 - Consumes: кит из задачи 3, `BuildContext`, `place`, `round_corners`, `naming` (задача 2), манифесты из задачи 4.
 - Produces: `daylight(*, sun_energy=3.5, sun_angle_deg=10, sky_color=(0.78, 0.84, 0.95), sky_strength=0.7)`, `area_lamp(name, at, *, size=0.5, energy=180, color=(1.0, 0.9, 0.75))`; `anchor(name, at, **extras)`, `hitbox(name, size, at, *, action, yaw_deg=0)`; `level_shell(ctx, *, kind)`, `ceiling_occluder(ctx)`, `spine(ctx)`; `desk`, `monitor`, `server_rack`, `plant`, `ceiling_lamp`, `sorter`, `trash_bin`, `wall_phone`, `coffee_counter`, `pipe` — все `(ctx, name, at, …)`.
 
-- [ ] **Step 1: Написать падающий тест**
+- [x] **Step 1: Написать падающий тест**
 
 `art/tests/blender/test_props.py`:
 ```python
@@ -2036,12 +2036,12 @@ def test_server_rack_leds_glow():
     assert len(objects_in("glow")) == 6
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падает**
+- [x] **Step 2: Запустить и убедиться, что падает**
 
 Run: `pnpm art:test:blender test_props`
 Expected: FAIL — нет модулей `towerlib.kit.props` и `towerlib.kit.shell`.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `art/blender/towerlib/rig.py`:
 ```python
@@ -2273,12 +2273,12 @@ def pipe(ctx: BuildContext, name: str, points: list[Vec3], *, color: str = "bras
     return [tube(name, round_corners(points, 0.25), radius=radius, color=ctx.palette[color])]
 ```
 
-- [ ] **Step 4: Запустить и убедиться, что проходит**
+- [x] **Step 4: Запустить и убедиться, что проходит**
 
 Run: `pnpm art:test:blender test_props`
 Expected: `7/7 passed`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add art/blender/towerlib/rig.py art/blender/towerlib/kit/anchors.py art/blender/towerlib/kit/shell.py art/blender/towerlib/kit/props.py art/tests/blender/test_props.py
