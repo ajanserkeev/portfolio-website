@@ -166,3 +166,105 @@ def lever_prop(ctx: BuildContext, name: str, at: Vec3, *, action: str = "toggle-
     hitbox(name, (0.7, 1.2, 0.7), at, action=action, yaw_deg=yaw_deg)
     return parts
 
+
+def conveyor(ctx: BuildContext, name: str, at: Vec3, *, yaw_deg: float = 0.0, length: float = 4.0, width: float = 0.8, height: float = 0.75) -> list:
+    import bpy
+    from ..core.coords import to_blender
+    from .scene import link
+
+    p = ctx.palette
+    parts = []
+    leg_x = length / 2 - 0.2
+    leg_z = width / 2 - 0.1
+    for i, (dx, dz) in enumerate([(-leg_x, -leg_z), (-leg_x, leg_z), (leg_x, -leg_z), (leg_x, leg_z)]):
+        parts.append(rounded_box(f"{name}-leg-{i}", (0.08, height - 0.06, 0.08), color=p["steel"], radius=0.02, at=place((dx, 0.0, dz), at, yaw_deg), yaw_deg=yaw_deg))
+
+    parts.append(rounded_box(f"{name}-rail-l", (length + 0.1, 0.1, 0.06), color=p["steel"], radius=0.02, at=place((0.0, height - 0.05, -width / 2 + 0.03), at, yaw_deg), yaw_deg=yaw_deg))
+    parts.append(rounded_box(f"{name}-rail-r", (length + 0.1, 0.1, 0.06), color=p["steel"], radius=0.02, at=place((0.0, height - 0.05, width / 2 - 0.03), at, yaw_deg), yaw_deg=yaw_deg))
+    parts.append(rounded_box(f"{name}-belt", (length, 0.04, width - 0.1), color=p["ink"], radius=0.01, at=place((0.0, height - 0.03, 0.0), at, yaw_deg), yaw_deg=yaw_deg))
+
+    root = bpy.data.objects.new(f"dyn__{name}", None)
+    root.empty_display_type = "PLAIN_AXES"
+    root.location = to_blender(place((length / 2 - 0.05, height - 0.02, 0.0), at, yaw_deg))
+    link(root, "dyn")
+    cylinder(f"dyn__{name}__roller", radius=0.06, height=width - 0.1, color=p["steel"], role="dyn", at=(0.0, 0.0, 0.0), parent=root)
+
+    anchor("conveyor-in", place((-length / 2 + 0.4, height + 0.12, 0.0), at, yaw_deg))
+    anchor("conveyor-mid", place((0.0, height + 0.12, 0.0), at, yaw_deg))
+    anchor("conveyor-out", place((length / 2 - 0.4, height + 0.12, 0.0), at, yaw_deg))
+    return parts
+
+
+def stamp_machine(ctx: BuildContext, name: str, at: Vec3, *, yaw_deg: float = 0.0) -> list:
+    import bpy
+    from ..core.coords import to_blender
+    from .scene import join, link
+
+    p = ctx.palette
+    parts = [
+        rounded_box(f"{name}-post-l", (0.12, 1.4, 0.12), color=p["steel"], radius=0.02, at=place((-0.45, 0.0, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-post-r", (0.12, 1.4, 0.12), color=p["steel"], radius=0.02, at=place((0.45, 0.0, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-bridge", (1.05, 0.32, 0.4), color=p["mustard"], radius=0.04, at=place((0.0, 1.35, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-led", (0.16, 0.06, 0.03), color=p["teal"], radius=0.0, segments=0, role="glow", at=place((0.0, 1.48, 0.205), at, yaw_deg), yaw_deg=yaw_deg),
+    ]
+
+    root = bpy.data.objects.new(f"dyn__{name}", None)
+    root.empty_display_type = "PLAIN_AXES"
+    root.location = to_blender(place((0.0, 1.35, 0.0), at, yaw_deg))
+    link(root, "dyn")
+
+    rod = cylinder(f"dyn__{name}__head", radius=0.045, height=0.45, color=p["steel"], role="dyn", at=(0.0, -0.45, 0.0), parent=root)
+    press = rounded_box(f"{name}-foot", (0.32, 0.08, 0.32), color=p["signal"], radius=0.015, role="dyn", at=(0.0, -0.45, 0.0), parent=rod)
+    join([rod, press], f"dyn__{name}__head")
+
+    anchor(f"{name}-target", place((0.0, 0.8, 0.0), at, yaw_deg))
+    return parts
+
+
+def deal_button(ctx: BuildContext, name: str, at: Vec3, *, action: str = "run-deal", yaw_deg: float = 0.0) -> list:
+    import bpy
+    from ..core.coords import to_blender
+    from .scene import link
+
+    p = ctx.palette
+    parts = [
+        rounded_box(f"{name}-base", (0.55, 0.8, 0.55), color=p["steel"], radius=0.04, at=at, yaw_deg=yaw_deg),
+        cylinder(f"{name}-rim", radius=0.22, height=0.06, color=p["ink"], at=place((0.0, 0.8, 0.0), at, yaw_deg)),
+    ]
+
+    root = bpy.data.objects.new(f"dyn__{name}", None)
+    root.empty_display_type = "PLAIN_AXES"
+    root.location = to_blender(place((0.0, 0.84, 0.0), at, yaw_deg))
+    link(root, "dyn")
+
+    cylinder(f"dyn__{name}__cap", radius=0.18, height=0.08, color=p["signal"], role="dyn", at=(0.0, 0.0, 0.0), parent=root)
+
+    hitbox(name, (0.6, 1.0, 0.6), at, action=action, yaw_deg=yaw_deg)
+    anchor(f"{name}-btn", place((0.0, 0.9, 0.0), at, yaw_deg))
+    return parts
+
+
+def filing_cabinet(ctx: BuildContext, name: str, at: Vec3, *, yaw_deg: float = 0.0, width: float = 0.9, height: float = 1.6, depth: float = 0.6) -> list:
+    p = ctx.palette
+    parts = [
+        rounded_box(f"{name}-body", (width, height, depth), color=p["mustard"], radius=0.03, at=at, yaw_deg=yaw_deg),
+    ]
+    drawer_h = (height - 0.15) / 4
+    for i in range(4):
+        dy = 0.08 + i * drawer_h
+        parts.append(rounded_box(f"{name}-drawer-{i}", (width - 0.08, drawer_h - 0.03, 0.02), color=p["ink"], radius=0.01, at=place((0.0, dy, depth / 2 + 0.01), at, yaw_deg), yaw_deg=yaw_deg))
+        parts.append(rounded_box(f"{name}-handle-{i}", (0.16, 0.03, 0.03), color=p["brass"], radius=0.01, at=place((0.0, dy + drawer_h / 2 - 0.02, depth / 2 + 0.03), at, yaw_deg), yaw_deg=yaw_deg))
+    return parts
+
+
+def wall_screen(ctx: BuildContext, name: str, at: Vec3, *, screen_id: str = "crm-kanban", size: tuple[float, float] = (1.6, 1.0), yaw_deg: float = 0.0) -> list:
+    info, p = ctx.screens[screen_id], ctx.palette
+    w, h = size
+    parts = [
+        rounded_box(f"{name}-frame", (w + 0.08, h + 0.08, 0.06), color=p["ink"], radius=0.02, at=at, yaw_deg=yaw_deg),
+        screen_plane(f"screen-{name}", size, uv=info.rect, glow=info.glow, at=place((0.0, 0.0, 0.032), at, yaw_deg), yaw_deg=yaw_deg),
+    ]
+    anchor(f"{name}-screen", place((0.0, 0.0, 0.05), at, yaw_deg))
+    return parts
+
+

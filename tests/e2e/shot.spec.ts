@@ -13,15 +13,14 @@ test('shot mode frames one level and hides the interface', async ({ page }) => {
   await expect(page.locator('.cta')).toBeHidden();
 });
 
-test('the agents floor is loaded from its GLB, the others fall back to the greybox', async ({
-  page,
-}) => {
+test('shipped floors load from GLB, unbuilt floors fall back to greybox', async ({ page }) => {
   await page.goto('/?tier=lite&debug=1#agents');
   await expect(page.locator('#stage')).toHaveAttribute('data-state', 'live');
   const sources = await page.evaluate(
     () => (window as unknown as { __tower?: { sources: Record<number, string> } }).__tower?.sources,
   );
+  expect(sources?.[0]).toBe('glb');
   expect(sources?.[1]).toBe('glb');
-  expect(sources?.[2]).toBe('greybox');
+  expect(sources?.[2]).toBe('glb');
   expect((await towerState(page))?.drawCalls).toBeLessThanOrEqual(60);
 });

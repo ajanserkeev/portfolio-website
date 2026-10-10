@@ -137,12 +137,12 @@
 - Create: `art/blender/levels/crm.py`, `src/engine/levels/crm.ts`, `src/engine/levels/crm.test.ts`
 - Output: `src/assets/levels/crm.glb`, `src/assets/levels/crm.lightmap.webp`
 
-- [ ] **Step 1: Написать скрипт сцены `crm.py` (конвейер, картотеки, штамп, кнопка сделки)**
-- [ ] **Step 2: Собрать уровень через `pnpm art:build crm`**
-- [ ] **Step 3: Написать тест контроллера уровня `crm.test.ts`**
-- [ ] **Step 4: Реализовать движение конвейера и цепочку сделки в `crm.ts`**
-- [ ] **Step 5: Проверить `pnpm verify && pnpm art:test`**
-- [ ] **Step 6: Commit**
+- [x] **Step 1: Написать скрипт сцены `crm.py` (конвейер, картотеки, штамп, кнопка сделки)**
+- [x] **Step 2: Собрать уровень через `pnpm art:build crm`**
+- [x] **Step 3: Написать тест контроллера уровня `crm.test.ts`**
+- [x] **Step 4: Реализовать движение конвейера и цепочку сделки в `crm.ts`**
+- [x] **Step 5: Проверить `pnpm verify && pnpm art:test`**
+- [x] **Step 6: Commit**
 
 ---
 

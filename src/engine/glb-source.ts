@@ -6,6 +6,7 @@ import { seedFrom } from './actors/robot-pose';
 import { levelBaseY, type TowerConfig, tower } from './config';
 import { prepareLevel } from './glb-level';
 import { disposeObject3D, type LevelSource } from './level-asset';
+import { createCrmController } from './levels/crm';
 import { createRoofController } from './levels/roof';
 import { createBakedMaterial } from './materials/baked';
 import type { SharedMaterials } from './materials/shared';
@@ -77,7 +78,8 @@ export function createGlbSource(
       (robot) => new RobotActor(robot, shared.faces, seedFrom(robot.name)),
     );
     const roofCtrl = id === 'roof' ? createRoofController({ root }) : undefined;
-    const hasUpdate = actors.length > 0 || roofCtrl !== undefined;
+    const crmCtrl = id === 'crm' ? createCrmController({ root }) : undefined;
+    const hasUpdate = actors.length > 0 || roofCtrl !== undefined || crmCtrl !== undefined;
 
     return {
       root,
@@ -87,10 +89,12 @@ export function createGlbSource(
         ? (timeSec: number) => {
             for (const actor of actors) actor.update(timeSec);
             roofCtrl?.update(timeSec);
+            crmCtrl?.update(timeSec);
           }
         : undefined,
       dispose: () => {
         roofCtrl?.dispose();
+        crmCtrl?.dispose();
         for (const actor of actors) actor.dispose();
         disposeObject3D(root, shared.keep);
         baked.dispose();
