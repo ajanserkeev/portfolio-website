@@ -19,7 +19,8 @@
     "e2e": "playwright test",
     "verify": "pnpm lint && pnpm check && pnpm test && pnpm build && pnpm budgets && pnpm e2e",
     "fixtures:camera": "tsx scripts/gen-camera-fixtures.ts && biome format --write scene/camera-fixtures.json",
-    "budgets": "tsx scripts/check-budgets.ts"
+    "budgets": "tsx scripts/check-budgets.ts",
+    "art:doctor": "tsx art/scripts/doctor.ts"
   },
   "dependencies": {
     "astro": "7.3.8",

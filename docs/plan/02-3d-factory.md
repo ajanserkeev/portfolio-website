@@ -78,14 +78,14 @@
 **Interfaces:**
 - Produces: `REQUIRED_BLENDER = '4.5'`, `BLENDER_MISSING_MESSAGE`, `interface FindOptions`, `blenderCandidates(o)`, `findBlender(o): string | null`, `defaultFindOptions()`, `blenderArgs(args): string[]`, `runBlender(bin, args, cwd?): Promise<void>`, `requireBlender(): string`.
 
-- [ ] **Step 1: Установить Blender 4.5 LTS (с подтверждением пользователя)**
+- [x] **Step 1: Установить Blender 4.5 LTS (с подтверждением пользователя)**
 
 ```bash
 winget install --id BlenderFoundation.Blender.LTS.4.5 -e --accept-package-agreements --accept-source-agreements
 ```
 Expected: Blender в `C:\Program Files\Blender Foundation\Blender 4.5\blender.exe`. На macOS/Linux — установщик с blender.org и переменная `BLENDER_BIN` с путём к бинарнику.
 
-- [ ] **Step 2: Написать падающий тест**
+- [x] **Step 2: Написать падающий тест**
 
 `art/scripts/blender.test.ts`:
 ```ts
@@ -137,12 +137,12 @@ it('tells the user how to install Blender', () => {
 });
 ```
 
-- [ ] **Step 3: Запустить и убедиться, что падает**
+- [x] **Step 3: Запустить и убедиться, что падает**
 
 Run: `pnpm vitest run art/scripts/blender.test.ts`
 Expected: FAIL — модуля `./blender` нет.
 
-- [ ] **Step 4: Реализация**
+- [x] **Step 4: Реализация**
 
 `art/scripts/blender.ts`:
 ```ts
@@ -273,7 +273,7 @@ await runBlender(requireBlender(), ['--python', 'art/blender/doctor.py']);
 "art:doctor": "tsx art/scripts/doctor.ts"
 ```
 
-- [ ] **Step 5: Запустить тест и доктор**
+- [x] **Step 5: Запустить тест и доктор**
 
 Run: `pnpm vitest run art/scripts/blender.test.ts`
 Expected: PASS.
@@ -281,7 +281,7 @@ Expected: PASS.
 Run: `pnpm art:doctor`
 Expected: `Blender 4.5.x`, `Python 3.11.x`, `glTF exporter OK`. Если опция экспортёра отсутствует — сверить имена с документацией 4.5, поправить `REQUIRED_EXPORT_OPTIONS` и вызов экспорта в задаче 8 (в одном коммите).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add art/scripts/blender.ts art/scripts/blender.test.ts art/scripts/doctor.ts art/blender/doctor.py package.json
