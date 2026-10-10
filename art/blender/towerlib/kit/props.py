@@ -405,5 +405,42 @@ def workbench(ctx: BuildContext, name: str, at: Vec3, *, yaw_deg: float = 0.0) -
     return parts
 
 
+def command_desk(ctx: BuildContext, name: str, at: Vec3, *, width: float = 4.8, depth: float = 1.0, height: float = 0.74, yaw_deg: float = 0.0) -> list:
+    p = ctx.palette
+    top = 0.06
+    parts = [
+        rounded_box(f"{name}-top", (width, top, depth), color=p["wood"], radius=0.03, at=place((0.0, height - top, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+    ]
+    for side, label in ((-1, "l"), (0, "m"), (1, "r")):
+        dx = side * (width / 2 - 0.2) if side != 0 else 0.0
+        parts.append(rounded_box(f"{name}-leg-{label}", (0.08, height - top, depth * 0.8), color=p["steel"], radius=0.015, at=place((dx, 0.0, 0.0), at, yaw_deg), yaw_deg=yaw_deg))
+    return parts
+
+
+def capsule_dock(ctx: BuildContext, name: str, at: Vec3, *, action: str = "test-capsule", yaw_deg: float = 0.0) -> list:
+    import bpy
+    from ..core.coords import to_blender
+    from .scene import link
+
+    p = ctx.palette
+    parts = [
+        rounded_box(f"{name}-base", (0.55, 0.12, 0.55), color=p["steel"], radius=0.03, at=at, yaw_deg=yaw_deg),
+        cylinder(f"{name}-funnel", radius=0.2, height=0.25, color=p["brass"], at=place((0.0, 0.12, 0.0), at, yaw_deg)),
+        rounded_box(f"{name}-led", (0.12, 0.04, 0.02), color=p["signal"], role="glow", at=place((0.0, 0.06, 0.28), at, yaw_deg), yaw_deg=yaw_deg),
+    ]
+
+    root = bpy.data.objects.new(f"dyn__{name}", None)
+    root.empty_display_type = "PLAIN_AXES"
+    root.location = to_blender(place((0.0, 0.25, 0.0), at, yaw_deg))
+    link(root, "dyn")
+
+    rounded_box(f"dyn__{name}__cradle", (0.32, 0.06, 0.32), color=p["brass"], radius=0.015, role="dyn", at=(0.0, 0.0, 0.0), parent=root)
+
+    hitbox(name, (0.7, 0.8, 0.7), at, action=action, yaw_deg=yaw_deg)
+    anchor("capsule-dock", place((0.0, 0.32, 0.0), at, yaw_deg))
+    return parts
+
+
+
 
 

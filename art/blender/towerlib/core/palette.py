@@ -27,5 +27,9 @@ class Palette:
         except KeyError:
             raise KeyError(f"unknown palette color {name!r}") from None
 
+    def get(self, name: str, default: tuple[float, float, float] | None = None) -> tuple[float, float, float]:
+        return self._colors.get(name, default)
+
     def names(self) -> list[str]:
         return sorted(self._colors)
+

@@ -182,13 +182,13 @@
 - Create: `art/team.json`, `art/blender/kit/person.py`, `art/blender/levels/basement.py`, `src/engine/levels/basement.ts`, `src/engine/levels/basement.test.ts`
 - Output: `src/assets/levels/basement.glb`, `src/assets/levels/basement.lightmap.webp`
 
-- [ ] **Step 1: Создать `art/team.json` и генератор параметрических персонажей `person.py`**
-- [ ] **Step 2: Написать скрипт сцены `basement.py` с пультом и терминалом дока**
-- [ ] **Step 3: Собрать уровень через `pnpm art:build basement`**
-- [ ] **Step 4: Написать тест контроллера подвала `basement.test.ts`**
-- [ ] **Step 5: Реализовать логику приёма капсулы в `basement.ts`**
-- [ ] **Step 6: Проверить `pnpm verify && pnpm art:test`**
-- [ ] **Step 7: Commit**
+- [x] **Step 1: Создать `art/team.json` и генератор параметрических персонажей `person.py`**
+- [x] **Step 2: Написать скрипт сцены `basement.py` с пультом и терминалом дока**
+- [x] **Step 3: Собрать уровень через `pnpm art:build basement`**
+- [x] **Step 4: Написать тест контроллера подвала `basement.test.ts`**
+- [x] **Step 5: Реализовать логику приёма капсулы в `basement.ts`**
+- [x] **Step 6: Проверить `pnpm verify && pnpm art:test`**
+- [x] **Step 7: Commit**
 
 ---
 
