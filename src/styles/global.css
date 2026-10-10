@@ -308,3 +308,10 @@ body {
     transition: none;
   }
 }
+
+html[data-shot] .topbar,
+html[data-shot] .elevator,
+html[data-shot] .cta,
+html[data-shot] .tower {
+  display: none;
+}

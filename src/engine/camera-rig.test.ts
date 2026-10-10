@@ -51,4 +51,11 @@ describe('CameraRig', () => {
     expect(rig.camera.aspect).toBeCloseTo(390 / 844, 10);
     expect(rig.camera.view?.offsetY ?? 0).toBeGreaterThan(0);
   });
+
+  it('drops the view offset in centered (shot) mode', () => {
+    const rig = new CameraRig(tower, viewport);
+    expect(rig.camera.view?.enabled).toBe(true);
+    rig.setCentered(true);
+    expect(rig.camera.view?.enabled ?? false).toBe(false);
+  });
 });

@@ -34,6 +34,25 @@ def main() -> None:
     ctx = load_context(ART)
     importlib.import_module(f"levels.{args.level.replace('-', '_')}").build(ctx)
 
+    # Ensure camera rays see the site background color (sand), while ambient lighting keeps the daylight sky.
+    world = bpy.context.scene.world
+    if world and world.node_tree:
+        tree = world.node_tree
+        bg_sky = tree.nodes.get("Background")
+        if bg_sky:
+            lp = tree.nodes.new("ShaderNodeLightPath")
+            bg_cam = tree.nodes.new("ShaderNodeBackground")
+            bg_cam.inputs["Color"].default_value = (*ctx.palette["sand"], 1.0)
+            bg_cam.inputs["Strength"].default_value = 1.0
+            mix = tree.nodes.new("ShaderNodeMixShader")
+            tree.links.new(lp.outputs["Is Camera Ray"], mix.inputs["Fac"])
+            tree.links.new(bg_sky.outputs["Background"], mix.inputs[1])
+            tree.links.new(bg_cam.outputs["Background"], mix.inputs[2])
+            output = tree.nodes.get("World Output")
+            if output:
+                tree.links.new(mix.outputs["Shader"], output.inputs["Surface"])
+
+
     # The level is built at its local origin, so the lift-0 pose frames it exactly like the site does.
     position, target = camera_pose(0.0, args.width, args.height, ctx.tower)
     data = bpy.data.cameras.new("preview")

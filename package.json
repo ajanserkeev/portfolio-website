@@ -28,7 +28,8 @@
     "art:faces": "tsx art/scripts/faces.ts",
     "art:build": "tsx art/scripts/build.ts",
     "art:preview": "tsx art/scripts/preview.ts",
-    "art:matcap": "tsx art/scripts/matcap.ts"
+    "art:matcap": "tsx art/scripts/matcap.ts",
+    "art:compare": "tsx art/scripts/compare.ts"
   },
   "dependencies": {
     "astro": "7.3.8",

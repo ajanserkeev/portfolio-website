@@ -35,9 +35,9 @@ export class LevelManager {
   }
 
   /** `position` is where the camera is; `prefetch` (the scroll goal) is where it is heading. */
-  update(position: number, prefetch: number = position): void {
+  update(position: number, prefetch: number = position, radius = 1): void {
     this.positions = [position, prefetch];
-    const plan = planStreaming(this.statuses, this.positions);
+    const plan = planStreaming(this.statuses, this.positions, radius);
     for (const index of plan.dispose) this.unload(index);
     for (const index of plan.load) {
       const failed = this.failedAt[index] ?? Number.NEGATIVE_INFINITY;

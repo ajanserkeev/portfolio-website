@@ -26,6 +26,7 @@ export interface StartOptions {
   /** 3D must stop (context lost, too slow): the caller switches the page to static mode. */
   onFallback: () => void;
   source?: LevelSource;
+  shot?: number;
 }
 
 export interface TowerHandle {
@@ -80,8 +81,12 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   }
 
   const rig = new CameraRig(tower, { width: stage.clientWidth, height: stage.clientHeight });
+  if (options.shot !== undefined) {
+    rig.setCentered(true);
+    rig.setGoal(options.shot, true);
+  }
   let travels: Travel[] = measureTravels(document);
-  let lastGoal = liftPosition(window.scrollY, travels);
+  let lastGoal = options.shot ?? liftPosition(window.scrollY, travels);
 
   const shared = createSharedMaterials(
     await loadSharedTextures({
@@ -101,7 +106,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
 
   function renderFrame(dt: number, timeMs: number): void {
     const moving = rig.update(dt);
-    levels.update(rig.position, lastGoal);
+    levels.update(rig.position, lastGoal, options.shot !== undefined ? 0 : 1);
     if (motion.ambient) {
       for (const index of levels.ready()) levels.asset(index)?.update?.(timeMs / 1000);
     }
@@ -114,6 +119,14 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
       live = true;
       stage.dataset.state = 'live';
       if (options.probeFps) void probe();
+      if (options.shot !== undefined) {
+        loop.invalidate(2);
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => {
+            document.documentElement.dataset.shotReady = 'true';
+          }),
+        );
+      }
     }
   }
 
@@ -147,6 +160,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   }
 
   function onScroll(): void {
+    if (options.shot !== undefined) return;
     const goal = liftPosition(window.scrollY, travels);
     lastGoal = goal;
     rig.setGoal(goal, motion.camera === 'cut');
@@ -190,7 +204,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   renderer.domElement.addEventListener('webglcontextlost', onContextLost);
 
   rig.setGoal(lastGoal, true);
-  levels.update(rig.position);
+  levels.update(rig.position, lastGoal, options.shot !== undefined ? 0 : 1);
   loop.start();
   loop.invalidate();
 

@@ -4046,7 +4046,7 @@ git commit -m "feat(engine): load baked GLB levels with greybox fallback"
 **Interfaces:**
 - Produces: `CameraRig.setCentered(centered: boolean)`; `StartOptions.shot?: number`; `html[data-shot]`, `html[data-shot-ready="true"]`; `interface RawImage`, `gridLuminanceDiff(a, b, grid = 3): number[]`; команда `pnpm art:compare <level>`.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `art/scripts/compare-lib.test.ts`:
 ```ts
@@ -4115,12 +4115,12 @@ test('the agents floor is loaded from its GLB, the others fall back to the greyb
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падают**
+- [x] **Step 2: Запустить и убедиться, что падают**
 
 Run: `pnpm vitest run art/scripts/compare-lib.test.ts src/engine/camera-rig.test.ts`
 Expected: FAIL — нет `./compare-lib` и метода `setCentered`.
 
-- [ ] **Step 3: Режим кадра**
+- [x] **Step 3: Режим кадра**
 
 `src/engine/camera-rig.ts` — добавить поля, метод и ветку в `resize`:
 ```ts
@@ -4204,7 +4204,7 @@ html[data-shot] .tower {
 }
 ```
 
-- [ ] **Step 4: Сверка Blender ↔ сайт**
+- [x] **Step 4: Сверка Blender ↔ сайт**
 
 `art/scripts/compare-lib.ts`:
 ```ts
@@ -4296,7 +4296,7 @@ process.exitCode = within >= 7 ? 0 : 1;
 "art:compare": "tsx art/scripts/compare.ts"
 ```
 
-- [ ] **Step 5: Сцена этажа**
+- [x] **Step 5: Сцена этажа**
 
 `art/blender/levels/agents.py`:
 ```python
@@ -4343,7 +4343,7 @@ def build(ctx: BuildContext) -> None:
         props.ceiling_lamp(ctx, f"lamp-{i}", (x, 3.55, -0.6))
 ```
 
-- [ ] **Step 6: Собрать, сверить, откалибровать**
+- [x] **Step 6: Собрать, сверить, откалибровать**
 
 1. Run: `pnpm art:build agents`
    Expected: таблица с `shipped: true`, треугольников < 60 000, GLB < 450 КБ, лайтмап < 250 КБ. Файлы в `src/assets/levels/`.
@@ -4359,7 +4359,7 @@ def build(ctx: BuildContext) -> None:
 4. Run: `pnpm vitest run art/scripts/built-levels.test.ts src/engine` и `pnpm e2e tests/e2e/shot.spec.ts tests/e2e/engine.spec.ts`
    Expected: PASS. В `__tower.sources` для уровня 1 — `glb`.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add art/blender/levels/agents.py art/scripts/compare-lib.ts art/scripts/compare-lib.test.ts art/scripts/compare.ts src/engine src/styles/global.css src/assets/levels tests/e2e/shot.spec.ts docs/qa/device-matrix.md package.json

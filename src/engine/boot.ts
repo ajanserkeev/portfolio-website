@@ -1,3 +1,4 @@
+import { tower } from './config';
 import { bus } from './events';
 import { readTierSignals } from './signals';
 import { decideTier, motionPolicy, parseTierOverride, type Tier } from './tiers';
@@ -93,7 +94,12 @@ export async function boot(): Promise<void> {
   const stage = document.getElementById('stage');
   const storage = safeLocalStorage();
   const params = new URLSearchParams(window.location.search);
-  const forced = parseTierOverride(window.location.search);
+  const shotId = params.get('shot');
+  const shotIndex = tower.levels.findIndex((level) => level.id === shotId);
+  const shot = shotIndex >= 0 ? shotIndex : undefined;
+  if (shot !== undefined && shotId) document.documentElement.dataset.shot = shotId;
+  // A shot is a still frame: forced high tier, no FPS probe, no debug overlay, no ambient motion.
+  const forced = shot !== undefined ? 'high' : parseTierOverride(window.location.search);
   const signals = readTierSignals(window);
   const auto = decideTier({ ...signals, override: null });
   const tier = decideTier({
@@ -113,9 +119,10 @@ export async function boot(): Promise<void> {
     handle = await startTower({
       stage,
       tier,
-      motion,
+      motion: shot !== undefined ? { camera: 'cut', ambient: false } : motion,
       probeFps: forced === null,
-      debug: params.has('debug'),
+      debug: shot === undefined && params.has('debug'),
+      shot,
       onFallback: () => {
         handle?.destroy();
         setTier('static');
