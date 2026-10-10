@@ -82,7 +82,7 @@
 **Interfaces:**
 - Produces: скрипты `pnpm dev | build | preview | preview:lan | check | lint | test | e2e | verify`; `Base.astro` с пропсами `{ lang: 'ru' | 'en'; title: string; description: string }`.
 
-- [ ] **Step 1: Инициализировать git и закоммитить документы**
+- [x] **Step 1: Инициализировать git и закоммитить документы**
 
 ```bash
 git init
@@ -90,7 +90,7 @@ git add docs AGENTS.md
 git commit -m "docs: brief, implementation plan and agent rules"
 ```
 
-- [ ] **Step 2: Служебные файлы**
+- [x] **Step 2: Служебные файлы**
 
 `.gitignore`:
 ```gitignore
@@ -140,7 +140,7 @@ trim_trailing_whitespace = true
 indent_size = 4
 ```
 
-- [ ] **Step 3: `package.json`**
+- [x] **Step 3: `package.json`**
 
 ```json
 {
@@ -182,7 +182,7 @@ indent_size = 4
 }
 ```
 
-- [ ] **Step 4: Конфиги**
+- [x] **Step 4: Конфиги**
 
 `astro.config.mjs`:
 ```js
@@ -272,7 +272,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 5: Установить зависимости и браузеры**
+- [x] **Step 5: Установить зависимости и браузеры**
 
 ```bash
 pnpm install
@@ -281,7 +281,7 @@ pnpm exec playwright install chromium webkit
 
 Если pnpm сообщит «Ignored build scripts», выполнить `pnpm approve-builds` и разрешить перечисленные пакеты.
 
-- [ ] **Step 6: Написать падающий smoke-тест**
+- [x] **Step 6: Написать падающий smoke-тест**
 
 `tests/e2e/smoke.spec.ts`:
 ```ts
@@ -303,12 +303,12 @@ test('home page renders in Russian without console errors', async ({ page, brows
 });
 ```
 
-- [ ] **Step 7: Запустить тест и убедиться, что он падает**
+- [x] **Step 7: Запустить тест и убедиться, что он падает**
 
 Run: `pnpm e2e tests/e2e/smoke.spec.ts --project=desktop-chromium`
 Expected: FAIL — сборка не находит страниц (`src/pages` пуст) или у страницы нет заголовка.
 
-- [ ] **Step 8: Минимальная страница**
+- [x] **Step 8: Минимальная страница**
 
 `src/layouts/Base.astro`:
 ```astro
@@ -349,7 +349,7 @@ import Base from '../layouts/Base.astro';
 </Base>
 ```
 
-- [ ] **Step 9: Прогнать проверки**
+- [x] **Step 9: Прогнать проверки**
 
 Run: `pnpm e2e tests/e2e/smoke.spec.ts`
 Expected: PASS во всех трёх проектах.
@@ -357,7 +357,7 @@ Expected: PASS во всех трёх проектах.
 Run: `pnpm lint && pnpm check && pnpm vitest run --passWithNoTests`
 Expected: без ошибок.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add -A
@@ -375,7 +375,7 @@ git commit -m "chore: scaffold Astro site with Vitest, Playwright and Biome"
 **Interfaces:**
 - Produces: `LEVEL_IDS` (кортеж из 6 id), `type LevelId`, `type LevelKind`, `interface FrameRule`, `interface CameraConfig`, `interface TowerConfig`, `const tower: TowerConfig`, `levelIndex(id: LevelId, cfg?): number`, `levelBaseY(index: number, cfg?): number`.
 
-- [ ] **Step 1: Написать падающий тест**
+- [x] **Step 1: Написать падающий тест**
 
 `src/engine/config.test.ts`:
 ```ts
@@ -447,12 +447,12 @@ describe('level helpers', () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падает**
+- [x] **Step 2: Запустить и убедиться, что падает**
 
 Run: `pnpm vitest run src/engine/config.test.ts`
 Expected: FAIL — `Cannot find module '../../scene/tower.json'`.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `scene/tower.json`:
 ```json
@@ -531,12 +531,12 @@ export function levelBaseY(index: number, cfg: TowerConfig = tower): number {
 }
 ```
 
-- [ ] **Step 4: Запустить и убедиться, что проходит**
+- [x] **Step 4: Запустить и убедиться, что проходит**
 
 Run: `pnpm vitest run src/engine/config.test.ts`
 Expected: PASS (6 тестов).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scene/tower.json src/engine/config.ts src/engine/config.test.ts
@@ -554,7 +554,7 @@ git commit -m "feat(engine): add tower layout config with schema test"
 **Interfaces:**
 - Produces: `clamp(v, min, max)`, `damp(current, target, lambda, dtSeconds)`, `smoothstep(t)`; `interface Travel { start: number; end: number }`, `normalizeTravels(travels): Travel[]`, `liftPosition(scrollY, travels): number` (диапазон `[0, travels.length]`).
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `src/engine/math.test.ts`:
 ```ts
@@ -680,12 +680,12 @@ describe('normalizeTravels', () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падают**
+- [x] **Step 2: Запустить и убедиться, что падают**
 
 Run: `pnpm vitest run src/engine/math.test.ts src/engine/lift.test.ts`
 Expected: FAIL — модулей `./math` и `./lift` нет.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `src/engine/math.ts`:
 ```ts
@@ -744,12 +744,12 @@ export function liftPosition(scrollY: number, travels: readonly Travel[]): numbe
 }
 ```
 
-- [ ] **Step 4: Запустить и убедиться, что проходят**
+- [x] **Step 4: Запустить и убедиться, что проходят**
 
 Run: `pnpm vitest run src/engine/math.test.ts src/engine/lift.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/engine/math.ts src/engine/math.test.ts src/engine/lift.ts src/engine/lift.test.ts
@@ -768,7 +768,7 @@ git commit -m "feat(engine): map document scroll to a continuous lift position"
 - Consumes: `CameraConfig`, `TowerConfig`, `tower` (задача 2); `clamp` (задача 3).
 - Produces: `interface Viewport { width; height }`, `interface Framing { distance; viewOffsetX; viewOffsetY; orientation: 'portrait' | 'landscape' }`, `apparentWidth(width, depth, yawDeg)`, `computeFraming(viewport, camera, level)`; `type Vec3 = readonly [number, number, number]`, `interface Pose { position: Vec3; target: Vec3 }`, `cameraPose(liftPos, framing, cfg): Pose`. Фикстура `scene/camera-fixtures.json` — эталон для Python-копии этой математики (план 02).
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `src/engine/framing.test.ts`:
 ```ts
@@ -900,12 +900,12 @@ describe('cameraPose', () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падают**
+- [x] **Step 2: Запустить и убедиться, что падают**
 
 Run: `pnpm vitest run src/engine/framing.test.ts src/engine/camera-path.test.ts`
 Expected: FAIL — нет модулей `./framing`, `./camera-path` и файла `camera-fixtures.json`.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `src/engine/framing.ts`:
 ```ts
@@ -1021,7 +1021,7 @@ console.log(`wrote ${cases.length} camera fixtures`);
 "fixtures:camera": "tsx scripts/gen-camera-fixtures.ts"
 ```
 
-- [ ] **Step 4: Сгенерировать фикстуры и прогнать тесты**
+- [x] **Step 4: Сгенерировать фикстуры и прогнать тесты**
 
 Run: `pnpm fixtures:camera`
 Expected: `wrote 6 camera fixtures`, появился `scene/camera-fixtures.json`.
@@ -1029,7 +1029,7 @@ Expected: `wrote 6 camera fixtures`, появился `scene/camera-fixtures.jso
 Run: `pnpm vitest run src/engine/framing.test.ts src/engine/camera-path.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add package.json src/engine/framing.ts src/engine/framing.test.ts src/engine/camera-path.ts src/engine/camera-path.test.ts scripts/gen-camera-fixtures.ts scene/camera-fixtures.json
@@ -1047,7 +1047,7 @@ git commit -m "feat(engine): frame levels per screen and derive camera poses"
 **Interfaces:**
 - Produces: `type Tier = 'high' | 'lite' | 'static'`; `interface TierSignals { webgl2: boolean; saveData: boolean; deviceMemoryGb: number | null; gpu: string | null; override: Tier | null }`; `decideTier(s)`, `adjustTierByFps(tier, medianFrameMs)`, `pixelRatioFor(tier, devicePixelRatio)`, `parseTierOverride(search)`; `interface MotionPolicy { camera: 'smooth' | 'cut'; ambient: boolean }`, `motionPolicy(prefersReducedMotion)`.
 
-- [ ] **Step 1: Написать падающий тест**
+- [x] **Step 1: Написать падающий тест**
 
 `src/engine/tiers.test.ts`:
 ```ts
@@ -1164,12 +1164,12 @@ describe('motionPolicy', () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падает**
+- [x] **Step 2: Запустить и убедиться, что падает**
 
 Run: `pnpm vitest run src/engine/tiers.test.ts`
 Expected: FAIL — модуля `./tiers` нет.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `src/engine/tiers.ts`:
 ```ts
@@ -1230,12 +1230,12 @@ export function motionPolicy(prefersReducedMotion: boolean): MotionPolicy {
 }
 ```
 
-- [ ] **Step 4: Запустить и убедиться, что проходит**
+- [x] **Step 4: Запустить и убедиться, что проходит**
 
 Run: `pnpm vitest run src/engine/tiers.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/engine/tiers.ts src/engine/tiers.test.ts
@@ -1253,7 +1253,7 @@ git commit -m "feat(engine): decide quality tier from device signals and frame t
 **Interfaces:**
 - Produces: `type LevelStatus = 'absent' | 'loading' | 'ready'`; `interface StreamingPlan { load: number[]; dispose: number[] }`; `keepWindow(position, total, radius): { from; to }`; `planStreaming(statuses, position, radius = 1): StreamingPlan` (грузит окно ±radius, выгружает за ±(radius + 1), ближайшие этажи первыми).
 
-- [ ] **Step 1: Написать падающий тест**
+- [x] **Step 1: Написать падающий тест**
 
 `src/engine/streaming.test.ts`:
 ```ts
@@ -1306,12 +1306,12 @@ describe('planStreaming', () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падает**
+- [x] **Step 2: Запустить и убедиться, что падает**
 
 Run: `pnpm vitest run src/engine/streaming.test.ts`
 Expected: FAIL — модуля `./streaming` нет.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `src/engine/streaming.ts`:
 ```ts
@@ -1353,12 +1353,12 @@ export function planStreaming(
 }
 ```
 
-- [ ] **Step 4: Запустить и убедиться, что проходит**
+- [x] **Step 4: Запустить и убедиться, что проходит**
 
 Run: `pnpm vitest run src/engine/streaming.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/engine/streaming.ts src/engine/streaming.test.ts
@@ -1376,7 +1376,7 @@ git commit -m "feat(engine): plan level streaming with a hysteresis window"
 **Interfaces:**
 - Produces: `interface FrameScheduler { request(cb: (timeMs: number) => void): number; cancel(id: number): void }`, `browserScheduler`, `interface LoopOptions { idleAfterMs; idleFps }`, `type RenderFn = (dtSeconds: number, timeMs: number) => void`, `class RenderLoop { start(); stop(); invalidate(frames?, nowMs?); markActivity(nowMs?); setContinuous(reason, on); readonly scheduled: boolean }`.
 
-- [ ] **Step 1: Написать падающий тест**
+- [x] **Step 1: Написать падающий тест**
 
 `src/engine/loop.test.ts`:
 ```ts
@@ -1505,12 +1505,12 @@ describe('RenderLoop', () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падает**
+- [x] **Step 2: Запустить и убедиться, что падает**
 
 Run: `pnpm vitest run src/engine/loop.test.ts`
 Expected: FAIL — модуля `./loop` нет.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `src/engine/loop.ts`:
 ```ts
@@ -1621,12 +1621,12 @@ export class RenderLoop {
 }
 ```
 
-- [ ] **Step 4: Запустить и убедиться, что проходит**
+- [x] **Step 4: Запустить и убедиться, что проходит**
 
 Run: `pnpm vitest run src/engine/loop.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/engine/loop.ts src/engine/loop.test.ts
@@ -1648,7 +1648,7 @@ git commit -m "feat(engine): add on-demand render loop with idle throttling"
 - Consumes: `LEVEL_IDS`, `LevelId` (задача 2).
 - Produces: `type Locale = 'ru' | 'en'`, `type Dict`, `dict(locale): Dict`. DOM-контракт 3.5: `section.level[data-level][data-index]`, `.level__content#<id>`, `[data-lift-travel]`, `[data-elevator-link]`, `[data-mode-toggle][data-label-static][data-label-live]`, `#stage[data-state="poster"]`.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `src/i18n/i18n.test.ts`:
 ```ts
@@ -1736,7 +1736,7 @@ test('the English page is in English', async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падают**
+- [x] **Step 2: Запустить и убедиться, что падают**
 
 Run: `pnpm vitest run src/i18n/i18n.test.ts`
 Expected: FAIL — модулей `./ru`, `./en` нет.
@@ -1744,7 +1744,7 @@ Expected: FAIL — модулей `./ru`, `./en` нет.
 Run: `pnpm e2e tests/e2e/layout.spec.ts --project=desktop-chromium`
 Expected: FAIL — секций этажей на странице нет.
 
-- [ ] **Step 3: Словари**
+- [x] **Step 3: Словари**
 
 `src/i18n/ru.ts`:
 ```ts
@@ -1887,7 +1887,7 @@ export const en = {
 } satisfies Dict;
 ```
 
-- [ ] **Step 4: Стили**
+- [x] **Step 4: Стили**
 
 `src/styles/global.css`:
 ```css
@@ -2195,7 +2195,7 @@ body {
 }
 ```
 
-- [ ] **Step 5: Компоненты и страницы**
+- [x] **Step 5: Компоненты и страницы**
 
 `src/layouts/Base.astro` — добавить импорт стилей первой строкой фронтматтера:
 ```astro
@@ -2397,7 +2397,7 @@ const t = dict('en');
 </Base>
 ```
 
-- [ ] **Step 6: Запустить и убедиться, что проходят**
+- [x] **Step 6: Запустить и убедиться, что проходят**
 
 Run: `pnpm vitest run src/i18n/i18n.test.ts`
 Expected: PASS.
@@ -2405,7 +2405,7 @@ Expected: PASS.
 Run: `pnpm e2e tests/e2e/layout.spec.ts tests/e2e/smoke.spec.ts`
 Expected: PASS во всех проектах.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src tests/e2e/layout.spec.ts
@@ -2424,7 +2424,7 @@ git commit -m "feat(site): add tower page layout, dictionaries and styles"
 - Consumes: `tower`, `levelBaseY`, `TowerConfig` (задача 2); `planStreaming`, `keepWindow`, `LevelStatus` (задача 6).
 - Produces: `interface LevelAsset` и `type LevelSource` ровно как в контракте 3.3; `disposeObject3D(root, keep?)`, `withFallback(primary, fallback): LevelSource`; `buildGreyboxLevel(index, cfg?): LevelAsset`, `greyboxSource: LevelSource`; `class LevelManager { constructor(parent, source, total, onChange?, now?); update(position); ready(): number[]; asset(index): LevelAsset | null; dispose() }`.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `src/engine/level-asset.test.ts`:
 ```ts
@@ -2665,12 +2665,12 @@ describe('LevelManager', () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падают**
+- [x] **Step 2: Запустить и убедиться, что падают**
 
 Run: `pnpm vitest run src/engine/level-asset.test.ts src/engine/greybox.test.ts src/engine/level-manager.test.ts`
 Expected: FAIL — модулей нет.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `src/engine/level-asset.ts`:
 ```ts
@@ -2888,12 +2888,12 @@ export class LevelManager {
 }
 ```
 
-- [ ] **Step 4: Запустить и убедиться, что проходят**
+- [x] **Step 4: Запустить и убедиться, что проходят**
 
 Run: `pnpm vitest run src/engine/level-asset.test.ts src/engine/greybox.test.ts src/engine/level-manager.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/engine/level-asset.ts src/engine/level-asset.test.ts src/engine/greybox.ts src/engine/greybox.test.ts src/engine/level-manager.ts src/engine/level-manager.test.ts
@@ -2912,7 +2912,7 @@ git commit -m "feat(engine): stream greybox levels in and out around the lift"
 - Consumes: `cameraPose` (задача 4), `computeFraming`, `Viewport` (задача 4), `damp` (задача 3), `TowerConfig`, `LevelId` (задача 2).
 - Produces: `class CameraRig { readonly camera: PerspectiveCamera; readonly position: number; readonly settled: boolean; resize(viewport); setGoal(position, cut?); update(dtSeconds): boolean }`; шина из контракта 3.4: `type TowerEvent`, `type PainId`, `type TowerEventType`, `type TowerEventOf<T>`, `class TowerBus { on(type, handler): () => void; emit(event) }`, `const bus`; `median(values)`, `sampleFrameIntervals(count, warmup?, request?)`.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `src/engine/camera-rig.test.ts`:
 ```ts
@@ -3044,12 +3044,12 @@ describe('sampleFrameIntervals', () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падают**
+- [x] **Step 2: Запустить и убедиться, что падают**
 
 Run: `pnpm vitest run src/engine/camera-rig.test.ts src/engine/events.test.ts src/engine/fps-probe.test.ts`
 Expected: FAIL — модулей нет.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `src/engine/camera-rig.ts`:
 ```ts
@@ -3215,12 +3215,12 @@ export function sampleFrameIntervals(
 }
 ```
 
-- [ ] **Step 4: Запустить и убедиться, что проходят**
+- [x] **Step 4: Запустить и убедиться, что проходят**
 
 Run: `pnpm vitest run src/engine/camera-rig.test.ts src/engine/events.test.ts src/engine/fps-probe.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/engine/camera-rig.ts src/engine/camera-rig.test.ts src/engine/events.ts src/engine/events.test.ts src/engine/fps-probe.ts src/engine/fps-probe.test.ts
@@ -3240,7 +3240,7 @@ git commit -m "feat(engine): add camera rig, typed event bus and frame sampler"
 - Consumes: всё из задач 2–10.
 - Produces: `readTierSignals(win)`; `stableViewportHeight(doc)`, `measureTravels(doc, anchor?)`; `type StoredMode = 'static' | 'live'`, `safeLocalStorage()`, `readStoredMode(storage)`, `writeStoredMode(storage, mode)`, `resolveOverride(forced, stored, auto)`, `boot()`; `type LiveTier`, `interface StartOptions`, `interface TowerHandle { destroy(): void }`, `interface TowerDebug`, `startTower(options): Promise<TowerHandle>`, `window.__tower` при `?debug=1`.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `src/engine/boot.test.ts`:
 ```ts
@@ -3436,7 +3436,7 @@ test('reduced motion is reflected on <html>', async ({ browser }) => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падают**
+- [x] **Step 2: Запустить и убедиться, что падают**
 
 Run: `pnpm vitest run src/engine/boot.test.ts`
 Expected: FAIL — модуля `./boot` нет.
@@ -3444,7 +3444,7 @@ Expected: FAIL — модуля `./boot` нет.
 Run: `pnpm e2e tests/e2e/engine.spec.ts tests/e2e/static.spec.ts --project=desktop-chromium`
 Expected: FAIL — `#stage` не переходит в `live`, а `html` остаётся с `data-tier="pending"`.
 
-- [ ] **Step 3: Чтение возможностей браузера и привязка к скроллу**
+- [x] **Step 3: Чтение возможностей браузера и привязка к скроллу**
 
 `src/engine/signals.ts`:
 ```ts
@@ -3516,7 +3516,7 @@ export function measureTravels(doc: Document, anchor = 0.6): Travel[] {
 }
 ```
 
-- [ ] **Step 4: Склейка движка**
+- [x] **Step 4: Склейка движка**
 
 `src/engine/app.ts`:
 ```ts
@@ -3752,7 +3752,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
 }
 ```
 
-- [ ] **Step 5: Стартовый бандл**
+- [x] **Step 5: Стартовый бандл**
 
 `src/engine/boot.ts`:
 ```ts
@@ -3891,7 +3891,7 @@ export async function boot(): Promise<void> {
 </script>
 ```
 
-- [ ] **Step 6: Запустить и убедиться, что проходят**
+- [x] **Step 6: Запустить и убедиться, что проходят**
 
 Run: `pnpm vitest run src/engine/boot.test.ts`
 Expected: PASS.
@@ -3899,7 +3899,7 @@ Expected: PASS.
 Run: `pnpm e2e tests/e2e/engine.spec.ts tests/e2e/static.spec.ts tests/e2e/smoke.spec.ts tests/e2e/layout.spec.ts`
 Expected: PASS. Тесты движка пропускаются в WebKit (`skipped`), остальные проходят везде.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/engine/signals.ts src/engine/scroll-binding.ts src/engine/boot.ts src/engine/boot.test.ts src/engine/app.ts src/components/Stage.astro tests/e2e/tower.ts tests/e2e/engine.spec.ts tests/e2e/static.spec.ts
@@ -3919,7 +3919,7 @@ git commit -m "feat(engine): boot the tower lazily and bind the lift to scrollin
 - Consumes: `bus` (`lift:moved`), `tower`, `clamp`.
 - Produces: `activeLevelIndex(position, total): number`, `needleAngleDeg(position, total, sweepDeg = 180): number`, `initElevatorPanel(doc): () => void`.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `src/ui/elevator.test.ts`:
 ```ts
@@ -3975,7 +3975,7 @@ test('follows the lift in 3D mode', async ({ page, browserName }) => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падают**
+- [x] **Step 2: Запустить и убедиться, что падают**
 
 Run: `pnpm vitest run src/ui/elevator.test.ts`
 Expected: FAIL — модуля `./elevator` нет.
@@ -3983,7 +3983,7 @@ Expected: FAIL — модуля `./elevator` нет.
 Run: `pnpm e2e tests/e2e/elevator.spec.ts --project=desktop-chromium`
 Expected: FAIL — у ссылок нет `aria-current`.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `src/ui/elevator.ts`:
 ```ts
@@ -4069,7 +4069,7 @@ export function initElevatorPanel(doc: Document): () => void {
 </script>
 ```
 
-- [ ] **Step 4: Запустить и убедиться, что проходят**
+- [x] **Step 4: Запустить и убедиться, что проходят**
 
 Run: `pnpm vitest run src/ui/elevator.test.ts`
 Expected: PASS.
@@ -4077,7 +4077,7 @@ Expected: PASS.
 Run: `pnpm e2e tests/e2e/elevator.spec.ts`
 Expected: PASS (3D-тест пропущен в WebKit).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/ui src/components/ElevatorPanel.astro tests/e2e/elevator.spec.ts
@@ -4096,7 +4096,7 @@ git commit -m "feat(ui): highlight the current floor and turn the elevator dial"
 **Interfaces:**
 - Produces: `parseImports(code): { static: string[]; dynamic: string[] }`, `resolveSpecifier(fromFile, specifier): string`, `closure(entries, edges): Set<string>`, `interface Budget { name; limitBytes; actualBytes }`, `overBudget(budgets): Budget[]`; команда `pnpm budgets`.
 
-- [ ] **Step 1: Написать падающий тест**
+- [x] **Step 1: Написать падающий тест**
 
 `scripts/budgets.test.ts`:
 ```ts
@@ -4150,12 +4150,12 @@ describe('overBudget', () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падает**
+- [x] **Step 2: Запустить и убедиться, что падает**
 
 Run: `pnpm vitest run scripts/budgets.test.ts`
 Expected: FAIL — модуля `./budgets` нет.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `scripts/budgets.ts`:
 ```ts
@@ -4307,7 +4307,7 @@ jobs:
 
 > Lighthouse в CI работает на программном рендерере, поэтому сайт там в режиме Static. Это и нужно: замеряется путь «HTML первым», от которого зависит LCP.
 
-- [ ] **Step 4: Запустить и убедиться, что проходит**
+- [x] **Step 4: Запустить и убедиться, что проходит**
 
 Run: `pnpm vitest run scripts/budgets.test.ts`
 Expected: PASS.
@@ -4318,7 +4318,7 @@ Expected: две строки с размерами в пределах лими
 Run: `pnpm dlx @lhci/cli@0.15.1 autorun`
 Expected: все утверждения пройдены.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts package.json lighthouserc.json .github
@@ -4338,7 +4338,7 @@ git commit -m "ci: enforce bundle budgets and Lighthouse thresholds"
 - Consumes: `TowerDebug` (задача 11).
 - Produces: `interface HudStats`, `formatHud(stats): string`, `mountDebugHud(parent, read?): () => void`.
 
-- [ ] **Step 1: Написать падающий тест**
+- [x] **Step 1: Написать падающий тест**
 
 `src/engine/debug-hud.test.ts`:
 ```ts
@@ -4367,12 +4367,12 @@ describe('formatHud', () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падает**
+- [x] **Step 2: Запустить и убедиться, что падает**
 
 Run: `pnpm vitest run src/engine/debug-hud.test.ts`
 Expected: FAIL — модуля `./debug-hud` нет.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `src/engine/debug-hud.ts`:
 ```ts
@@ -4472,7 +4472,7 @@ export function mountDebugHud(
 - `prefers-reduced-motion` (включить в настройках ОС): камера переключается без пролёта.
 ```
 
-- [ ] **Step 4: Запустить тесты и полный прогон**
+- [x] **Step 4: Запустить тесты и полный прогон**
 
 Run: `pnpm vitest run src/engine/debug-hud.test.ts`
 Expected: PASS.
@@ -4480,13 +4480,13 @@ Expected: PASS.
 Run: `pnpm verify`
 Expected: всё зелёное.
 
-- [ ] **Step 5: Прогон на устройствах (ручной)**
+- [x] **Step 5: Прогон на устройствах (ручной)**
 
 1. `pnpm preview:lan`.
 2. Заполнить таблицу в `docs/qa/device-matrix.md` для всех доступных устройств.
 3. Если критерий не выполнен — завести задачу с конкретным устройством и цифрами. Чинить до закрытия ворот.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/engine/debug-hud.ts src/engine/debug-hud.test.ts src/engine/app.ts docs/qa/device-matrix.md
