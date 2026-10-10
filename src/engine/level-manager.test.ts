@@ -77,6 +77,32 @@ describe('LevelManager', () => {
     expect(manager.ready()).not.toContain(0);
   });
 
+  it('keeps the floors the camera is looking at when the scroll goal jumps far ahead', async () => {
+    const { requests, manager } = setup();
+    manager.update(0);
+    const roof = fakeAsset(0);
+    const first = fakeAsset(1);
+    requests[0]?.resolve(roof.asset);
+    requests[1]?.resolve(first.asset);
+    await flush();
+    // The camera is still at the roof while the scroll goal is already at the basement.
+    manager.update(0, 5);
+    expect(roof.state.disposed).toBe(false);
+    expect(first.state.disposed).toBe(false);
+    expect(manager.ready()).toEqual([0, 1]);
+    expect(requests.map((r) => r.index)).toEqual(expect.arrayContaining([4, 5]));
+  });
+
+  it('keeps a prefetched level that arrives while the camera is still travelling', async () => {
+    const { requests, parent, manager } = setup();
+    manager.update(0, 5);
+    const basement = requests.find((r) => r.index === 5);
+    const asset = fakeAsset(5);
+    basement?.resolve(asset.asset);
+    await flush();
+    expect(parent.children).toContain(asset.asset.root);
+  });
+
   it('throws away a level that arrives after the lift moved far away', async () => {
     const { requests, parent, manager } = setup();
     manager.update(0);

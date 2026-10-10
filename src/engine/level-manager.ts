@@ -15,7 +15,7 @@ export class LevelManager {
   private readonly assets: Array<LevelAsset | null>;
   private readonly controllers: Array<AbortController | null>;
   private readonly failedAt: number[];
-  private position = 0;
+  private positions: number[] = [0];
 
   constructor(
     parent: Object3D,
@@ -34,9 +34,10 @@ export class LevelManager {
     this.failedAt = Array.from({ length: total }, () => Number.NEGATIVE_INFINITY);
   }
 
-  update(position: number): void {
-    this.position = position;
-    const plan = planStreaming(this.statuses, position);
+  /** `position` is where the camera is; `prefetch` (the scroll goal) is where it is heading. */
+  update(position: number, prefetch: number = position): void {
+    this.positions = [position, prefetch];
+    const plan = planStreaming(this.statuses, this.positions);
     for (const index of plan.dispose) this.unload(index);
     for (const index of plan.load) {
       const failed = this.failedAt[index] ?? Number.NEGATIVE_INFINITY;
@@ -95,7 +96,9 @@ export class LevelManager {
   }
 
   private isWanted(index: number): boolean {
-    const range = keepWindow(this.position, this.statuses.length, EVICT_RADIUS);
-    return index >= range.from && index <= range.to;
+    return this.positions.some((position) => {
+      const range = keepWindow(position, this.statuses.length, EVICT_RADIUS);
+      return index >= range.from && index <= range.to;
+    });
   }
 }

@@ -86,7 +86,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
 
   function renderFrame(dt: number, timeMs: number): void {
     const moving = rig.update(dt);
-    levels.update(rig.position);
+    levels.update(rig.position, lastGoal);
     if (motion.ambient) {
       for (const index of levels.ready()) levels.asset(index)?.update?.(timeMs / 1000);
     }
@@ -135,7 +135,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
     const goal = liftPosition(window.scrollY, travels);
     lastGoal = goal;
     rig.setGoal(goal, motion.camera === 'cut');
-    levels.update(goal);
+    levels.update(rig.position, goal);
     loop.setContinuous('camera', true);
     loop.invalidate();
   }

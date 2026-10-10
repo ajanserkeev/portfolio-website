@@ -41,6 +41,11 @@ describe('planStreaming', () => {
     expect(planStreaming(statuses, 5).dispose).toEqual([]);
   });
 
+  it('loads around every given position and evicts only far from all of them', () => {
+    const statuses: LevelStatus[] = ['ready', 'ready', 'absent', 'absent', 'absent', 'absent'];
+    expect(planStreaming(statuses, [0, 5])).toEqual({ load: [5, 4], dispose: [] });
+  });
+
   it('respects a custom radius', () => {
     expect(planStreaming(all('absent'), 0, 2).load).toEqual([0, 1, 2]);
   });
