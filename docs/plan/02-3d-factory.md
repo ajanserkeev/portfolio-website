@@ -301,7 +301,7 @@ git commit -m "feat(art): locate Blender 4.5 LTS and check the glTF exporter"
 **Interfaces:**
 - Produces (Python): `Vec3`, `to_blender(v)`, `to_three(v)`, `place(local, at, yaw_deg)`; `srgb_to_linear(c)`, `hex_to_linear(hex)`, `Palette[name] -> (r, g, b)`; `round_corners(points, radius, segments=6)`; `UvRect(x, y, width, height, image_width, image_height).corners_blender()`, `face_cell_rect(index, cols, rows, cell)`; `NODE_NAME`, `dyn(id, part=None)`, `anchor(*parts)`, `hit(name)`, `is_valid(name)`; `LevelDims`, `ScreenInfo`, `FacesInfo`, `BuildContext`, `load_context(art_dir)`; `apparent_width`, `framing_distance`, `camera_pose(lift, width, height, tower)`; `read_glb_json(path)`; `script_args(argv)`.
 
-- [ ] **Step 1: Палитра и окружение pytest**
+- [x] **Step 1: Палитра и окружение pytest**
 
 `art/palette.json`:
 ```json
@@ -377,7 +377,7 @@ sys.path.insert(0, str(ART / "blender"))
 """Pure-Python helpers, importable without Blender."""
 ```
 
-- [ ] **Step 2: Написать падающие тесты**
+- [x] **Step 2: Написать падающие тесты**
 
 `art/tests/test_coords.py`:
 ```python
@@ -609,12 +609,12 @@ def test_returns_empty_list_without_double_dash():
     assert script_args(["blender", "-b"]) == []
 ```
 
-- [ ] **Step 3: Запустить и убедиться, что падают**
+- [x] **Step 3: Запустить и убедиться, что падают**
 
 Run: `pnpm art:test:py`
 Expected: первый запуск создаёт `art/.venv` и ставит pytest, затем FAIL — `ModuleNotFoundError: towerlib.core.coords` и т. д.
 
-- [ ] **Step 4: Реализация**
+- [x] **Step 4: Реализация**
 
 `art/blender/towerlib/core/coords.py`:
 ```python
@@ -949,12 +949,12 @@ def script_args(argv: list[str]) -> list[str]:
     return argv[argv.index("--") + 1 :] if "--" in argv else []
 ```
 
-- [ ] **Step 5: Запустить и убедиться, что проходят**
+- [x] **Step 5: Запустить и убедиться, что проходят**
 
 Run: `pnpm art:test:py`
 Expected: все тесты PASS. `test_camera` сверяется с `scene/camera-fixtures.json` из плана 01: Python-камера совпадает с сайтом.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add art/palette.json art/requirements-dev.txt art/scripts/py.ts art/blender/towerlib art/tests package.json
