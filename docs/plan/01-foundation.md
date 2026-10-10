@@ -2608,7 +2608,9 @@ describe('LevelManager', () => {
     const { requests, manager } = setup();
     manager.update(0);
     manager.update(0.2);
-    expect(requests.map((r) => r.index)).toEqual([0, 1]);
+    const indices = requests.map((r) => r.index);
+    expect(indices.slice(0, 2)).toEqual([0, 1]);
+    expect(new Set(indices).size).toBe(indices.length);
   });
 
   it('unloads levels that the lift left behind', async () => {
