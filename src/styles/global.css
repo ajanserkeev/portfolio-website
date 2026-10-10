@@ -393,3 +393,175 @@ html[data-shot] .cta,
 html[data-shot] .tower {
   display: none;
 }
+
+/* Cases section inside level */
+.level__cases {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed rgba(28, 27, 34, 0.15);
+}
+
+.level__cases-title {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  margin: 0 0 1rem;
+  color: var(--color-ink);
+}
+
+.level__cases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+/* Extras: Process, Team, FAQ in basement */
+.level__extras {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.section-block {
+  padding-top: 1.5rem;
+  border-top: 1px dashed rgba(28, 27, 34, 0.15);
+}
+
+.section-block__title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  margin: 0 0 0.5rem;
+}
+
+.section-block__lead {
+  font-size: 0.9375rem;
+  color: rgba(28, 27, 34, 0.7);
+  margin: 0 0 1.25rem;
+  max-width: 48ch;
+}
+
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.process-card {
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(28, 27, 34, 0.08);
+  border-radius: 0.875rem;
+}
+
+.process-card__kicker {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-signal);
+  display: block;
+  margin-bottom: 0.375rem;
+}
+
+.process-card__title {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
+}
+
+.process-card__desc {
+  font-size: 0.875rem;
+  color: rgba(28, 27, 34, 0.75);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.team-card {
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(28, 27, 34, 0.08);
+  border-radius: 0.875rem;
+}
+
+.team-card__name {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  margin: 0 0 0.25rem;
+}
+
+.team-card__role {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-teal);
+  margin: 0 0 0.5rem;
+}
+
+.team-card__bio {
+  font-size: 0.875rem;
+  color: rgba(28, 27, 34, 0.75);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.faq-item {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(28, 27, 34, 0.08);
+  border-radius: 0.75rem;
+  padding: 0.875rem 1.125rem;
+  transition: background 0.15s ease;
+}
+
+.faq-item[open] {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.faq-item__q {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.faq-item__a {
+  margin: 0.75rem 0 0;
+  font-size: 0.875rem;
+  color: rgba(28, 27, 34, 0.8);
+  line-height: 1.5;
+}
+
+.footer-legal {
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(28, 27, 34, 0.12);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.8125rem;
+  color: rgba(28, 27, 34, 0.65);
+}
+
+.footer-legal__links a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footer-legal__links a:hover {
+  color: var(--color-ink);
+}
+
+.footer-legal__copy {
+  margin: 0;
+}

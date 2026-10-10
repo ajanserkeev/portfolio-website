@@ -1,6 +1,8 @@
 ---
+import { getCollection } from 'astro:content';
 import type { LevelId } from '../engine/config';
 import { dict, type Locale } from '../i18n';
+import CaseCard from './CaseCard.astro';
 
 interface Props {
   id: LevelId;
@@ -10,6 +12,12 @@ interface Props {
 const { id, index, locale } = Astro.props;
 const d = dict(locale);
 const copy = d.levels[id];
+
+const collectionName = locale === 'ru' ? 'cases-ru' : 'cases-en';
+const allCases = await getCollection(collectionName);
+const floorCases = allCases
+  .filter((c) => c.data.floorId === id)
+  .sort((a, b) => a.data.order - b.data.order);
 ---
 <section class="level" data-level={id} data-index={index} aria-labelledby={`${id}-title`}>
   <div class="level__travel" data-lift-travel aria-hidden="true"></div>
@@ -21,5 +29,70 @@ const copy = d.levels[id];
     <h2 id={`${id}-title`} class="level__title">{copy.title}</h2>
     <p class="level__lead">{copy.lead}</p>
     <slot />
+
+    {floorCases.length > 0 && (
+      <div class="level__cases">
+        <h3 class="level__cases-title">{d.cases.heading}</h3>
+        <div class="level__cases-grid">
+          {floorCases.map((item) => (
+            <CaseCard item={item} locale={locale} />
+          ))}
+        </div>
+      </div>
+    )}
+
+    {id === 'basement' && (
+      <div class="level__extras">
+        <div class="section-block">
+          <h3 class="section-block__title">{d.process.title}</h3>
+          <p class="section-block__lead">{d.process.lead}</p>
+          <div class="process-grid">
+            {d.process.steps.map((s) => (
+              <div class="process-card">
+                <span class="process-card__kicker">{s.kicker}</span>
+                <h4 class="process-card__title">{s.title}</h4>
+                <p class="process-card__desc">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="section-block">
+          <h3 class="section-block__title">{d.team.title}</h3>
+          <p class="section-block__lead">{d.team.lead}</p>
+          <div class="team-grid">
+            {d.team.members.map((m) => (
+              <div class="team-card">
+                <h4 class="team-card__name">{m.name}</h4>
+                <p class="team-card__role">{m.role}</p>
+                <p class="team-card__bio">{m.bio}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="section-block">
+          <h3 class="section-block__title">{d.faq.title}</h3>
+          <p class="section-block__lead">{d.faq.lead}</p>
+          <div class="faq-list">
+            {d.faq.items.map((item) => (
+              <details class="faq-item">
+                <summary class="faq-item__q">{item.q}</summary>
+                <p class="faq-item__a">{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+
+        <footer class="footer-legal">
+          <div class="footer-legal__links">
+            <a href={locale === 'ru' ? '/privacy/' : '/en/privacy/'}>
+              {d.legal.privacy}
+            </a>
+          </div>
+          <p class="footer-legal__copy">{d.legal.copyright}</p>
+        </footer>
+      </div>
+    )}
   </div>
 </section>

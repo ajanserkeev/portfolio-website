@@ -81,11 +81,11 @@
 - Create: `src/components/CaseCard.astro`
 - Modify: `src/components/LevelSection.astro`, `src/components/TowerPage.astro`
 
-- [ ] **Step 1: Создать компонент `CaseCard.astro` с отображением метрик, стека и ссылки на страницу кейса**
-- [ ] **Step 2: Интегрировать фильтрацию и вывод кейсов по услуге в секциях этажей (`LevelSection.astro`)**
-- [ ] **Step 3: Написать e2e тест отображения карточек кейсов на этажах**
-- [ ] **Step 4: Проверить `pnpm verify`**
-- [ ] **Step 5: Commit**
+- [x] **Step 1: Создать компонент `CaseCard.astro` с отображением метрик, стека и ссылки на страницу кейса**
+- [x] **Step 2: Интегрировать фильтрацию и вывод кейсов по услуге в секциях этажей (`LevelSection.astro`)**
+- [x] **Step 3: Написать e2e тест отображения карточек кейсов на этажах**
+- [x] **Step 4: Проверить `pnpm verify`**
+- [x] **Step 5: Commit**
 
 ---
 
