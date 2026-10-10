@@ -1,6 +1,7 @@
 """Scene and collection helpers. Every object belongs to exactly one role collection."""
 from __future__ import annotations
 
+import bmesh
 import bpy
 
 ROLES = ("static", "screens", "glow", "dyn", "anchors", "hits", "lights", "occluders")
@@ -28,7 +29,9 @@ def link(obj: bpy.types.Object, role: str) -> bpy.types.Object:
 
 def objects_in(role: str) -> list[bpy.types.Object]:
     coll = bpy.data.collections.get(role)
-    return list(coll.objects) if coll is not None else []
+    if coll is None:
+        return []
+    return sorted(list(coll.objects), key=lambda o: o.name)
 
 
 def select_only(obj: bpy.types.Object) -> None:
@@ -36,6 +39,18 @@ def select_only(obj: bpy.types.Object) -> None:
         other.select_set(False)
     obj.select_set(True)
     bpy.context.view_layer.objects.active = obj
+
+
+def sort_mesh_elements(obj: bpy.types.Object) -> None:
+    if obj.type != "MESH" or obj.data is None:
+        return
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    bm.faces.sort(key=lambda f: f.calc_center_bounds().x * 10000.0 + f.calc_center_bounds().y * 100.0 + f.calc_center_bounds().z)
+    bm.verts.sort(key=lambda v: v.co.x * 10000.0 + v.co.y * 100.0 + v.co.z)
+    bm.to_mesh(obj.data)
+    bm.free()
+    obj.data.update()
 
 
 def join(objects: list[bpy.types.Object], name: str) -> bpy.types.Object:
@@ -51,6 +66,7 @@ def join(objects: list[bpy.types.Object], name: str) -> bpy.types.Object:
             selected_editable_objects=objects,
         ):
             bpy.ops.object.join()
+        sort_mesh_elements(target)
     target.name = name
     target.data.name = name
     return target

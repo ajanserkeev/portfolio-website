@@ -87,8 +87,8 @@ def build_robot(spec: RobotSpec, ctx: BuildContext) -> bpy.types.Object:
         glow=(0.35, 0.95, 0.85),
         strength=1.5,
         role="dyn",
-        at=(0.0, 0.07, 0.232),
-        parent=head,
+        at=(0.0, h + 0.83, 0.232),
+        parent=root,
     )
 
     for side, label in ((-1, "l"), (1, "r")):

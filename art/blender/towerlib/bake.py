@@ -127,6 +127,7 @@ def _srgb_encode(linear: np.ndarray) -> np.ndarray:
 
 
 def _save_png(rgb_srgb: np.ndarray, size: tuple[int, int], path: Path) -> None:
+    path = path.resolve()
     width, height = size
     rgba = np.ones((width * height, 4), dtype=np.float32)
     rgba[:, :3] = rgb_srgb

@@ -26,7 +26,7 @@ export async function optimizeLevel(input: string, output: string): Promise<void
   stripStaticNormals(doc);
   await doc.transform(
     dedup(),
-    prune(),
+    prune({ keepLeaves: true }),
     weld(),
     quantize(),
     meshopt({ encoder: MeshoptEncoder, level: 'medium' }),

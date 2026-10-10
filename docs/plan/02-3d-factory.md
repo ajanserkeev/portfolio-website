@@ -3147,7 +3147,7 @@ git commit -m "feat(art): export levels to GLB, compress them and enforce the le
 **Interfaces:**
 - Produces: `parseBuildArgs(argv): { level: string; draft: boolean; noBake: boolean }`; модули этажей с функцией `build(ctx: BuildContext) -> None`; команды `pnpm art:build <level> [--draft] [--no-bake]`, `pnpm art:preview <level>`, `pnpm art:matcap`.
 
-- [ ] **Step 1: Написать падающий тест**
+- [x] **Step 1: Написать падающий тест**
 
 `art/scripts/build-args.test.ts`:
 ```ts
@@ -3175,12 +3175,12 @@ describe('parseBuildArgs', () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падает**
+- [x] **Step 2: Запустить и убедиться, что падает**
 
 Run: `pnpm vitest run art/scripts/build-args.test.ts`
 Expected: FAIL — модуля `./build-args` нет.
 
-- [ ] **Step 3: Реализация — Node**
+- [x] **Step 3: Реализация — Node**
 
 `art/scripts/build-args.ts`:
 ```ts
@@ -3304,7 +3304,7 @@ console.log('matcap: src/assets/textures/matcap.webp');
 "art:matcap": "tsx art/scripts/matcap.ts"
 ```
 
-- [ ] **Step 4: Реализация — Blender**
+- [x] **Step 4: Реализация — Blender**
 
 `art/blender/levels/__init__.py`:
 ```python
@@ -3536,7 +3536,7 @@ def main() -> None:
 main()
 ```
 
-- [ ] **Step 5: Тест и сборка тестовой комнаты**
+- [x] **Step 5: Тест и сборка тестовой комнаты**
 
 Run: `pnpm vitest run art/scripts/build-args.test.ts`
 Expected: PASS.
@@ -3547,12 +3547,12 @@ Expected: таблица с `shipped: false`, треугольниками и р
 Run: `pnpm art:preview test-room` и `pnpm art:matcap`
 Expected: `art/out/test-room/preview.png` и `src/assets/textures/matcap.webp`. Открыть оба PNG и посмотреть: комната светлая, робот виден, matcap — мягко освещённая сфера со светом сверху-слева.
 
-- [ ] **Step 6: Детерминизм (Review Focus 2)**
+- [x] **Step 6: Детерминизм (Review Focus 2)**
 
 Run: `pnpm art:build test-room --no-bake` дважды подряд.
 Expected: одинаковое значение `glb sha256` в обеих таблицах. Если отличается — найти источник (порядок объектов, время в метаданных) и убрать его до коммита.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add art/blender/build_level.py art/blender/render_preview.py art/blender/render_matcap.py art/blender/levels art/scripts/build-args.ts art/scripts/build-args.test.ts art/scripts/build.ts art/scripts/preview.ts art/scripts/matcap.ts src/assets/textures/matcap.webp package.json

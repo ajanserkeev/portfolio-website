@@ -25,7 +25,10 @@
     "art:test:blender": "tsx art/scripts/test-blender.ts",
     "art:test": "pnpm art:test:py && pnpm art:test:blender",
     "art:screens": "tsx art/scripts/screens.ts",
-    "art:faces": "tsx art/scripts/faces.ts"
+    "art:faces": "tsx art/scripts/faces.ts",
+    "art:build": "tsx art/scripts/build.ts",
+    "art:preview": "tsx art/scripts/preview.ts",
+    "art:matcap": "tsx art/scripts/matcap.ts"
   },
   "dependencies": {
     "astro": "7.3.8",

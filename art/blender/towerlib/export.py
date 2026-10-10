@@ -6,7 +6,7 @@ from pathlib import Path
 import bpy
 
 from .kit.materials import placeholder_material
-from .kit.scene import join, objects_in
+from .kit.scene import join, objects_in, sort_mesh_elements
 
 
 def finalize_for_export() -> None:
@@ -29,6 +29,9 @@ def merge_role(role: str, name: str) -> bpy.types.Object | None:
 
 def export_glb(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    for obj in sorted(bpy.data.objects, key=lambda o: o.name):
+        if obj.type == "MESH":
+            sort_mesh_elements(obj)
     bpy.ops.export_scene.gltf(
         filepath=str(path),
         export_format="GLB",
