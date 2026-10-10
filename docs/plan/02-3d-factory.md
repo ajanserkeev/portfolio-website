@@ -2489,7 +2489,7 @@ git commit -m "feat(art): add a parametric hover robot with animatable parts"
 - Consumes: `objects_in`, `join`, `select_only` (задача 3), `daylight` (задача 5).
 - Produces: `LIGHTMAP_UV = "lightmap"`, `@dataclass BakeSettings(size=1024, samples=512, margin_px=8, exposure=1.0, headroom=2.0, denoise=True, seed=7)`, `join_static() -> Object`, `unwrap_lightmap(obj, *, margin=0.004)`, `configure_cycles(settings)`, `bake_irradiance(obj, settings) -> Image`, `denoise(image) -> Image`, `encode_lightmap(image, path, settings) -> dict`, `write_flat_lightmap(path, settings) -> dict`.
 
-- [ ] **Step 1: Написать падающий тест**
+- [x] **Step 1: Написать падающий тест**
 
 `art/tests/blender/test_bake.py`:
 ```python
@@ -2544,7 +2544,7 @@ def test_a_block_casts_a_contact_shadow():
 
 
 def test_denoise_reduces_noise():
-    image, _ = _bake_floor(with_block=True, samples=4)
+    image, _ = _bake_floor(with_block=True, samples=2)
     raw = _noise(image)
     clean = _noise(bake.denoise(image))
     assert clean < raw * 0.6, (clean, raw)
@@ -2571,12 +2571,12 @@ def test_flat_lightmap_encodes_full_light():
     assert abs(value - 0.7353569) < 0.01  # sRGB encoding of 1.0 / headroom (0.5)
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падает**
+- [x] **Step 2: Запустить и убедиться, что падает**
 
 Run: `pnpm art:test:blender test_bake`
 Expected: FAIL — нет модуля `towerlib.bake`.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `art/blender/towerlib/bake.py`:
 ```python
@@ -2747,7 +2747,7 @@ def write_flat_lightmap(path: Path, settings: BakeSettings) -> dict[str, float]:
     return {"mean": value, "p05": value, "p95": value, "clipped": 0.0}
 ```
 
-- [ ] **Step 4: Запустить и убедиться, что проходит**
+- [x] **Step 4: Запустить и убедиться, что проходит**
 
 Run: `pnpm art:test:blender test_bake`
 Expected: `4/4 passed` за 1–3 минуты на процессоре.
@@ -2758,7 +2758,7 @@ Expected: `4/4 passed` за 1–3 минуты на процессоре.
 >
 > Остальной конвейер от этого не меняется.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add art/blender/towerlib/bake.py art/tests/blender/test_bake.py

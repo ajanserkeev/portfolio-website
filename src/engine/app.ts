@@ -68,6 +68,13 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   sun.position.set(-6, 10, 8);
   scene.add(sun);
 
+  if (window.location.hash) {
+    const target = document.getElementById(window.location.hash.slice(1));
+    if (target) {
+      target.scrollIntoView({ behavior: 'instant', block: 'start' });
+    }
+  }
+
   const rig = new CameraRig(tower, { width: stage.clientWidth, height: stage.clientHeight });
   let travels: Travel[] = measureTravels(document);
   let lastGoal = liftPosition(window.scrollY, travels);

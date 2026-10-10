@@ -2,14 +2,5 @@
   "cols": 4,
   "rows": 2,
   "cell": 128,
-  "frames": [
-    "neutral",
-    "happy",
-    "blink",
-    "focus",
-    "surprised",
-    "annoyed",
-    "sleepy",
-    "love"
-  ]
+  "frames": ["neutral", "happy", "blink", "focus", "surprised", "annoyed", "sleepy", "love"]
 }
