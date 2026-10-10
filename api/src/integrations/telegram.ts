@@ -9,8 +9,19 @@ export interface LeadPayload {
   locale: string;
 }
 
+export interface BookingPayload {
+  id: string;
+  name: string;
+  contact: string;
+  channel: string;
+  slotStart: string;
+  slotEnd: string;
+  locale: string;
+}
+
 export interface TelegramNotifier {
   notifyLead(lead: LeadPayload): Promise<boolean>;
+  notifyBooking(booking: BookingPayload): Promise<boolean>;
 }
 
 export class RealTelegramNotifier implements TelegramNotifier {
@@ -41,6 +52,27 @@ export class RealTelegramNotifier implements TelegramNotifier {
       .filter(Boolean)
       .join('\n');
 
+    return this.sendMessage(text);
+  }
+
+  async notifyBooking(booking: BookingPayload): Promise<boolean> {
+    if (!this.token || !this.chatId) {
+      return false;
+    }
+
+    const text = [
+      '<b>Башня — Бронирование звонка</b>',
+      `<b>Имя:</b> ${escapeHtml(booking.name)}`,
+      `<b>Контакт:</b> ${escapeHtml(booking.contact)} (${escapeHtml(booking.channel)})`,
+      `<b>Начало:</b> ${escapeHtml(booking.slotStart)}`,
+      `<b>Конец:</b> ${escapeHtml(booking.slotEnd)}`,
+      `<b>Язык:</b> ${escapeHtml(booking.locale)}`,
+    ].join('\n');
+
+    return this.sendMessage(text);
+  }
+
+  private async sendMessage(text: string): Promise<boolean> {
     try {
       const res = await fetch(`https://api.telegram.org/bot${this.token}/sendMessage`, {
         method: 'POST',
@@ -61,9 +93,15 @@ export class RealTelegramNotifier implements TelegramNotifier {
 
 export class FakeTelegramNotifier implements TelegramNotifier {
   public sentLeads: LeadPayload[] = [];
+  public sentBookings: BookingPayload[] = [];
 
   async notifyLead(lead: LeadPayload): Promise<boolean> {
     this.sentLeads.push(lead);
+    return true;
+  }
+
+  async notifyBooking(booking: BookingPayload): Promise<boolean> {
+    this.sentBookings.push(booking);
     return true;
   }
 }

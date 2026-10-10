@@ -6,7 +6,9 @@ import { initDatabase } from './db';
 import { type CrmSync, RealCrmSync } from './integrations/crm';
 import { RealTelegramNotifier, type TelegramNotifier } from './integrations/telegram';
 import { createRateLimiter } from './limits';
+import { createBookRoute } from './routes/book';
 import { createLeadRoute } from './routes/lead';
+import { createSlotsRoute } from './routes/slots';
 
 export interface AppDependencies {
   config?: ApiConfig;
@@ -79,11 +81,41 @@ export function createApp(options?: AppDependencies | ApiConfig) {
       max: 20,
     }),
   );
+  app.use(
+    '/api/book',
+    createRateLimiter({
+      db,
+      windowMs: 60_000,
+      max: 20,
+    }),
+  );
+  app.use(
+    '/api/slots',
+    createRateLimiter({
+      db,
+      windowMs: 60_000,
+      max: 60,
+    }),
+  );
 
   // Mount routes
   app.route(
     '/api/lead',
     createLeadRoute({
+      db,
+      telegramNotifier,
+      crmSync,
+    }),
+  );
+  app.route(
+    '/api/slots',
+    createSlotsRoute({
+      db,
+    }),
+  );
+  app.route(
+    '/api/book',
+    createBookRoute({
       db,
       telegramNotifier,
       crmSync,

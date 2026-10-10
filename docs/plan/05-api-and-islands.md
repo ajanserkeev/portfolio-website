@@ -54,12 +54,12 @@
 **Files:**
 - Create: `api/src/booking/slots.ts`, `api/src/routes/slots.ts`, `api/src/routes/book.ts`, `api/tests/booking.test.ts`
 
-- [ ] **Step 1: Написать чистые тесты генератора слотов: рабочие часы, часовой пояс Asia/Almaty, занятые интервалы**
-- [ ] **Step 2: Реализовать чистую функцию `generateSlots(rules, busy, now, tz)`**
-- [ ] **Step 3: Реализовать маршрут `GET /api/slots` и `POST /api/book` с обработкой гонки (HTTP 409 Conflict)**
-- [ ] **Step 4: Проверить тесты идемпотентности и бронирования**
-- [ ] **Step 5: Проверить `pnpm verify`**
-- [ ] **Step 6: Commit**
+- [x] **Step 1: Написать чистые тесты генератора слотов: рабочие часы, часовой пояс Asia/Almaty, занятые интервалы**
+- [x] **Step 2: Реализовать чистую функцию `generateSlots(rules, busy, now, tz)`**
+- [x] **Step 3: Реализовать маршрут `GET /api/slots` и `POST /api/book` с обработкой гонки (HTTP 409 Conflict)**
+- [x] **Step 4: Проверить тесты идемпотентности и бронирования**
+- [x] **Step 5: Проверить `pnpm verify`**
+- [x] **Step 6: Commit**
 
 ---
 
