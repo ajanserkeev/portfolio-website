@@ -4666,12 +4666,12 @@ git commit -m "feat(engine): animate robots with hover, typing arms and blinking
 **Files:**
 - Modify: `docs/qa/device-matrix.md` (раздел «Ворота 02»)
 
-- [ ] **Step 1: Полная проверка**
+- [x] **Step 1: Полная проверка**
 
 Run: `pnpm verify && pnpm art:test`
 Expected: всё зелёное.
 
-- [ ] **Step 2: Прогон на устройствах**
+- [x] **Step 2: Прогон на устройствах**
 
 Добавить в `docs/qa/device-matrix.md` раздел и заполнить его так же, как для ворот 01, на странице `/?debug=1#agents`:
 
@@ -4689,18 +4689,18 @@ Expected: всё зелёное.
 |---|---|---|---|
 ```
 
-- [ ] **Step 3: Утверждение стиля командой**
+- [x] **Step 3: Утверждение стиля командой**
 
 1. Отправить команде `art/out/agents/compare.png` и 2–3 скриншота с телефонов.
 2. Правки палитры — в `art/palette.json`, затем `pnpm art:build agents` (2–5 минут) и повторный показ.
 3. Правки расстановки — в `art/blender/levels/agents.py`, сборка и показ так же.
 
-- [ ] **Step 4: Решение go / no-go**
+- [x] **Step 4: Решение go / no-go**
 
 - **Go:** критерии выполнены, команда утвердила стиль → пишется детальный план 03 (остальные этажи по этому же шаблону).
 - **No-go после двух итераций калибровки:** запасной путь из брифа (3.12). Этажи без лайтмапа (`--no-bake`), matcap-свет на всей геометрии. Задача на доработку запекания уходит в план 03. Сайт не блокируется.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/qa/device-matrix.md art/palette.json src/assets
