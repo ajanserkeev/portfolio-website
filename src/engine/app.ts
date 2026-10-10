@@ -1,13 +1,16 @@
 import { Color, DirectionalLight, HemisphereLight, Scene, WebGLRenderer } from 'three';
+import { levelFiles, textureUrl } from './assets';
 import { CameraRig } from './camera-rig';
 import { tower } from './config';
 import { bus } from './events';
 import { median, sampleFrameIntervals } from './fps-probe';
+import { createGlbSource } from './glb-source';
 import { greyboxSource } from './greybox';
-import type { LevelSource } from './level-asset';
+import { type LevelSource, withFallback } from './level-asset';
 import { LevelManager } from './level-manager';
 import { liftPosition, type Travel } from './lift';
 import { RenderLoop } from './loop';
+import { createSharedMaterials, loadSharedTextures } from './materials/shared';
 import { measureTravels } from './scroll-binding';
 import { adjustTierByFps, type MotionPolicy, pixelRatioFor, type Tier } from './tiers';
 
@@ -36,6 +39,7 @@ export interface TowerDebug {
   readonly drawCalls: number;
   readonly triangles: number;
   readonly frames: number;
+  readonly sources: Record<number, string>;
   loseContext(): void;
 }
 
@@ -79,17 +83,21 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   let travels: Travel[] = measureTravels(document);
   let lastGoal = liftPosition(window.scrollY, travels);
 
-  const loop = new RenderLoop(renderFrame);
-  const levels = new LevelManager(
-    scene,
-    options.source ?? greyboxSource,
-    tower.levels.length,
-    () => {
-      const animated = levels.ready().some((i) => levels.asset(i)?.update !== undefined);
-      loop.setContinuous('ambient', motion.ambient && animated);
-      loop.invalidate();
-    },
+  const shared = createSharedMaterials(
+    await loadSharedTextures({
+      matcap: textureUrl('matcap'),
+      screens: textureUrl('screens'),
+      faces: textureUrl('faces'),
+    }),
   );
+  const source = options.source ?? withFallback(createGlbSource(levelFiles, shared), greyboxSource);
+
+  const loop = new RenderLoop(renderFrame);
+  const levels = new LevelManager(scene, source, tower.levels.length, () => {
+    const animated = levels.ready().some((i) => levels.asset(i)?.update !== undefined);
+    loop.setContinuous('ambient', motion.ambient && animated);
+    loop.invalidate();
+  });
 
   function renderFrame(dt: number, timeMs: number): void {
     const moving = rig.update(dt);
@@ -206,6 +214,13 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
       get frames() {
         return frames;
       },
+      get sources() {
+        return Object.fromEntries(
+          levels
+            .ready()
+            .map((i) => [i, String(levels.asset(i)?.root.userData.source ?? 'greybox')]),
+        );
+      },
       loseContext: () => renderer.getContext().getExtension('WEBGL_lose_context')?.loseContext(),
     };
     void import('./debug-hud').then(({ mountDebugHud }) => mountDebugHud(document.body));
@@ -222,6 +237,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
       document.removeEventListener('visibilitychange', onVisibility);
       renderer.domElement.removeEventListener('webglcontextlost', onContextLost);
       levels.dispose();
+      for (const item of shared.keep) (item as { dispose?: () => void }).dispose?.();
       renderer.dispose();
       renderer.domElement.remove();
       stage.dataset.state = 'poster';

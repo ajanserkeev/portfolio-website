@@ -3572,7 +3572,7 @@ git commit -m "feat(art): build, preview and matcap commands for tower levels"
 - Consumes: `LevelAsset`, `LevelSource`, `disposeObject3D`, `withFallback`, `greyboxSource` (план 01); `levelBaseY`, `tower` (план 01).
 - Produces: `LIGHTMAP_HEADROOM = 2`, `createBakedMaterial(lightMap): ShaderMaterial`; `interface SharedTextures { matcap; screens; faces }`, `interface SharedMaterials { matcap; screens; glow; faces; keep: ReadonlySet<object> }`, `createSharedMaterials(textures)`, `whiteTexture()`, `loadSharedTextures(urls, loader?)`; `prepareLevel(root, baked, shared): { anchors; hits }`; `interface LevelFiles { glb; lightmap }`, `levelFilesFromGlob(urls)`, `interface GlbLoaders`, `createGlbSource(files, shared, loaders?, cfg?)`; `levelFiles`, `textureUrl(name)`.
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 `src/engine/materials/baked.test.ts`:
 ```ts
@@ -3712,12 +3712,12 @@ describe('createGlbSource', () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падают**
+- [x] **Step 2: Запустить и убедиться, что падают**
 
 Run: `pnpm vitest run src/engine/materials src/engine/glb-level.test.ts src/engine/glb-source.test.ts`
 Expected: FAIL — модулей нет.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 `src/engine/materials/baked.ts`:
 ```ts
@@ -4018,7 +4018,7 @@ import { createSharedMaterials, loadSharedTextures } from './materials/shared';
       for (const item of shared.keep) (item as { dispose?: () => void }).dispose?.();
 ```
 
-- [ ] **Step 4: Запустить и убедиться, что проходят**
+- [x] **Step 4: Запустить и убедиться, что проходят**
 
 Run: `pnpm vitest run src/engine`
 Expected: PASS — и новые тесты, и все тесты плана 01.
@@ -4026,7 +4026,7 @@ Expected: PASS — и новые тесты, и все тесты плана 01.
 Run: `pnpm build && pnpm budgets && pnpm e2e tests/e2e/engine.spec.ts`
 Expected: бюджеты выполнены (GLTFLoader и декодер Meshopt — в ленивом бандле), e2e зелёные. Этажей ещё нет, поэтому всё — «серая коробка» через фолбэк.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/engine
