@@ -12,12 +12,12 @@
 - Create: `api/src/config.ts`, `api/src/app.ts`, `api/src/server.ts`, `api/tests/app.test.ts`
 - Modify: `package.json` (добавление `hono`, `@hono/node-server`)
 
-- [ ] **Step 1: Установить зависимости `hono` и `@hono/node-server`, указанные в мастер-плане**
-- [ ] **Step 2: Реализовать типизированную конфигурацию `api/src/config.ts` с валидацией через Zod**
-- [ ] **Step 3: Создать приложение Hono с request-id, CORS, логированием и маршрутом `/api/health`**
-- [ ] **Step 4: Написать тесты `api/tests/app.test.ts` с вызовами через `app.request()` без сетевых сокетов**
-- [ ] **Step 5: Проверить `pnpm verify`**
-- [ ] **Step 6: Commit**
+- [x] **Step 1: Установить зависимости `hono` и `@hono/node-server`, указанные в мастер-плане**
+- [x] **Step 2: Реализовать типизированную конфигурацию `api/src/config.ts` с валидацией через Zod**
+- [x] **Step 3: Создать приложение Hono с request-id, CORS, логированием и маршрутом `/api/health`**
+- [x] **Step 4: Написать тесты `api/tests/app.test.ts` с вызовами через `app.request()` без сетевых сокетов**
+- [x] **Step 5: Проверить `pnpm verify`**
+- [x] **Step 6: Commit**
 
 ---
 
