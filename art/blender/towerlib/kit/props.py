@@ -268,3 +268,85 @@ def wall_screen(ctx: BuildContext, name: str, at: Vec3, *, screen_id: str = "crm
     return parts
 
 
+def concierge_desk(ctx: BuildContext, name: str, at: Vec3, *, action: str = "open-booking", yaw_deg: float = 0.0) -> list:
+    p = ctx.palette
+    parts = [
+        rounded_box(f"{name}-front", (2.4, 0.95, 0.7), color=p["wood"], radius=0.04, at=at, yaw_deg=yaw_deg),
+        rounded_box(f"{name}-top", (2.5, 0.06, 0.8), color=p["wood"], radius=0.02, at=place((0.0, 0.95, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        cylinder(f"{name}-bell", radius=0.07, height=0.07, color=p["brass"], at=place((-0.6, 1.01, 0.1), at, yaw_deg)),
+        cylinder(f"{name}-button", radius=0.02, height=0.04, color=p["signal"], at=place((-0.6, 1.07, 0.1), at, yaw_deg)),
+        rounded_box(f"{name}-ledger", (0.32, 0.03, 0.25), color=p["white"], radius=0.01, at=place((0.4, 1.01, 0.05), at, yaw_deg), yaw_deg=yaw_deg),
+    ]
+    hitbox(name, (2.6, 1.2, 0.9), at, action=action, yaw_deg=yaw_deg)
+    anchor(f"{name}-counter", place((0.0, 1.05, 0.0), at, yaw_deg))
+    return parts
+
+
+def split_flap_board(ctx: BuildContext, name: str, at: Vec3, *, screen_id: str = "calendar", action: str = "open-booking", yaw_deg: float = 0.0) -> list:
+    import bpy
+    from ..core.coords import to_blender
+    from .scene import link
+
+    info, p = ctx.screens[screen_id], ctx.palette
+    parts = [
+        rounded_box(f"{name}-frame", (3.4, 1.8, 0.15), color=p["ink"], radius=0.04, at=at, yaw_deg=yaw_deg),
+        rounded_box(f"{name}-recess", (3.2, 1.6, 0.06), color=p["robot-dark"], radius=0.02, at=place((0.0, 0.0, 0.06), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-header", (3.2, 0.14, 0.08), color=p["ink"], radius=0.01, at=place((0.0, 0.72, 0.08), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-lamp-l", (0.08, 0.04, 0.02), color=p["teal"], role="glow", at=place((-1.4, 0.72, 0.12), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-lamp-r", (0.08, 0.04, 0.02), color=p["mustard"], role="glow", at=place((1.4, 0.72, 0.12), at, yaw_deg), yaw_deg=yaw_deg),
+        screen_plane(f"screen-{name}", (1.1, 0.7), uv=info.rect, glow=info.glow, at=place((0.95, -0.05, 0.092), at, yaw_deg), yaw_deg=yaw_deg),
+    ]
+
+    root = bpy.data.objects.new(f"dyn__{name}", None)
+    root.empty_display_type = "PLAIN_AXES"
+    root.location = to_blender(place((-0.6, -0.05, 0.09), at, yaw_deg))
+    link(root, "dyn")
+
+    rounded_box(f"dyn__{name}__flap", (1.8, 1.1, 0.02), color=p["ink"], radius=0.01, role="dyn", at=(0.0, 0.0, 0.0), parent=root)
+
+    hitbox(name, (3.5, 1.9, 0.35), at, action=action, yaw_deg=yaw_deg)
+    anchor(f"{name}-board", place((0.0, 0.0, 0.12), at, yaw_deg))
+    anchor(f"{name}-flaps", place((-0.6, -0.05, 0.11), at, yaw_deg))
+    return parts
+
+
+def luggage_trolley(ctx: BuildContext, name: str, at: Vec3, *, yaw_deg: float = 0.0) -> list:
+    p = ctx.palette
+    parts = [
+        rounded_box(f"{name}-bed", (1.2, 0.1, 0.7), color=p["signal"], radius=0.02, at=at, yaw_deg=yaw_deg),
+        cylinder(f"{name}-post-l", radius=0.03, height=1.3, color=p["brass"], at=place((-0.5, 0.1, 0.0), at, yaw_deg)),
+        cylinder(f"{name}-post-r", radius=0.03, height=1.3, color=p["brass"], at=place((0.5, 0.1, 0.0), at, yaw_deg)),
+        rounded_box(f"{name}-cross", (1.0, 0.05, 0.05), color=p["brass"], radius=0.01, at=place((0.0, 1.35, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-bag-1", (0.7, 0.22, 0.45), color=p["mustard"], radius=0.03, at=place((0.0, 0.1, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-bag-2", (0.55, 0.18, 0.35), color=p["wood"], radius=0.025, at=place((0.05, 0.32, 0.0), at, yaw_deg), yaw_deg=yaw_deg + 12.0),
+    ]
+    return parts
+
+
+def lounge_chair(ctx: BuildContext, name: str, at: Vec3, *, yaw_deg: float = 0.0, color: str = "teal") -> list:
+    p = ctx.palette
+    c = p[color]
+    parts = [
+        rounded_box(f"{name}-cushion", (0.75, 0.22, 0.75), color=c, radius=0.04, at=place((0.0, 0.25, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-back", (0.75, 0.55, 0.18), color=c, radius=0.04, at=place((0.0, 0.45, -0.32), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-arm-l", (0.12, 0.35, 0.7), color=c, radius=0.03, at=place((-0.38, 0.32, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-arm-r", (0.12, 0.35, 0.7), color=c, radius=0.03, at=place((0.38, 0.32, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        cylinder(f"{name}-leg-fl", radius=0.03, height=0.25, color=p["wood"], at=place((-0.3, 0.0, 0.28), at, yaw_deg)),
+        cylinder(f"{name}-leg-fr", radius=0.03, height=0.25, color=p["wood"], at=place((0.3, 0.0, 0.28), at, yaw_deg)),
+        cylinder(f"{name}-leg-bl", radius=0.03, height=0.25, color=p["wood"], at=place((-0.3, 0.0, -0.28), at, yaw_deg)),
+        cylinder(f"{name}-leg-br", radius=0.03, height=0.25, color=p["wood"], at=place((0.3, 0.0, -0.28), at, yaw_deg)),
+    ]
+    return parts
+
+
+def wall_clock(ctx: BuildContext, name: str, at: Vec3, *, yaw_deg: float = 0.0) -> list:
+    p = ctx.palette
+    return [
+        cylinder(f"{name}-rim", radius=0.32, height=0.08, color=p["ink"], at=at, yaw_deg=yaw_deg),
+        cylinder(f"{name}-face", radius=0.28, height=0.02, color=p["white"], at=place((0.0, 0.0, 0.035), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-hand-h", (0.02, 0.12, 0.01), color=p["signal"], at=place((0.0, 0.05, 0.05), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-hand-m", (0.015, 0.18, 0.01), color=p["ink"], at=place((0.05, 0.06, 0.05), at, yaw_deg), yaw_deg=yaw_deg),
+    ]
+
+
+

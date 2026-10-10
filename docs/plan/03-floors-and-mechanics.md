@@ -152,12 +152,12 @@
 - Create: `art/blender/levels/booking.py`, `src/engine/levels/booking.ts`, `src/engine/levels/booking.test.ts`
 - Output: `src/assets/levels/booking.glb`, `src/assets/levels/booking.lightmap.webp`
 
-- [ ] **Step 1: Написать скрипт сцены `booking.py` (стойка портье, табло с якорями)**
-- [ ] **Step 2: Собрать уровень через `pnpm art:build booking`**
-- [ ] **Step 3: Написать тест split-flap табло `booking.test.ts`**
-- [ ] **Step 4: Реализовать анимацию перелистывания табло в `booking.ts`**
-- [ ] **Step 5: Проверить `pnpm verify && pnpm art:test`**
-- [ ] **Step 6: Commit**
+- [x] **Step 1: Написать скрипт сцены `booking.py` (стойка портье, табло с якорями)**
+- [x] **Step 2: Собрать уровень через `pnpm art:build booking`**
+- [x] **Step 3: Написать тест split-flap табло `booking.test.ts`**
+- [x] **Step 4: Реализовать анимацию перелистывания табло в `booking.ts`**
+- [x] **Step 5: Проверить `pnpm verify && pnpm art:test`**
+- [x] **Step 6: Commit**
 
 ---
 
