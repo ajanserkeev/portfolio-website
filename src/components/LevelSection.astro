@@ -1,0 +1,21 @@
+---
+import type { LevelId } from '../engine/config';
+import { dict, type Locale } from '../i18n';
+
+interface Props {
+  id: LevelId;
+  index: number;
+  locale: Locale;
+}
+const { id, index, locale } = Astro.props;
+const copy = dict(locale).levels[id];
+---
+<section class="level" data-level={id} data-index={index} aria-labelledby={`${id}-title`}>
+  <div class="level__travel" data-lift-travel aria-hidden="true"></div>
+  <div class="level__content" id={id}>
+    <p class="level__kicker">{copy.name}</p>
+    <h2 id={`${id}-title`} class="level__title">{copy.title}</h2>
+    <p class="level__lead">{copy.lead}</p>
+    <slot />
+  </div>
+</section>

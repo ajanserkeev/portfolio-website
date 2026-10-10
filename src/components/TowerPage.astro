@@ -1,0 +1,24 @@
+---
+import { LEVEL_IDS } from '../engine/config';
+import type { Locale } from '../i18n';
+import CtaButton from './CtaButton.astro';
+import ElevatorPanel from './ElevatorPanel.astro';
+import Hero from './Hero.astro';
+import LevelSection from './LevelSection.astro';
+import Stage from './Stage.astro';
+import TopBar from './TopBar.astro';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const floors = LEVEL_IDS.slice(1);
+---
+<Stage />
+<TopBar locale={locale} />
+<ElevatorPanel locale={locale} />
+<main class="tower">
+  <Hero locale={locale} />
+  {floors.map((id, i) => <LevelSection id={id} index={i + 1} locale={locale} />)}
+</main>
+<CtaButton locale={locale} />

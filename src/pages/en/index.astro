@@ -1,0 +1,10 @@
+---
+import TowerPage from '../../components/TowerPage.astro';
+import { dict } from '../../i18n';
+import Base from '../../layouts/Base.astro';
+
+const t = dict('en');
+---
+<Base lang="en" title={t.meta.title} description={t.meta.description}>
+  <TowerPage locale="en" />
+</Base>

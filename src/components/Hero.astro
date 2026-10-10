@@ -1,0 +1,19 @@
+---
+import { dict, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const t = dict(Astro.props.locale);
+---
+<section class="level hero" data-level="roof" data-index="0" aria-labelledby="roof-title">
+  <div class="level__content" id="roof">
+    <p class="level__kicker">{t.hero.kicker}</p>
+    <h1 id="roof-title" class="hero__title">{t.hero.title}</h1>
+    <p class="level__lead">{t.hero.lead}</p>
+    <div class="hero__actions">
+      <a class="button button--primary" href="#agents">{t.hero.primary}</a>
+      <a class="button" href="#basement">{t.hero.secondary}</a>
+    </div>
+  </div>
+</section>

@@ -1,10 +1,10 @@
 ---
+import TowerPage from '../components/TowerPage.astro';
+import { dict } from '../i18n';
 import Base from '../layouts/Base.astro';
+
+const t = dict('ru');
 ---
-<Base
-  lang="ru"
-  title="[Студия] — ИИ-агенты, CRM, автоматизация и сайты"
-  description="Студия из трёх разработчиков: ИИ-агенты, CRM, автоматизация, сайты и бронирование."
->
-  <main class="tower"><h1>[Студия]</h1></main>
+<Base lang="ru" title={t.meta.title} description={t.meta.description}>
+  <TowerPage locale="ru" />
 </Base>

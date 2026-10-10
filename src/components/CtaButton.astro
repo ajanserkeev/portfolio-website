@@ -1,0 +1,9 @@
+---
+import { dict, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const t = dict(Astro.props.locale);
+---
+<a class="cta" href="#basement">{t.cta.discuss}</a>

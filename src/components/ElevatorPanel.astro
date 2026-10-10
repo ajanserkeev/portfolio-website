@@ -1,0 +1,30 @@
+---
+import { LEVEL_IDS } from '../engine/config';
+import { dict, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const t = dict(Astro.props.locale);
+---
+<nav class="elevator" aria-label={t.panel.label} data-elevator>
+  <svg class="elevator__dial" viewBox="0 0 100 64" aria-hidden="true">
+    <path d="M10 56 A40 40 0 0 1 90 56" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity="0.5"></path>
+    <line class="elevator__needle" x1="50" y1="56" x2="50" y2="20" stroke="#1c1b22" stroke-width="4" stroke-linecap="round"></line>
+    <circle cx="50" cy="56" r="6" fill="#1c1b22"></circle>
+  </svg>
+  <ol class="elevator__floors">
+    {LEVEL_IDS.map((id, index) => (
+      <li>
+        <a
+          class="elevator__button"
+          href={`#${id}`}
+          data-elevator-link={index}
+          aria-label={`${t.levels[id].name}: ${t.levels[id].title}`}
+        >
+          {t.levels[id].short}
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>

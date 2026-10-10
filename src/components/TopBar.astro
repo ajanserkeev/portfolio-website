@@ -1,0 +1,25 @@
+---
+import { dict, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const t = dict(Astro.props.locale);
+---
+<header class="topbar">
+  <span class="topbar__brand">{t.brand}</span>
+  <div class="topbar__actions">
+    <button
+      type="button"
+      class="chip"
+      data-mode-toggle
+      data-label-static={t.mode.toStatic}
+      data-label-live={t.mode.toLive}
+    >
+      {t.mode.toStatic}
+    </button>
+    <a class="chip" href={t.lang.href} hreflang={t.lang.hreflang} lang={t.lang.hreflang}>
+      {t.lang.switchTo}
+    </a>
+  </div>
+</header>
