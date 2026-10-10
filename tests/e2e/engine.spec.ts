@@ -63,3 +63,22 @@ test('the mode toggle switches to static mode and back', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('data-tier', 'lite');
   expect(await page.evaluate(() => localStorage.getItem('tower:mode'))).toBe('live');
 });
+
+test('reduced motion disables ambient continuous frames', async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  await page.goto('/?tier=lite&debug=1#roof');
+  await expect(page.locator('html')).toHaveAttribute('data-motion', 'reduced');
+  await expect(page.locator('#stage')).toHaveAttribute('data-state', 'live');
+  await page.waitForTimeout(100);
+  const frames1 = await page.evaluate(
+    () => (window as unknown as { __tower?: { frames: number } }).__tower?.frames ?? 0,
+  );
+  await page.waitForTimeout(300);
+  const frames2 = await page.evaluate(
+    () => (window as unknown as { __tower?: { frames: number } }).__tower?.frames ?? 0,
+  );
+  // Without ambient continuous loop, frames do not constantly fire
+  expect(frames2 - frames1).toBeLessThanOrEqual(2);
+  await context.close();
+});

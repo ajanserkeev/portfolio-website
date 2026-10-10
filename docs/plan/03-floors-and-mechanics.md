@@ -198,9 +198,9 @@
 - Create: `src/engine/ambient.ts`, `src/engine/ambient.test.ts`
 - Modify: `docs/qa/device-matrix.md` (раздел «Ворота 03»)
 
-- [ ] **Step 1: Написать тест троттлинга 30 FPS и реакции на reduced motion в `ambient.test.ts`**
-- [ ] **Step 2: Реализовать менеджер фоновой активности `ambient.ts`**
-- [ ] **Step 3: Полная проверка `pnpm verify && pnpm art:test`**
-- [ ] **Step 4: Проверить бюджеты этажей и замерить draw calls e2e-тестом**
-- [ ] **Step 5: Заполнить раздел «Ворота 03» в `docs/qa/device-matrix.md`**
-- [ ] **Step 6: Commit**
+- [x] **Step 1: Написать тест троттлинга 30 FPS и реакции на reduced motion в `ambient.test.ts`**
+- [x] **Step 2: Реализовать менеджер фоновой активности `ambient.ts`**
+- [x] **Step 3: Полная проверка `pnpm verify && pnpm art:test`**
+- [x] **Step 4: Проверить бюджеты этажей и замерить draw calls e2e-тестом**
+- [x] **Step 5: Заполнить раздел «Ворота 03» в `docs/qa/device-matrix.md`**
+- [x] **Step 6: Commit**

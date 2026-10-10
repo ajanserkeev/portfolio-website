@@ -1,4 +1,5 @@
 import { Color, DirectionalLight, HemisphereLight, Scene, WebGLRenderer } from 'three';
+import { createAmbientManager } from './ambient';
 import { levelFiles, textureUrl } from './assets';
 import { CameraRig } from './camera-rig';
 import { createCapsulePool } from './capsules/capsule-pool';
@@ -102,6 +103,18 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   const source = options.source ?? withFallback(createGlbSource(levelFiles, shared), greyboxSource);
 
   const loop = new RenderLoop(renderFrame);
+  const ambient = createAmbientManager({
+    motion,
+    glowMaterial: shared.glow,
+    mediaQuery:
+      typeof window !== 'undefined'
+        ? window.matchMedia('(prefers-reduced-motion: reduce)')
+        : undefined,
+    onActiveChange: (active) => {
+      loop.setContinuous('ambient', active);
+      loop.invalidate();
+    },
+  });
   const hotspots = createHotspotManager({
     canvas: renderer.domElement,
     camera: rig.camera,
@@ -121,6 +134,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   };
 
   const unbindPain = bus.on('capsule:selected', (e) => {
+    ambient.markActivity();
     const channel = painChannelMap[e.pain] ?? 'default';
     capsules.setPersonalCapsule(rig.position, channel);
     capsules.launchCapsule({ channel });
@@ -128,11 +142,13 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   });
 
   const unbindDeal = bus.on('deal:run', () => {
+    ambient.markActivity();
     capsules.launchCapsule({ channel: 'default', durationSec: 2.0 });
     loop.invalidate(2);
   });
 
   const unbindChat = bus.on('chat:user-message', () => {
+    ambient.markActivity();
     capsules.launchCapsule({ channel: 'telegram', durationSec: 2.0 });
     loop.invalidate(2);
   });
@@ -149,14 +165,15 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
       }
     }
     const animated = levels.ready().some((i) => levels.asset(i)?.update !== undefined);
-    loop.setContinuous('ambient', motion.ambient && animated);
+    ambient.setAnimated(animated);
     loop.invalidate();
   });
 
   function renderFrame(dt: number, timeMs: number): void {
     const moving = rig.update(dt);
     levels.update(rig.position, lastGoal, options.shot !== undefined ? 0 : 1);
-    if (motion.ambient) {
+    ambient.update(timeMs);
+    if (ambient.active) {
       for (const index of levels.ready()) levels.asset(index)?.update?.(timeMs / 1000);
     }
     capsules.update(timeMs / 1000, rig.position);
@@ -210,6 +227,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   }
 
   function onScroll(): void {
+    ambient.markActivity();
     if (options.shot !== undefined) return;
     const goal = liftPosition(window.scrollY, travels);
     lastGoal = goal;
@@ -301,6 +319,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
       document.removeEventListener('visibilitychange', onVisibility);
       renderer.domElement.removeEventListener('webglcontextlost', onContextLost);
       levels.dispose();
+      ambient.dispose();
       for (const item of shared.keep) (item as { dispose?: () => void }).dispose?.();
       unbindDomHotspots();
       hotspots.dispose();
