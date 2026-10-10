@@ -9,6 +9,7 @@ import { disposeObject3D, type LevelSource } from './level-asset';
 import { createBookingController } from './levels/booking';
 import { createCrmController } from './levels/crm';
 import { createRoofController } from './levels/roof';
+import { createWorkshopController } from './levels/workshop';
 import { createBakedMaterial } from './materials/baked';
 import type { SharedMaterials } from './materials/shared';
 
@@ -81,11 +82,13 @@ export function createGlbSource(
     const roofCtrl = id === 'roof' ? createRoofController({ root }) : undefined;
     const crmCtrl = id === 'crm' ? createCrmController({ root }) : undefined;
     const bookingCtrl = id === 'booking' ? createBookingController({ root }) : undefined;
+    const workshopCtrl = id === 'workshop' ? createWorkshopController({ root }) : undefined;
     const hasUpdate =
       actors.length > 0 ||
       roofCtrl !== undefined ||
       crmCtrl !== undefined ||
-      bookingCtrl !== undefined;
+      bookingCtrl !== undefined ||
+      workshopCtrl !== undefined;
 
     return {
       root,
@@ -97,12 +100,14 @@ export function createGlbSource(
             roofCtrl?.update(timeSec);
             crmCtrl?.update(timeSec);
             bookingCtrl?.update(timeSec);
+            workshopCtrl?.update(timeSec);
           }
         : undefined,
       dispose: () => {
         roofCtrl?.dispose();
         crmCtrl?.dispose();
         bookingCtrl?.dispose();
+        workshopCtrl?.dispose();
         for (const actor of actors) actor.dispose();
         disposeObject3D(root, shared.keep);
         baked.dispose();

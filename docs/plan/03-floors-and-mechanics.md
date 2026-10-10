@@ -167,12 +167,12 @@
 - Create: `art/blender/levels/workshop.py`, `src/engine/levels/workshop.ts`, `src/engine/levels/workshop.test.ts`
 - Output: `src/assets/levels/workshop.glb`, `src/assets/levels/workshop.lightmap.webp`
 
-- [ ] **Step 1: Написать скрипт сцены `workshop.py` (стапель сборки, мониторы, слайдер)**
-- [ ] **Step 2: Собрать уровень через `pnpm art:build workshop`**
-- [ ] **Step 3: Написать тест состояний мастерской `workshop.test.ts`**
-- [ ] **Step 4: Реализовать логику смены состояний «макет → код → прод» в `workshop.ts`**
-- [ ] **Step 5: Проверить `pnpm verify && pnpm art:test`**
-- [ ] **Step 6: Commit**
+- [x] **Step 1: Написать скрипт сцены `workshop.py` (стапель сборки, мониторы, слайдер)**
+- [x] **Step 2: Собрать уровень через `pnpm art:build workshop`**
+- [x] **Step 3: Написать тест состояний мастерской `workshop.test.ts`**
+- [x] **Step 4: Реализовать логику смены состояний «макет → код → прод» в `workshop.ts`**
+- [x] **Step 5: Проверить `pnpm verify && pnpm art:test`**
+- [x] **Step 6: Commit**
 
 ---
 

@@ -349,4 +349,61 @@ def wall_clock(ctx: BuildContext, name: str, at: Vec3, *, yaw_deg: float = 0.0) 
     ]
 
 
+def assembly_slipway(ctx: BuildContext, name: str, at: Vec3, *, yaw_deg: float = 0.0) -> list:
+    p = ctx.palette
+    parts = [
+        rounded_box(f"{name}-platform", (3.6, 0.22, 1.8), color=p["steel"], radius=0.04, at=at, yaw_deg=yaw_deg),
+        rounded_box(f"{name}-rail-l", (0.05, 0.03, 1.6), color=p["teal"], role="glow", at=place((-1.7, 0.22, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-rail-r", (0.05, 0.03, 1.6), color=p["teal"], role="glow", at=place((1.7, 0.22, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-ped-0", (0.65, 0.65, 0.45), color=p["robot-dark"], radius=0.02, at=place((-1.1, 0.22, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-ped-1", (0.85, 0.65, 0.45), color=p["robot-dark"], radius=0.02, at=place((0.0, 0.22, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-ped-2", (0.65, 0.65, 0.45), color=p["robot-dark"], radius=0.02, at=place((1.1, 0.22, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-mockup", (0.5, 0.35, 0.03), color=p["white"], radius=0.015, at=place((-1.1, 0.88, 0.0), at, yaw_deg), yaw_deg=yaw_deg + 15.0),
+    ]
+    anchor(f"{name}-stage-wireframe", place((-1.1, 0.95, 0.0), at, yaw_deg))
+    anchor(f"{name}-stage-code", place((0.0, 0.95, 0.0), at, yaw_deg))
+    anchor(f"{name}-stage-prod", place((1.1, 0.95, 0.0), at, yaw_deg))
+    return parts
+
+
+def stage_slider(ctx: BuildContext, name: str, at: Vec3, *, action: str = "next-stage", yaw_deg: float = 0.0) -> list:
+    import bpy
+    from ..core.coords import to_blender
+    from .scene import link
+
+    p = ctx.palette
+    parts = [
+        rounded_box(f"{name}-base", (1.2, 0.85, 0.45), color=p["steel"], radius=0.03, at=at, yaw_deg=yaw_deg),
+        rounded_box(f"{name}-panel", (1.0, 0.04, 0.35), color=p["ink"], radius=0.01, at=place((0.0, 0.85, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-led-0", (0.05, 0.02, 0.03), color=p["teal"], role="glow", at=place((-0.28, 0.89, -0.1), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-led-1", (0.05, 0.02, 0.03), color=p["mustard"], role="glow", at=place((0.0, 0.89, -0.1), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-led-2", (0.05, 0.02, 0.03), color=p["signal"], role="glow", at=place((0.28, 0.89, -0.1), at, yaw_deg), yaw_deg=yaw_deg),
+    ]
+
+    root = bpy.data.objects.new(f"dyn__{name}", None)
+    root.empty_display_type = "PLAIN_AXES"
+    root.location = to_blender(place((0.0, 0.89, 0.05), at, yaw_deg))
+    link(root, "dyn")
+
+    cylinder(f"dyn__{name}__handle", radius=0.045, height=0.12, color=p["signal"], role="dyn", at=(0.0, 0.0, 0.0), parent=root)
+
+    hitbox(name, (1.3, 1.1, 0.55), at, action=action, yaw_deg=yaw_deg)
+    anchor(f"{name}-slider", place((0.0, 0.95, 0.0), at, yaw_deg))
+    return parts
+
+
+def workbench(ctx: BuildContext, name: str, at: Vec3, *, yaw_deg: float = 0.0) -> list:
+    p = ctx.palette
+    parts = [
+        rounded_box(f"{name}-top", (1.8, 0.08, 0.75), color=p["wood"], radius=0.02, at=place((0.0, 0.75, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-leg-l", (0.08, 0.75, 0.65), color=p["steel"], radius=0.015, at=place((-0.75, 0.0, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-leg-r", (0.08, 0.75, 0.65), color=p["steel"], radius=0.015, at=place((0.75, 0.0, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-board", (1.8, 0.85, 0.03), color=p["steel"], radius=0.01, at=place((0.0, 0.83, -0.36), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-box", (0.35, 0.12, 0.25), color=p["signal"], radius=0.015, at=place((-0.45, 0.83, 0.1), at, yaw_deg), yaw_deg=yaw_deg),
+        cylinder(f"{name}-solder", radius=0.06, height=0.08, color=p["mustard"], at=place((0.35, 0.83, 0.12), at, yaw_deg)),
+    ]
+    return parts
+
+
+
 
