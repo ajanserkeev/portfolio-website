@@ -1,0 +1,24 @@
+---
+import { getCollection, render } from 'astro:content';
+import CaseDetail from '../../../components/CaseDetail.astro';
+import { dict } from '../../../i18n';
+import Base from '../../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const cases = await getCollection('cases-en');
+  return cases.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = dict('en');
+const c = entry.data;
+---
+<Base lang="en" title={`${c.title} — ${d.meta.title}`} description={c.summary}>
+  <CaseDetail entry={entry} locale="en">
+    <Content />
+  </CaseDetail>
+</Base>

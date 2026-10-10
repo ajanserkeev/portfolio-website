@@ -1,0 +1,383 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { dict, type Locale } from '../i18n';
+
+interface Props {
+  entry: CollectionEntry<'cases-ru'> | CollectionEntry<'cases-en'>;
+  locale: Locale;
+}
+
+const { entry, locale } = Astro.props;
+const d = dict(locale);
+const c = entry.data;
+
+const floorHref = locale === 'ru' ? `/#${c.floorId}` : `/en/#${c.floorId}`;
+const otherLangHref = locale === 'ru' ? `/en/cases/${entry.id}/` : `/cases/${entry.id}/`;
+const currentLevel = d.levels[c.floorId];
+---
+<div class="case-page-wrap">
+  <header class="case-header">
+    <div class="case-header__container">
+      <a href={floorHref} class="case-header__back" data-back-to-tower>
+        <span aria-hidden="true">←</span>
+        <span>{d.cases.backToTower}</span>
+      </a>
+
+      <div class="case-header__actions">
+        <a
+          class="chip"
+          href={otherLangHref}
+          hreflang={d.lang.hreflang}
+          lang={d.lang.hreflang}
+        >
+          {d.lang.switchTo}
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="case-main">
+    <article class="case-article">
+      <header class="case-hero">
+        <div class="case-hero__meta">
+          <span class="case-hero__badge">{c.industry}</span>
+          <span class="case-hero__city">{c.city}</span>
+          {c.nda && <span class="case-hero__nda">{d.cases.ndaBadge}</span>}
+          <span class="case-hero__floor">{currentLevel.name}</span>
+        </div>
+
+        <h1 class="case-hero__title">{c.title}</h1>
+
+        <p class="case-hero__lead">{c.summary}</p>
+      </header>
+
+      <section class="case-page__metrics" aria-label={d.cases.resultsTitle}>
+        <h2 class="case-section-title">{d.cases.resultsTitle}</h2>
+        <div class="case-metrics-grid">
+          {c.metrics.map((m) => (
+            <div class="case-metric-card">
+              <strong class="case-metric-card__val">{m.value}</strong>
+              <span class="case-metric-card__lbl">{m.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="case-page__stack" aria-label={d.cases.stackTitle}>
+        <h2 class="case-section-title">{d.cases.stackTitle}</h2>
+        <div class="case-stack-list">
+          {c.stack.map((tech) => (
+            <span class="case-stack-tag">{tech}</span>
+          ))}
+        </div>
+      </section>
+
+      <section class="case-page__content prose">
+        <slot />
+      </section>
+
+      <footer class="case-footer">
+        <div class="case-footer__card">
+          <h3 class="case-footer__heading">{d.cta.discuss}</h3>
+          <p class="case-footer__desc">{currentLevel.lead}</p>
+          <div class="case-footer__buttons">
+            <a href={locale === 'ru' ? '/#basement' : '/en/#basement'} class="btn-cta">
+              {d.cta.discuss}
+            </a>
+            <a href={floorHref} class="btn-subtle" data-back-to-tower>
+              {d.cases.backToTower}
+            </a>
+          </div>
+        </div>
+      </footer>
+    </article>
+  </main>
+</div>
+
+<style>
+  .case-page-wrap {
+    min-height: 100vh;
+    background: var(--color-sand);
+    color: var(--color-ink);
+    padding-bottom: 5rem;
+  }
+
+  .case-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(243, 235, 221, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(28, 27, 34, 0.08);
+  }
+
+  .case-header__container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .case-header__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--color-ink);
+    text-decoration: none;
+    padding: 0.4rem 0.8rem;
+    background: rgba(28, 27, 34, 0.05);
+    border-radius: 0.5rem;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .case-header__back:hover {
+    background: var(--color-signal);
+    color: #ffffff;
+  }
+
+  .case-main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 0;
+  }
+
+  .case-article {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .case-hero {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .case-hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+  }
+
+  .case-hero__badge {
+    padding: 0.25rem 0.6rem;
+    background: rgba(28, 27, 34, 0.08);
+    border-radius: 0.375rem;
+    font-weight: 600;
+  }
+
+  .case-hero__city {
+    color: rgba(28, 27, 34, 0.7);
+  }
+
+  .case-hero__nda {
+    padding: 0.25rem 0.6rem;
+    background: rgba(255, 90, 31, 0.1);
+    color: var(--color-signal);
+    border-radius: 0.375rem;
+    font-weight: 600;
+  }
+
+  .case-hero__floor {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: rgba(28, 27, 34, 0.6);
+  }
+
+  .case-hero__title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1.2;
+    margin: 0;
+    color: var(--color-ink);
+  }
+
+  .case-hero__lead {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: rgba(28, 27, 34, 0.85);
+    margin: 0;
+  }
+
+  .case-section-title {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    margin: 0 0 1rem;
+    color: var(--color-ink);
+  }
+
+  .case-page__metrics {
+    padding: 1.75rem;
+    background: #ffffff;
+    border: 1px solid rgba(28, 27, 34, 0.08);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px -2px rgba(28, 27, 34, 0.04);
+  }
+
+  .case-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .case-metric-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .case-metric-card__val {
+    font-family: var(--font-heading);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    color: var(--color-teal);
+    line-height: 1.1;
+  }
+
+  .case-metric-card__lbl {
+    font-size: 0.875rem;
+    color: rgba(28, 27, 34, 0.7);
+    line-height: 1.35;
+  }
+
+  .case-page__stack {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(28, 27, 34, 0.08);
+    border-radius: 1rem;
+  }
+
+  .case-stack-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .case-stack-tag {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    padding: 0.35rem 0.75rem;
+    background: #ffffff;
+    border: 1px solid rgba(28, 27, 34, 0.1);
+    border-radius: 0.375rem;
+    color: var(--color-ink);
+  }
+
+  .case-page__content {
+    background: #ffffff;
+    border: 1px solid rgba(28, 27, 34, 0.08);
+    border-radius: 1rem;
+    padding: 2rem 2.5rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: rgba(28, 27, 34, 0.9);
+  }
+
+  @media (max-width: 640px) {
+    .case-page__content {
+      padding: 1.5rem;
+    }
+  }
+
+  .case-page__content :global(h2) {
+    font-family: var(--font-heading);
+    font-size: 1.375rem;
+    margin: 2rem 0 1rem;
+    color: var(--color-ink);
+  }
+
+  .case-page__content :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .case-page__content :global(p) {
+    margin: 0 0 1.25rem;
+  }
+
+  .case-page__content :global(ul) {
+    margin: 0 0 1.25rem;
+    padding-left: 1.25rem;
+  }
+
+  .case-page__content :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .case-page__content :global(strong) {
+    color: var(--color-ink);
+  }
+
+  .case-footer {
+    margin-top: 1rem;
+  }
+
+  .case-footer__card {
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(31, 165, 154, 0.08) 0%, rgba(255, 90, 31, 0.06) 100%);
+    border: 1px solid rgba(28, 27, 34, 0.1);
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .case-footer__heading {
+    font-family: var(--font-heading);
+    font-size: 1.375rem;
+    margin: 0;
+    color: var(--color-ink);
+  }
+
+  .case-footer__desc {
+    margin: 0;
+    color: rgba(28, 27, 34, 0.8);
+    max-width: 600px;
+  }
+
+  .case-footer__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .btn-cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-signal);
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: opacity 0.15s ease;
+  }
+
+  .btn-cta:hover {
+    opacity: 0.9;
+  }
+
+  .btn-subtle {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    background: rgba(28, 27, 34, 0.06);
+    color: var(--color-ink);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: background 0.15s ease;
+  }
+
+  .btn-subtle:hover {
+    background: rgba(28, 27, 34, 0.12);
+  }
+</style>

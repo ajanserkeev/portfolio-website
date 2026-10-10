@@ -40,3 +40,41 @@ test('renders case cards on corresponding floors in English', async ({ page }) =
     'AI Receptionist',
   );
 });
+
+test('navigates to case detail page and back to tower floor in Russian', async ({ page }) => {
+  await page.goto('/?tier=static');
+
+  const card = page.locator('[data-case-id="med-agent"]');
+  await card.locator('.case-card__btn').click();
+
+  await expect(page).toHaveURL(/\/cases\/med-agent\/?$/);
+  await expect(page.locator('h1')).toContainText('ИИ-диспетчер для сети медицинских клиник');
+  await expect(page.locator('.case-page__metrics')).toBeVisible();
+  await expect(page.locator('.case-page__stack')).toContainText('Python');
+  await expect(page.locator('.case-page__content')).toContainText('Контекст и задача');
+
+  const backBtn = page.locator('[data-back-to-tower]').first();
+  await expect(backBtn).toHaveAttribute('href', '/#agents');
+  await backBtn.click();
+
+  await expect(page).toHaveURL(/\/#agents$/);
+});
+
+test('navigates to case detail page and back to tower floor in English', async ({ page }) => {
+  await page.goto('/en/?tier=static');
+
+  const card = page.locator('[data-case-id="med-agent"]');
+  await card.locator('.case-card__btn').click();
+
+  await expect(page).toHaveURL(/\/en\/cases\/med-agent\/?$/);
+  await expect(page.locator('h1')).toContainText('AI Receptionist for Healthcare Clinic Network');
+  await expect(page.locator('.case-page__metrics')).toBeVisible();
+  await expect(page.locator('.case-page__stack')).toContainText('Python');
+  await expect(page.locator('.case-page__content')).toContainText('Context & Challenge');
+
+  const backBtn = page.locator('[data-back-to-tower]').first();
+  await expect(backBtn).toHaveAttribute('href', '/en/#agents');
+  await backBtn.click();
+
+  await expect(page).toHaveURL(/\/en\/#agents$/);
+});
