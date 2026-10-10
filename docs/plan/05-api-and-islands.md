@@ -68,11 +68,11 @@
 **Files:**
 - Create: `src/data/pricing.ts`, `src/lib/estimate.ts`, `src/lib/estimate.test.ts`
 
-- [ ] **Step 1: Зафиксировать структуру тарифов и надбавок в `src/data/pricing.ts`**
-- [ ] **Step 2: Написать юнит-тесты расчета вилки стоимости и сроков для всех комбинаций опций**
-- [ ] **Step 3: Реализовать чистую функцию `estimate(selection, priceTable)`**
-- [ ] **Step 4: Проверить `pnpm test`**
-- [ ] **Step 5: Commit**
+- [x] **Step 1: Зафиксировать структуру тарифов и надбавок в `src/data/pricing.ts`**
+- [x] **Step 2: Написать юнит-тесты расчета вилки стоимости и сроков для всех комбинаций опций**
+- [x] **Step 3: Реализовать чистую функцию `estimate(selection, priceTable)`**
+- [x] **Step 4: Проверить `pnpm test`**
+- [x] **Step 5: Commit**
 
 ---
 
