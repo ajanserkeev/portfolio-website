@@ -68,7 +68,8 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem calc(1rem + env(safe-area-inset-right)) 0.75rem
+    calc(1rem + env(safe-area-inset-left));
 }
 
 .topbar__brand {
@@ -114,7 +115,8 @@ body {
 
 .level__content {
   position: relative;
-  margin: 46svh calc(var(--panel-w) + 1rem) 0 1rem;
+  margin: 46svh calc(var(--panel-w) + 1rem + env(safe-area-inset-right)) 0
+    calc(1rem + env(safe-area-inset-left));
   padding: 1.25rem 1.25rem 1.5rem;
   border-radius: 1.25rem;
   background: rgb(243 235 221 / 0.94);
@@ -185,7 +187,7 @@ body {
 .elevator {
   position: fixed;
   z-index: 2;
-  right: 0.5rem;
+  right: calc(0.5rem + env(safe-area-inset-right));
   top: 50%;
   transform: translateY(-50%);
   display: flex;
@@ -237,8 +239,8 @@ body {
 .cta {
   position: fixed;
   z-index: 2;
-  left: 1rem;
-  right: calc(var(--panel-w) + 1rem);
+  left: calc(1rem + env(safe-area-inset-left));
+  right: calc(var(--panel-w) + 1rem + env(safe-area-inset-right));
   bottom: max(1rem, env(safe-area-inset-bottom));
   display: flex;
   justify-content: center;
