@@ -1,9 +1,9 @@
 import type { Dict } from './index';
 
 export const en = {
-  brand: '[Studio]',
+  brand: 'Tower',
   meta: {
-    title: '[Studio] — AI agents, CRM, automation and websites',
+    title: 'Tower — Automation, AI Agents and Web Development Studio',
     description:
       'A studio of three developers: AI agents for WhatsApp, Telegram and Instagram, CRM and process automation, websites, web apps and booking engines.',
   },
@@ -66,5 +66,88 @@ export const en = {
       'need-booking': 'Need online booking',
       browsing: 'Just exploring',
     },
+  },
+  cases: {
+    heading: 'Featured projects',
+    viewCase: 'View case study',
+    backToTower: 'Back to the tower',
+    allCases: 'All cases',
+    ndaBadge: 'Confidential (NDA)',
+    stackTitle: 'Technology stack',
+    resultsTitle: 'Measurable results',
+  },
+  process: {
+    title: 'How we work',
+    lead: 'No endless meetings or bloated estimates: from discovery to live production in 4 clear steps.',
+    steps: [
+      {
+        kicker: 'Step 1',
+        title: 'Discovery & architecture',
+        desc: 'We analyze your workflows, calculate implementation ROI, and prepare a strict technical specification.',
+      },
+      {
+        kicker: 'Step 2',
+        title: 'Prototype in 7 days',
+        desc: 'Within a week, we deliver the first working scenario of your AI agent or a clickable web app prototype.',
+      },
+      {
+        kicker: 'Step 3',
+        title: 'Development & integration',
+        desc: 'We write clean code, integrate your CRM, configure knowledge vectors, and train your operational team.',
+      },
+      {
+        kicker: 'Step 4',
+        title: 'Launch & ongoing support',
+        desc: 'We deploy to production, monitor conversion metrics, and expand functionality as your business scales.',
+      },
+    ],
+  },
+  team: {
+    title: 'Team at the console',
+    lead: 'We are three founders. You work directly with the engineers architecting your system and writing the code.',
+    members: [
+      {
+        name: 'Aman',
+        role: 'Architecture & AI Agents',
+        bio: 'Designs autonomous agents, LLM pipelines, and dialogue intent classification systems.',
+      },
+      {
+        name: 'Artyom',
+        role: 'UI, 3D & Design',
+        bio: 'Oversees Blender 3D art, art direction, and mobile WebGL performance in Three.js.',
+      },
+      {
+        name: 'Daniyar',
+        role: 'CRM, Backend & Automation',
+        bio: 'Integrates databases, payment processing, n8n workflows, and ERP systems.',
+      },
+    ],
+  },
+  faq: {
+    title: 'Frequently asked questions',
+    lead: 'Everything you need to know about partnering with our studio before kicking off a project.',
+    items: [
+      {
+        q: 'How much does development cost and what are typical timelines?',
+        a: 'Targeted solutions (AI agents or booking widgets) launch in 1–2 weeks. Comprehensive platforms take 3–6 weeks. Budgets are fixed upfront in the agreement.',
+      },
+      {
+        q: 'What if an AI agent makes a mistake or hallucinates?',
+        a: 'We implement rigorous guardrails and grounding constraints: agents only draw from verified knowledge bases. Any out-of-scope query escalates smoothly to a human operator.',
+      },
+      {
+        q: 'Do you work under Non-Disclosure Agreements (NDA)?',
+        a: 'Yes. We sign mutual NDAs before receiving sensitive business documentation, CRM access, or customer datasets.',
+      },
+      {
+        q: 'How are payments and quality guarantees structured?',
+        a: 'We work under formal agreements with milestone payments and provide an included warranty period for bug fixes after deployment.',
+      },
+    ],
+  },
+  legal: {
+    privacy: 'Privacy Policy',
+    consent: 'Personal Data Processing Consent',
+    copyright: '© 2026 Tower. All rights reserved.',
   },
 } satisfies Dict;

@@ -18,8 +18,28 @@ const t = dict(Astro.props.locale);
     >
       {t.mode.toStatic}
     </button>
-    <a class="chip" href={t.lang.href} hreflang={t.lang.hreflang} lang={t.lang.hreflang}>
+    <a
+      class="chip"
+      href={t.lang.href}
+      hreflang={t.lang.hreflang}
+      lang={t.lang.hreflang}
+      data-lang-toggle
+    >
       {t.lang.switchTo}
     </a>
   </div>
 </header>
+
+<script>
+  const toggle = document.querySelector<HTMLAnchorElement>('[data-lang-toggle]');
+  if (toggle) {
+    toggle.addEventListener('click', (event) => {
+      const hash = window.location.hash;
+      if (hash) {
+        event.preventDefault();
+        const base = toggle.getAttribute('href') ?? '/';
+        window.location.href = `${base}${hash}`;
+      }
+    });
+  }
+</script>
