@@ -13,3 +13,4 @@ lhci/
 .env.*
 !.env.example
 .DS_Store
+.lighthouseci/

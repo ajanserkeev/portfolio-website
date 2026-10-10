@@ -4113,6 +4113,12 @@ describe('parseImports', () => {
     });
   });
 
+  it('finds dynamic imports written with template literals (Rolldown output)', () => {
+    expect(parseImports('const m=()=>import(`./app.B5wRXqJx.js`);').dynamic).toEqual([
+      './app.B5wRXqJx.js',
+    ]);
+  });
+
   it('ignores property access that looks like import', () => {
     expect(parseImports('foo.import"./nope.js"').static).toEqual([]);
   });
@@ -4157,7 +4163,7 @@ import { posix } from 'node:path';
 
 const STATIC_IMPORT =
   /(?:^|[^.\w$])(?:import|export)\s*(?:[\w$*{},\s]+?\s*from\s*)?["']([^"']+\.js)["']/g;
-const DYNAMIC_IMPORT = /\bimport\(\s*["']([^"']+\.js)["']\s*\)/g;
+const DYNAMIC_IMPORT = /\bimport\(\s*["'`]([^"'`]+\.js)["'`]\s*\)/g;
 
 export function parseImports(code: string): { static: string[]; dynamic: string[] } {
   return {

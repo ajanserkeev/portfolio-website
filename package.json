@@ -17,8 +17,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "e2e": "playwright test",
-    "verify": "pnpm lint && pnpm check && pnpm test && pnpm build && pnpm e2e",
-    "fixtures:camera": "tsx scripts/gen-camera-fixtures.ts && biome format --write scene/camera-fixtures.json"
+    "verify": "pnpm lint && pnpm check && pnpm test && pnpm build && pnpm budgets && pnpm e2e",
+    "fixtures:camera": "tsx scripts/gen-camera-fixtures.ts && biome format --write scene/camera-fixtures.json",
+    "budgets": "tsx scripts/check-budgets.ts"
   },
   "dependencies": {
     "astro": "7.3.8",
