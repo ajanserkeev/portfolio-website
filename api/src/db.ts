@@ -56,6 +56,17 @@ export function initDatabase(dbPath = ':memory:'): DatabaseSync {
       count INTEGER NOT NULL DEFAULT 1,
       reset_at INTEGER NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS error_logs (
+      id TEXT PRIMARY KEY,
+      created_at TEXT NOT NULL,
+      level TEXT NOT NULL,
+      message TEXT NOT NULL,
+      stack TEXT,
+      url TEXT,
+      user_agent TEXT,
+      ip TEXT
+    );
   `);
 
   return db;

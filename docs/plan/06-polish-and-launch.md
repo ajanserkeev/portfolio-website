@@ -74,11 +74,11 @@
 - Create: `api/src/routes/log.ts`, `api/tests/log.test.ts`
 - Modify: `api/src/app.ts`
 
-- [ ] **Step 1: Написать тесты на валидацию и сохранение логов ошибок**
-- [ ] **Step 2: Реализовать маршрут `POST /api/log` с жестким rate limit (max 10 в минуту) и фильтром спама**
-- [ ] **Step 3: Смонтировать в `api/src/app.ts`**
-- [ ] **Step 4: Проверить `pnpm verify`**
-- [ ] **Step 5: Commit**
+- [x] **Step 1: Написать тесты на валидацию и сохранение логов ошибок**
+- [x] **Step 2: Реализовать маршрут `POST /api/log` с жестким rate limit (max 10 в минуту) и фильтром спама**
+- [x] **Step 3: Смонтировать в `api/src/app.ts`**
+- [x] **Step 4: Проверить `pnpm verify`**
+- [x] **Step 5: Commit**
 
 ---
 

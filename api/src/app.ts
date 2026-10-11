@@ -9,6 +9,7 @@ import { createRateLimiter } from './limits';
 import { createBookRoute } from './routes/book';
 import { createChatRoute } from './routes/chat';
 import { createLeadRoute } from './routes/lead';
+import { createLogRoute } from './routes/log';
 import { createSlotsRoute } from './routes/slots';
 
 export interface AppDependencies {
@@ -106,6 +107,14 @@ export function createApp(options?: AppDependencies | ApiConfig) {
       max: 30,
     }),
   );
+  app.use(
+    '/api/log',
+    createRateLimiter({
+      db,
+      windowMs: 60_000,
+      max: 10,
+    }),
+  );
 
   // Mount routes
   app.route(
@@ -135,6 +144,13 @@ export function createApp(options?: AppDependencies | ApiConfig) {
     createChatRoute({
       db,
       config,
+    }),
+  );
+  app.route(
+    '/api/log',
+    createLogRoute({
+      db,
+      telegramNotifier,
     }),
   );
 
