@@ -83,7 +83,7 @@ test('the sound button is labelled in the page language', async ({ page }) => {
 - *Десктоп (≥ 1024 px, landscape):* латунная панель ар-деко — градиент `#e6c98f → #b88d45`, тонкая окантовка, сверху циферблат со стрелкой, кнопки — круглые латунные «пуговицы» с гравировкой (тень внутрь), текущая светится тёплым (`box-shadow` + `#fff4d6`). При наведении — подпись этажа слева (`::before` из `data-label`).
 - *Телефон:* панель 28 px: вертикальная линия-шахта, риски этажей, латунный бегунок, который едет по `--lift`; кнопки-ссылки прозрачные 44 × 44 поверх рисок (зоны нажатия сохраняются); рядом с бегунком — чип с названием текущего этажа.
 
-- [ ] **Step 1: Падающие тесты**
+- [x] **Step 1: Падающие тесты**
 
 ```ts
 // src/ui/elevator.test.ts (добавить)
@@ -113,9 +113,9 @@ test('on a phone the lift panel is a slim rail with the current floor name', asy
 });
 ```
 
-- [ ] **Step 2:** → FAIL.
-- [ ] **Step 3:** `liftProgress` в `elevator.ts`; `elevator-panel.ts` выставляет `--lift` и текст `[data-elevator-current]` (названия этажей — из `data-label` ссылок); разметка и CSS.
-- [ ] **Step 4:** PASS, `pnpm verify`. Commit: `feat(ui): brass lift panel on desktop and a slim rail on phones`.
+- [x] **Step 2:** → FAIL.
+- [x] **Step 3:** `liftProgress` в `elevator.ts`; `elevator-panel.ts` выставляет `--lift` и текст `[data-elevator-current]` (названия этажей — из `data-label` ссылок); разметка и CSS.
+- [x] **Step 4:** PASS, `pnpm verify`. Commit: `feat(ui): brass lift panel on desktop and a slim rail on phones`.
 
 ---
 

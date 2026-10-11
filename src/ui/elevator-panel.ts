@@ -1,20 +1,35 @@
 import { tower } from '../engine/config';
 import { bus } from '../engine/events';
-import { activeLevelIndex, needleAngleDeg } from './elevator';
+import { activeLevelIndex, liftProgress, needleAngleDeg } from './elevator';
 
 /** Highlights the current floor and turns the dial. Follows the lift in 3D, the sections in static mode. */
 export function initElevatorPanel(doc: Document): () => void {
   const panel = doc.querySelector<HTMLElement>('[data-elevator]');
   if (!panel) return () => {};
   const links = Array.from(panel.querySelectorAll<HTMLAnchorElement>('[data-elevator-link]'));
+  const currentLabel = panel.querySelector<HTMLElement>('[data-elevator-current]');
   const total = tower.levels.length;
   let current = -1;
+  let last = Number.NaN;
+  let settle: ReturnType<typeof setTimeout> | undefined;
+
+  // The floor name next to the rail shows while the lift moves, then fades (it overlaps the text).
+  const markMoving = (position: number) => {
+    if (Math.abs(position - last) < 1e-3) return;
+    last = position;
+    panel.dataset.moving = '';
+    clearTimeout(settle);
+    settle = setTimeout(() => delete panel.dataset.moving, 1200);
+  };
 
   const render = (position: number) => {
+    markMoving(position);
     panel.style.setProperty('--needle', `${needleAngleDeg(position, total)}deg`);
+    panel.style.setProperty('--lift', String(liftProgress(position, total)));
     const active = activeLevelIndex(position, total);
     if (active === current) return;
     current = active;
+    if (currentLabel) currentLabel.textContent = links[active]?.dataset.label ?? '';
     links.forEach((link, index) => {
       if (index === active) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
@@ -48,6 +63,7 @@ export function initElevatorPanel(doc: Document): () => void {
 
   render(0);
   return () => {
+    clearTimeout(settle);
     off();
     observer.disconnect();
   };

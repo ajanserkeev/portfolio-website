@@ -409,56 +409,147 @@ html[data-tier="static"] .action-chip[data-needs-3d] {
   color: var(--color-sand);
 }
 
+/* Lift panel. Phone: a slim shaft with a brass bead; the links stay 44 px tap targets. */
 .elevator {
+  --step: 2.75rem;
   position: fixed;
   z-index: 2;
-  right: calc(0.5rem + env(safe-area-inset-right));
+  right: calc(0.25rem + env(safe-area-inset-right));
   top: 50%;
   transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.375rem;
-  border-radius: 999px;
-  background: rgb(28 27 34 / 0.82);
+  width: var(--step);
+}
+
+.elevator::before {
+  content: "";
+  position: absolute;
+  left: calc(50% - 1.5px);
+  top: calc(var(--step) / 2);
+  bottom: calc(var(--step) / 2);
+  width: 3px;
+  border-radius: 2px;
+  background: rgb(28 27 34 / 0.28);
 }
 
 .elevator__dial {
   display: none;
 }
 
+.elevator__dial-face {
+  fill: #fff7e6;
+  stroke: #7a5a26;
+  stroke-width: 2;
+}
+
+.elevator__dial-tick {
+  stroke: #4a3412;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
 .elevator__needle {
+  stroke: var(--color-signal);
+  stroke-width: 3;
+  stroke-linecap: round;
   transform-box: view-box;
   transform-origin: 50px 56px;
   transform: rotate(var(--needle, -90deg));
   transition: transform 120ms linear;
 }
 
+.elevator__hub {
+  fill: var(--color-ink);
+}
+
 .elevator__floors {
+  position: relative;
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
 }
 
 .elevator__button {
+  position: relative;
   display: grid;
   place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: var(--step);
+  height: var(--step);
   border-radius: 50%;
-  color: var(--color-sand);
+  color: var(--color-ink);
   font-size: 0.875rem;
   font-weight: 700;
   text-decoration: none;
 }
 
-.elevator__button[aria-current] {
-  background: var(--color-brass);
-  color: var(--color-ink);
+/* Floor tick on the shaft. */
+.elevator__button::after {
+  content: "";
+  width: 0.75rem;
+  height: 2px;
+  border-radius: 1px;
+  background: rgb(28 27 34 / 0.45);
+}
+
+.elevator__num {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.elevator__button:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: -4px;
+}
+
+.elevator__bead,
+.elevator__current {
+  position: absolute;
+  top: calc(var(--step) / 2 + var(--lift, 0) * (var(--floors, 6) - 1) * var(--step));
+  pointer-events: none;
+  transition: top 120ms linear;
+}
+
+.elevator__bead {
+  left: 50%;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 35% 30%, #f6e2b0, var(--color-brass) 60%, #8c6a2f);
+  box-shadow:
+    0 0 0 2px var(--color-ink),
+    0 4px 10px -2px rgb(28 27 34 / 0.5);
+}
+
+.elevator__current {
+  right: calc(100% - 0.25rem);
+  transform: translateY(-50%);
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: var(--color-ink);
+  color: var(--color-sand);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+  opacity: 0;
+  transition:
+    top 120ms linear,
+    opacity 250ms ease;
+}
+
+.elevator[data-moving] .elevator__current,
+.elevator:focus-within .elevator__current {
+  opacity: 1;
+}
+
+html[data-motion="reduced"] .elevator .elevator__bead,
+html[data-motion="reduced"] .elevator .elevator__current,
+html[data-motion="reduced"] .elevator .elevator__needle {
+  transition: none;
 }
 
 /* Bottom dock: the CTA and the chat launcher side by side, never on top of each other. */
@@ -525,11 +616,28 @@ html[data-tier="static"] .action-chip[data-needs-3d] {
     margin-bottom: 8rem;
   }
 
+  /* Desktop: an art deco brass panel with a dial and engraved buttons. */
   .elevator {
     right: 1.25rem;
-    padding: 0.75rem 0.5rem;
-    border-radius: 1.25rem;
-    background: linear-gradient(180deg, #d9b878, var(--color-brass));
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 0.625rem;
+    border-radius: 1.5rem;
+    background: linear-gradient(180deg, #ecd39e 0%, #c9a15b 55%, #a8803f 100%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.55),
+      inset 0 -2px 0 rgb(74 52 18 / 0.35),
+      0 0 0 1px rgb(74 52 18 / 0.45),
+      0 18px 36px -18px rgb(28 27 34 / 0.6);
+  }
+
+  .elevator::before,
+  .elevator__bead,
+  .elevator__current {
+    display: none;
   }
 
   .elevator__dial {
@@ -537,14 +645,65 @@ html[data-tier="static"] .action-chip[data-needs-3d] {
     width: 3.5rem;
   }
 
+  .elevator__floors {
+    gap: 0.375rem;
+  }
+
   .elevator__button {
-    color: var(--color-ink);
-    background: rgb(255 255 255 / 0.35);
+    background: radial-gradient(circle at 35% 30%, #f6e2b0, #cfa660 58%, #9c7535);
+    color: #4a3412;
+    text-shadow: 0 1px 0 rgb(255 255 255 / 0.45);
+    box-shadow:
+      inset 0 -2px 3px rgb(74 52 18 / 0.35),
+      0 1px 0 rgb(255 255 255 / 0.4),
+      0 0 0 1px rgb(74 52 18 / 0.5);
+  }
+
+  .elevator__button::after {
+    content: none;
+  }
+
+  .elevator__num {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
   }
 
   .elevator__button[aria-current] {
+    background: radial-gradient(circle at 50% 45%, #fff6dc, #ffd27a 55%, #e9a93c);
+    color: var(--color-ink);
+    box-shadow:
+      0 0 0 2px var(--color-ink),
+      0 0 18px 3px rgb(255 196 90 / 0.65);
+  }
+
+  .elevator__button:active {
+    transform: translateY(1px);
+  }
+
+  /* Floor name on hover or keyboard focus. */
+  .elevator__button::before {
+    content: attr(data-label);
+    position: absolute;
+    right: calc(100% + 0.875rem);
+    padding: 0.25rem 0.625rem;
+    border-radius: 999px;
     background: var(--color-ink);
     color: var(--color-sand);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-shadow: none;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms ease;
+  }
+
+  .elevator__button:hover::before,
+  .elevator__button:focus-visible::before {
+    opacity: 1;
   }
 
   .dock {

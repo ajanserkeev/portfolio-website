@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { activeLevelIndex, needleAngleDeg } from './elevator';
+import { activeLevelIndex, liftProgress, needleAngleDeg } from './elevator';
 
 describe('activeLevelIndex', () => {
   it('rounds to the nearest level', () => {
@@ -23,5 +23,16 @@ describe('needleAngleDeg', () => {
 
   it('copes with a single level', () => {
     expect(needleAngleDeg(0, 1)).toBe(-90);
+  });
+});
+
+describe('liftProgress', () => {
+  it('maps the roof to 0, the basement to 1 and clamps outside', () => {
+    expect(liftProgress(0, 6)).toBe(0);
+    expect(liftProgress(2.5, 6)).toBe(0.5);
+    expect(liftProgress(5, 6)).toBe(1);
+    expect(liftProgress(9, 6)).toBe(1);
+    expect(liftProgress(-2, 6)).toBe(0);
+    expect(liftProgress(Number.NaN, 6)).toBe(0);
   });
 });

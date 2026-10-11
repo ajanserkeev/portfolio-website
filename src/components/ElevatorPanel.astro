@@ -6,12 +6,28 @@ interface Props {
   locale: Locale;
 }
 const t = dict(Astro.props.locale);
+// Dial ticks: one per floor across the 180° sweep of the needle.
+const ticks = LEVEL_IDS.map((_, i) => {
+  const angle = Math.PI - (i / (LEVEL_IDS.length - 1)) * Math.PI;
+  const at = (r: number) => [50 + r * Math.cos(angle), 56 - r * Math.sin(angle)];
+  const [x1, y1] = at(34);
+  const [x2, y2] = at(41);
+  return { x1, y1, x2, y2 };
+});
 ---
-<nav class="elevator" aria-label={t.panel.label} data-elevator>
+<nav
+  class="elevator"
+  aria-label={t.panel.label}
+  data-elevator
+  style={`--floors: ${LEVEL_IDS.length}`}
+>
   <svg class="elevator__dial" viewBox="0 0 100 64" aria-hidden="true">
-    <path d="M10 56 A40 40 0 0 1 90 56" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity="0.5"></path>
-    <line class="elevator__needle" x1="50" y1="56" x2="50" y2="20" stroke="#1c1b22" stroke-width="4" stroke-linecap="round"></line>
-    <circle cx="50" cy="56" r="6" fill="#1c1b22"></circle>
+    <path class="elevator__dial-face" d="M8 56 A42 42 0 0 1 92 56 Z"></path>
+    {ticks.map((tick) => (
+      <line class="elevator__dial-tick" x1={tick.x1} y1={tick.y1} x2={tick.x2} y2={tick.y2}></line>
+    ))}
+    <line class="elevator__needle" x1="50" y1="56" x2="50" y2="22"></line>
+    <circle class="elevator__hub" cx="50" cy="56" r="5"></circle>
   </svg>
   <ol class="elevator__floors">
     {LEVEL_IDS.map((id, index) => (
@@ -20,13 +36,16 @@ const t = dict(Astro.props.locale);
           class="elevator__button"
           href={`#${id}`}
           data-elevator-link={index}
+          data-label={t.levels[id].name}
           aria-label={`${t.levels[id].name}: ${t.levels[id].title}`}
         >
-          {t.levels[id].short}
+          <span class="elevator__num">{t.levels[id].short}</span>
         </a>
       </li>
     ))}
   </ol>
+  <span class="elevator__bead" aria-hidden="true"></span>
+  <span class="elevator__current" data-elevator-current aria-hidden="true">{t.levels.roof.name}</span>
 </nav>
 <script>
   import { initElevatorPanel } from '../ui/elevator-panel';
