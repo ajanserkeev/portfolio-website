@@ -6,6 +6,16 @@ async function hydrated(inner: Locator): Promise<void> {
   await expect(inner.locator('xpath=ancestor::astro-island[1]')).not.toHaveAttribute('ssr', /.*/);
 }
 
+/** Relative luminance of an element's own background, 0 (black) … 1 (white). */
+async function luminance(locator: Locator): Promise<number> {
+  return locator.evaluate((el) => {
+    const [r = 0, g = 0, b = 0] = (getComputedStyle(el).backgroundColor.match(/[\d.]+/g) ?? []).map(
+      Number,
+    );
+    return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+  });
+}
+
 test.describe('Preact Islands E2E', () => {
   test('Calculator interacts and recalculates estimated range', async ({ page, browserName }) => {
     await page.goto(browserName === 'webkit' ? '/?tier=static' : '/');
@@ -19,13 +29,33 @@ test.describe('Preact Islands E2E', () => {
     const initialPrice = await priceText.textContent();
     expect(initialPrice).toContain('$');
 
-    // Click Enterprise complexity button
-    const enterpriseBtn = calc.getByRole('button', { name: /Энтерпрайз/i });
-    if (await enterpriseBtn.isVisible()) {
-      await enterpriseBtn.click();
-      const newPrice = await priceText.textContent();
-      expect(newPrice).not.toEqual(initialPrice);
-    }
+    const largeBtn = calc.getByRole('button', { name: /Крупный/i });
+    await largeBtn.click();
+    await expect(largeBtn).toHaveAttribute('aria-pressed', 'true');
+    await expect(priceText).not.toHaveText(initialPrice ?? '');
+  });
+
+  test('Calculator uses the light theme and English copy on /en/', async ({ page }) => {
+    await page.goto('/en/?tier=static');
+    const calc = page.locator('[data-testid="calculator"]');
+    await hydrated(calc);
+    expect(await luminance(calc)).toBeGreaterThan(0.8);
+    expect(await calc.innerText()).not.toMatch(/[А-Яа-яЁё]/);
+  });
+
+  test('Calculator is prefilled from the pain picked on the roof', async ({ page }) => {
+    await page.goto('/?tier=static');
+    const calc = page.locator('[data-testid="calculator"]');
+    await hydrated(calc);
+    await page.locator('[data-pain-option="need-booking"]').click();
+    await expect(calc.getByRole('button', { name: /Онлайн-запись/ })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await expect(calc.getByRole('button', { name: /ИИ-агенты/ })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
   });
 
   test('LeadForm validates, submits and displays success confirmation', async ({
@@ -137,4 +167,18 @@ test.describe('Preact Islands E2E', () => {
     await expect(fallback.getByRole('link')).toHaveCount(2);
     await expect(fallback.getByRole('link').last()).toHaveAttribute('href', '#basement');
   });
+});
+
+test('island controls stay inside their panel in the narrow desktop column', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/?tier=static');
+  const calc = page.locator('[data-testid="calculator"]');
+  await calc.scrollIntoViewIfNeeded();
+  const panel = await calc.boundingBox();
+  for (const button of await calc.locator('button').all()) {
+    const box = await button.boundingBox();
+    expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(
+      (panel?.x ?? 0) + (panel?.width ?? 0),
+    );
+  }
 });

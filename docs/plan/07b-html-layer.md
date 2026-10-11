@@ -195,7 +195,7 @@ test('on desktop the text column starts right of the tower', async ({ page }) =>
 - Produces: классы `.ui-panel`, `.ui-panel__title`, `.ui-panel__lead`, `.ui-label`, `.ui-input`, `.ui-textarea`, `.ui-segmented` (+ кнопки с `aria-pressed`), `.ui-tile` (опция-флажок), `.ui-btn`, `.ui-btn--primary` (чернила), `.ui-btn--accent` (сигнальный), `.ui-note`, `.ui-alert`, `.ui-result`. Тёплая палитра: фон панели `#fbf8f2`, обводка `rgb(28 27 34 / 0.1)`, активные элементы — чернила/латунь, акцент — сигнальный оранжевый.
 - Острова получают тексты пропсом: `<Calculator client:visible copy={d.calc} />`, тип `Dict['calc']`.
 
-- [ ] **Step 1: Падающие тесты**
+- [x] **Step 1: Падающие тесты**
 
 ```ts
 async function luminance(locator: Locator): Promise<number> {
@@ -216,9 +216,9 @@ test('the calculator uses the light theme and English copy on /en/', async ({ pa
 
 (если у корня калькулятора нет `data-testid="calculator"` — добавить.)
 
-- [ ] **Step 2:** → FAIL (тёмный фон).
-- [ ] **Step 3:** `ui.css`; `Calculator` на классах кита, тексты — из `copy`; ключи `calc.*` в словарях.
-- [ ] **Step 4:** PASS, `pnpm verify`. Commit: `feat(ui): add the island UI kit and restyle the calculator`.
+- [x] **Step 2:** → FAIL (тёмный фон).
+- [x] **Step 3:** `ui.css`; `Calculator` на классах кита, тексты — из `copy`; ключи `calc.*` в словарях.
+- [x] **Step 4:** PASS, `pnpm verify`. Commit: `feat(ui): add the island UI kit and restyle the calculator`.
 
 ---
 

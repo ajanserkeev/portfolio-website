@@ -1,3 +1,5 @@
+import type { PainId } from '../engine/events';
+
 export interface ServicePricing {
   id: string;
   minPrice: number;
@@ -22,7 +24,8 @@ export interface PricingTable {
     urgent: number;
   };
   supportMonthlyCostUsd: number;
-  painDefaults: Record<string, string[]>;
+  /** Services preselected in the calculator for the pain picked on the roof. */
+  painDefaults: Record<PainId, string[]>;
 }
 
 export const defaultPricingTable: PricingTable = {
@@ -72,9 +75,9 @@ export const defaultPricingTable: PricingTable = {
   supportMonthlyCostUsd: 300,
   painDefaults: {
     'lost-leads': ['agents', 'crm'],
-    routine: ['agents', 'crm'],
-    'site-or-app': ['web'],
-    booking: ['booking'],
-    'just-looking': ['agents'],
+    'manual-routine': ['crm', 'agents'],
+    'need-site': ['web'],
+    'need-booking': ['booking'],
+    browsing: ['agents'],
   },
 };

@@ -1,7 +1,8 @@
 import type { PricingTable } from '../data/pricing';
+import type { PainId } from '../engine/events';
 
 export interface EstimateSelection {
-  pain?: string;
+  pain?: PainId;
   services: string[];
   complexity?: 'simple' | 'medium' | 'enterprise';
   urgency?: 'standard' | 'urgent';

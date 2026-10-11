@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { defaultPricingTable } from '../data/pricing';
+import { ALL_PAINS } from '../engine/relevance';
 import { type EstimateSelection, estimate } from './estimate';
 
 describe('estimate()', () => {
@@ -100,5 +101,13 @@ describe('estimate()', () => {
     // Days should be less than naive sum (7+10+14=31) due to parallelism
     expect(res.minDays).toBeLessThan(31);
     expect(res.maxDays).toBeLessThan(21 + 28 + 35);
+  });
+});
+
+describe('defaultPricingTable.painDefaults', () => {
+  it('has preset services for every pain the roof picker offers', () => {
+    for (const pain of ALL_PAINS) {
+      expect(defaultPricingTable.painDefaults[pain]?.length, pain).toBeGreaterThan(0);
+    }
   });
 });
