@@ -614,15 +614,15 @@ test('an action wakes the render loop after the scene went idle', async ({ page,
 - Test: `art/tests/blender/test_props.py` (+ новый `art/tests/blender/test_person.py` по образцу `test_robot.py`)
 - Output: `src/assets/levels/basement.*`, `src/assets/levels/booking.*`
 
-- [ ] **Step 1: Падающие тесты в Blender**
+- [x] **Step 1: Падающие тесты в Blender**
   - `test_person.py`: после `build_person` нижняя точка мирового bounding box узла `dyn__<id>__head` (с волосами) ≤ 1,45 м; волосы не выше головы больше чем на 0,2 м; воротник внутри высоты торса + 0,1 м.
   - `test_props.py`: верх рамы табло `split_flap_board(at=(0, 1.8, -2.85))` ≤ 2,9 м, низ ≥ 0,7 м; створка `dyn__board__flap` целиком внутри рамы по высоте.
-- [ ] **Step 2:** `pnpm art:test:blender` → FAIL.
-- [ ] **Step 3: Исправления**
+- [x] **Step 2:** `pnpm art:test:blender` → FAIL.
+- [x] **Step 3: Исправления**
   - `person.py`: `collar at=(0.0, 0.52, 0.0)` (от торса), `hair at=(0.0, 0.30, 0.0)` (от головы), `glasses at=(0.0, 0.17, 0.19)` (от головы).
   - `props.split_flap_board`: рама `place((0, -0.9, 0), at)`, ниша `place((0, -0.8, 0.06), at)`, створка внутри корня `at=(0.0, -0.55, 0.0)`, хитбокс `place((0, -0.95, 0), at)`. Табло центрируется на `at.y`.
-- [ ] **Step 4:** `pnpm art:test` → PASS. `pnpm art:build basement`, `pnpm art:build booking` (≈ 3 мин каждый). Проверить скриншотом сайта, что табло целиком в кадре, а волосы на головах.
-- [ ] **Step 5:** `pnpm verify` зелёный. Commit: `fix(art): attach team hair to heads and fit the split-flap board under the ceiling`.
+- [x] **Step 4:** `pnpm art:test` → PASS. `pnpm art:build basement`, `pnpm art:build booking` (≈ 3 мин каждый). Проверить скриншотом сайта, что табло целиком в кадре, а волосы на головах.
+- [x] **Step 5:** `pnpm verify` зелёный. Commit: `fix(art): attach team hair to heads and fit the split-flap board under the ceiling`.
 
 ---
 

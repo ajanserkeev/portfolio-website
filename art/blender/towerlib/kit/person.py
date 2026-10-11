@@ -61,7 +61,7 @@ def build_person(spec: PersonSpec, ctx: BuildContext) -> bpy.types.Object:
         height=0.08,
         color=skin_color,
         role="dyn",
-        at=(0.0, 0.72, 0.0),
+        at=(0.0, 0.52, 0.0),  # local to the torso: its top edge
         parent=torso,
     )
     join([torso, collar], naming.dyn(spec.id, "body"))
@@ -82,7 +82,7 @@ def build_person(spec: PersonSpec, ctx: BuildContext) -> bpy.types.Object:
         color=hair_color,
         radius=0.04,
         role="dyn",
-        at=(0.0, 1.15, 0.0),
+        at=(0.0, 0.30, 0.0),  # local to the head
         parent=head,
     )
     extras = [hair]
@@ -93,7 +93,7 @@ def build_person(spec: PersonSpec, ctx: BuildContext) -> bpy.types.Object:
             color=p["ink"],
             radius=0.015,
             role="dyn",
-            at=(0.0, 0.98, 0.19),
+            at=(0.0, 0.17, 0.19),  # local to the head: eye level
             parent=head,
         )
         extras.append(frame)

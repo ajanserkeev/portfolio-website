@@ -71,3 +71,21 @@ def test_lamp_adds_a_glow_disc_and_a_light():
 def test_server_rack_leds_glow():
     props.server_rack(_ctx(), "rack", (-5.0, 0.0, -2.4), leds=6)
     assert len(objects_in("glow")) == 6
+
+
+def test_split_flap_board_fits_under_the_ceiling():
+    import bpy
+
+    ctx = _ctx()
+    props.split_flap_board(ctx, "board", (0.0, 1.8, -2.85), screen_id="calendar")
+    bpy.context.view_layer.update()
+
+    def world_z(name):
+        obj = bpy.data.objects[name]
+        zs = [(obj.matrix_world @ v.co).z for v in obj.data.vertices]
+        return min(zs), max(zs)
+
+    frame_bottom, frame_top = world_z("board-frame")
+    assert frame_top <= 2.9 and frame_bottom >= 0.7, (frame_bottom, frame_top)
+    flap_bottom, flap_top = world_z("dyn__board__flap")
+    assert frame_bottom <= flap_bottom and flap_top <= frame_top, (flap_bottom, flap_top)

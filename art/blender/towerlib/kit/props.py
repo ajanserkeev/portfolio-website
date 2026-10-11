@@ -288,9 +288,10 @@ def split_flap_board(ctx: BuildContext, name: str, at: Vec3, *, screen_id: str =
     from .scene import link
 
     info, p = ctx.screens[screen_id], ctx.palette
+    # The board is centred on `at`; boxes rest on their y, so the frame and recess drop by half their height.
     parts = [
-        rounded_box(f"{name}-frame", (3.4, 1.8, 0.15), color=p["ink"], radius=0.04, at=at, yaw_deg=yaw_deg),
-        rounded_box(f"{name}-recess", (3.2, 1.6, 0.06), color=p["robot-dark"], radius=0.02, at=place((0.0, 0.0, 0.06), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-frame", (3.4, 1.8, 0.15), color=p["ink"], radius=0.04, at=place((0.0, -0.9, 0.0), at, yaw_deg), yaw_deg=yaw_deg),
+        rounded_box(f"{name}-recess", (3.2, 1.6, 0.06), color=p["robot-dark"], radius=0.02, at=place((0.0, -0.8, 0.06), at, yaw_deg), yaw_deg=yaw_deg),
         rounded_box(f"{name}-header", (3.2, 0.14, 0.08), color=p["ink"], radius=0.01, at=place((0.0, 0.72, 0.08), at, yaw_deg), yaw_deg=yaw_deg),
         rounded_box(f"{name}-lamp-l", (0.08, 0.04, 0.02), color=p["teal"], role="glow", at=place((-1.4, 0.72, 0.12), at, yaw_deg), yaw_deg=yaw_deg),
         rounded_box(f"{name}-lamp-r", (0.08, 0.04, 0.02), color=p["mustard"], role="glow", at=place((1.4, 0.72, 0.12), at, yaw_deg), yaw_deg=yaw_deg),
@@ -302,9 +303,9 @@ def split_flap_board(ctx: BuildContext, name: str, at: Vec3, *, screen_id: str =
     root.location = to_blender(place((-0.6, -0.05, 0.09), at, yaw_deg))
     link(root, "dyn")
 
-    rounded_box(f"dyn__{name}__flap", (1.8, 1.1, 0.02), color=p["ink"], radius=0.01, role="dyn", at=(0.0, 0.0, 0.0), parent=root)
+    rounded_box(f"dyn__{name}__flap", (1.8, 1.1, 0.02), color=p["ink"], radius=0.01, role="dyn", at=(0.0, -0.55, 0.0), parent=root)
 
-    hitbox(name, (3.5, 1.9, 0.35), at, action=action, yaw_deg=yaw_deg)
+    hitbox(name, (3.5, 1.9, 0.35), place((0.0, -0.95, 0.0), at, yaw_deg), action=action, yaw_deg=yaw_deg)
     anchor(f"{name}-board", place((0.0, 0.0, 0.12), at, yaw_deg))
     anchor(f"{name}-flaps", place((-0.6, -0.05, 0.11), at, yaw_deg))
     return parts
