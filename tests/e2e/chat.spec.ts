@@ -48,3 +48,25 @@ test.describe('Chat Agent E2E', () => {
     await expect(sheet).not.toBeVisible();
   });
 });
+
+test.describe('Chat sheet', () => {
+  test('is light, in the page language and keyboard friendly', async ({ page }) => {
+    await page.goto('/en/?tier=static');
+    const opener = page.locator('[data-chat-open]');
+    await opener.click();
+    const sheet = page.getByRole('dialog');
+    await expect(sheet).toBeVisible();
+    await expect(page.getByTestId('chat-input')).toBeFocused();
+    const light = await sheet.evaluate((el) => {
+      const [r = 0, g = 0, b = 0] = (
+        getComputedStyle(el).backgroundColor.match(/[\d.]+/g) ?? []
+      ).map(Number);
+      return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+    });
+    expect(light).toBeGreaterThan(0.8);
+    expect(await sheet.innerText()).not.toMatch(/[А-Яа-яЁё]/);
+    await page.keyboard.press('Escape');
+    await expect(sheet).toBeHidden();
+    await expect(opener).toBeFocused();
+  });
+});

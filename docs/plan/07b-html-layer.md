@@ -248,9 +248,9 @@ test('the calculator uses the light theme and English copy on /en/', async ({ pa
 
 Шторка чата: на телефоне — снизу на 85 % высоты с ручкой, на десктопе — справа 24 rem; светлая; сообщения агента — карточки, посетителя — чернила; кнопки «Продолжить в Telegram/WhatsApp» — в стиле кита. Esc закрывает, фокус уходит в поле ввода при открытии и возвращается на кнопку панели при закрытии.
 
-- [ ] **Step 1:** тесты: светлая тема + нет кириллицы на `/en/`; Esc закрывает и возвращает фокус на `[data-chat-open]` → FAIL.
-- [ ] **Step 2:** реализация; бюджет до 3D проверить (`pnpm budgets`).
-- [ ] **Step 3:** PASS, `pnpm verify`. Commit: `feat(ui): restyle the agent chat as a light sheet with keyboard support`.
+- [x] **Step 1:** тесты: светлая тема + нет кириллицы на `/en/`; Esc закрывает и возвращает фокус на `[data-chat-open]` → FAIL.
+- [x] **Step 2:** реализация; бюджет до 3D проверить (`pnpm budgets`).
+- [x] **Step 3:** PASS, `pnpm verify`. Commit: `feat(ui): restyle the agent chat as a light sheet with keyboard support`.
 
 ---
 

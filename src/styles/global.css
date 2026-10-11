@@ -1,5 +1,6 @@
 @import "./fonts.css";
 @import "./ui.css";
+@import "./chat.css";
 @import "tailwindcss";
 
 @theme {
