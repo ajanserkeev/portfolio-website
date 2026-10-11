@@ -9,10 +9,10 @@
 **Files:**
 - Create: `scripts/posters.ts`, `public/posters/.gitkeep`
 
-- [ ] **Step 1: Реализовать скрипт `scripts/posters.ts` для скриншотов этажей в режиме `?shot=<этаж>`**
-- [ ] **Step 2: Сохранение постеров для каждого уровня (`roof`, `agents`, `crm`, `booking`, `workshop`, `basement`)**
-- [ ] **Step 3: Проверить `pnpm build && pnpm budgets`**
-- [ ] **Step 4: Commit**
+- [x] **Step 1: Реализовать скрипт `scripts/posters.ts` для скриншотов этажей в режиме `?shot=<этаж>`**
+- [x] **Step 2: Сохранение постеров для каждого уровня (`roof`, `agents`, `crm`, `booking`, `workshop`, `basement`)**
+- [x] **Step 3: Проверить `pnpm build && pnpm budgets`**
+- [x] **Step 4: Commit**
 
 ---
 
