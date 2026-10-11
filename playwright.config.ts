@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const PORT = 4321;
+// Not 4321: a running `pnpm dev` must never be reused as the server under test.
+const PORT = Number(process.env.E2E_PORT ?? 4331);
 // SwiftShader gives headless Chromium a software WebGL2 implementation.
 const webgl = { args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] };
 
