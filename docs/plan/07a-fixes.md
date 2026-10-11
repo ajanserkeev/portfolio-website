@@ -652,6 +652,8 @@ test('booking falls back to other channels when the slots API is down', async ({
 
 ### Task 7: Постеры из настоящей сцены (B9)
 
+> **Отклонение от плана (по факту реализации).** Портретный кадр 900×1200 оказался почти пустым: этаж вдвое шире своей высоты. Постеры — 1200×720 (5:3), снимаются с `deviceScaleFactor: 2` и обрезаются к центру с увеличением 1,6 (OG — 1,4), потому что режим кадра держит десктопную раскладку с полем под текст и менять его нельзя (на нём сверка Blender ↔ сайт). Чистая функция `centerCrop` покрыта тестом. Плюс найден баг: в режиме кадра холст проявлялся за 600 мс и снимок выходил блёклым — в `?shot=` переход выключен.
+
 **Files:**
 - Modify: `scripts/posters.ts` (переписать), `src/components/StaticLevel.astro`, `package.json` (`posters` — без изменений имени)
 - Create: `scripts/posters-lib.ts`, `scripts/posters-lib.test.ts`
@@ -661,7 +663,7 @@ test('booking falls back to other channels when the slots API is down', async ({
 **Interfaces:**
 - Produces: `posterJobs(base: string, levels: readonly string[]): PosterJob[]`, где `PosterJob = { id: string; url: string; out: string; width: number; height: number; format: 'webp' | 'jpeg' }`.
 
-- [ ] **Step 1: Падающий тест**
+- [x] **Step 1: Падающий тест**
 
 ```ts
 // scripts/posters-lib.test.ts
@@ -680,9 +682,9 @@ describe('posterJobs', () => {
 });
 ```
 
-- [ ] **Step 2:** → FAIL.
-- [ ] **Step 3:** `posters-lib.ts` с `posterJobs`; `posters.ts`: Chromium (`--use-angle=swiftshader --enable-unsafe-swiftshader`), для каждой задачи — вьюпорт, переход, ожидание `html[data-shot-ready="true"]`, скриншот → sharp (WebP q80 / JPEG q86). Базовый URL — первый аргумент, по умолчанию `http://localhost:4321` (нужен запущенный `pnpm preview`, как у `art:compare`). `StaticLevel.astro`: светлая рамка (`--color-sand-dark`), `alt=""` (блок `aria-hidden`), без тёмного фона.
-- [ ] **Step 4: e2e**
+- [x] **Step 2:** → FAIL.
+- [x] **Step 3:** `posters-lib.ts` с `posterJobs`; `posters.ts`: Chromium (`--use-angle=swiftshader --enable-unsafe-swiftshader`), для каждой задачи — вьюпорт, переход, ожидание `html[data-shot-ready="true"]`, скриншот → sharp (WebP q80 / JPEG q86). Базовый URL — первый аргумент, по умолчанию `http://localhost:4321` (нужен запущенный `pnpm preview`, как у `art:compare`). `StaticLevel.astro`: светлая рамка (`--color-sand-dark`), `alt=""` (блок `aria-hidden`), без тёмного фона.
+- [x] **Step 4: e2e**
 
 ```ts
 test('static mode shows real floor posters', async ({ page }) => {
@@ -693,7 +695,7 @@ test('static mode shows real floor posters', async ({ page }) => {
 });
 ```
 
-- [ ] **Step 5:** `pnpm build && pnpm preview`, в другом терминале `pnpm posters`; глазами проверить 6 постеров и OG. `pnpm verify`. Commit: `feat(posters): render floor posters and the OG image from the live scene`.
+- [x] **Step 5:** `pnpm build && pnpm preview`, в другом терминале `pnpm posters`; глазами проверить 6 постеров и OG. `pnpm verify`. Commit: `feat(posters): render floor posters and the OG image from the live scene`.
 
 ---
 

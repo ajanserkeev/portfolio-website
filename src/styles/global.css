@@ -507,6 +507,11 @@ html[data-tier="static"] .action-chip[data-needs-3d] {
   }
 }
 
+/* A shot is a still frame: no fade-in, or the capture lands mid-transition. */
+html[data-shot] .stage canvas {
+  transition: none;
+}
+
 html[data-shot] .topbar,
 html[data-shot] .elevator,
 html[data-shot] .dock,

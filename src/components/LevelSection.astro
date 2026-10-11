@@ -34,7 +34,7 @@ const floorCases = allCases
     <h2 id={`${id}-title`} class="level__title">{copy.title}</h2>
     <p class="level__lead">{copy.lead}</p>
     <FloorAction id={id} locale={locale} />
-    <StaticLevel id={id} name={copy.name} />
+    <StaticLevel id={id} />
     <slot />
 
     {floorCases.length > 0 && (

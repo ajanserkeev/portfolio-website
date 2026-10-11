@@ -3,21 +3,20 @@ import type { LevelId } from '../engine/config';
 
 interface Props {
   id: LevelId;
-  name: string;
 }
 
-const { id, name } = Astro.props;
+const { id } = Astro.props;
 const posterSrc = `/posters/${id}.webp`;
 ---
 <div class="static-level" data-static-level={id} aria-hidden="true">
   <img
     src={posterSrc}
-    alt={`Постер уровня ${name}`}
+    alt=""
     class="static-level__img"
     loading="lazy"
     decoding="async"
-    width="900"
-    height="1200"
+    width="1200"
+    height="720"
   />
 </div>
 
@@ -29,9 +28,9 @@ const posterSrc = `/posters/${id}.webp`;
     margin: 2rem auto;
     border-radius: 1.25rem;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(10, 10, 12, 0.6);
-    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgb(28 27 34 / 0.08);
+    background: var(--color-sand-dark);
+    box-shadow: 0 16px 32px -20px rgb(28 27 34 / 0.45);
     display: none;
   }
 
@@ -42,7 +41,7 @@ const posterSrc = `/posters/${id}.webp`;
   .static-level__img {
     width: 100%;
     height: auto;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 5 / 3;
     object-fit: cover;
     display: block;
     transition: transform 0.4s ease;
