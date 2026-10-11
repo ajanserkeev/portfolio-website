@@ -70,6 +70,7 @@ const caseUrl = locale === 'ru' ? `/cases/${item.id}/` : `/en/cases/${item.id}/`
 
   .case-card__top {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     gap: 0.5rem;
@@ -91,6 +92,7 @@ const caseUrl = locale === 'ru' ? `/cases/${item.id}/` : `/en/cases/${item.id}/`
   }
 
   .case-card__nda {
+    max-width: 100%;
     font-size: 0.75rem;
     padding: 0.2rem 0.5rem;
     background: rgba(255, 90, 31, 0.1);

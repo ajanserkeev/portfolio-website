@@ -190,7 +190,7 @@ test('heading and body fonts carry real Cyrillic glyphs', async ({ page }) => {
 - Modify: `src/styles/global.css`, `src/components/CaseCard.astro`
 - Test: `tests/e2e/layout.spec.ts`
 
-- [ ] **Step 1: Падающие тесты**
+- [x] **Step 1: Падающие тесты**
 
 ```ts
 // tests/e2e/layout.spec.ts (добавить)
@@ -231,9 +231,9 @@ test('case card badges stay inside the card on a 360 px phone', async ({ page })
 });
 ```
 
-- [ ] **Step 2:** `pnpm e2e tests/e2e/layout.spec.ts` → три новых теста FAIL.
+- [x] **Step 2:** `pnpm e2e tests/e2e/layout.spec.ts` → три новых теста FAIL.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 ```css
 /* global.css */
@@ -263,7 +263,7 @@ test('case card badges stay inside the card on a 360 px phone', async ({ page })
 
 В `CaseCard.astro` у `.case-card__top` — `flex-wrap: wrap; gap: 0.5rem`, у `.case-card__nda` — `max-width: 100%`.
 
-- [ ] **Step 4:** тесты PASS, `pnpm verify` зелёный. Commit: `fix(ui): style floor titles, clear the top bar and wrap case badges`.
+- [x] **Step 4:** тесты PASS, `pnpm verify` зелёный. Commit: `fix(ui): style floor titles, clear the top bar and wrap case badges`.
 
 ---
 

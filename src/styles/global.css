@@ -147,6 +147,7 @@ pre,
 
 .level__kicker {
   margin: 0 0 0.25rem;
+  font-family: var(--font-mono);
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -176,8 +177,24 @@ pre,
   display: inline-block;
 }
 
+.level__title {
+  margin: 0 0 0.625rem;
+  font-size: clamp(1.5rem, 5.2vw, 2.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.level__lead {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: rgb(28 27 34 / 0.78);
+  max-width: 46ch;
+}
+
+/* Clears the fixed top bar (about 3.75rem tall). */
 .hero .level__content {
-  margin-top: 0;
+  margin-top: calc(4.25rem + env(safe-area-inset-top));
   margin-bottom: 6rem;
   scroll-margin-top: 100svh;
 }
