@@ -2,6 +2,9 @@
 import { getCollection } from 'astro:content';
 import type { LevelId } from '../engine/config';
 import { dict, type Locale } from '../i18n';
+import BookingWidget from '../islands/BookingWidget';
+import Calculator from '../islands/Calculator';
+import LeadForm from '../islands/LeadForm';
 import CaseCard from './CaseCard.astro';
 
 interface Props {
@@ -38,6 +41,19 @@ const floorCases = allCases
             <CaseCard item={item} locale={locale} />
           ))}
         </div>
+      </div>
+    )}
+
+    {id === 'booking' && (
+      <div class="level__widget">
+        <BookingWidget client:visible locale={locale} />
+      </div>
+    )}
+
+    {id === 'basement' && (
+      <div class="level__interactive">
+        <Calculator client:visible locale={locale} />
+        <LeadForm client:visible locale={locale} />
       </div>
     )}
 

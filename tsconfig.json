@@ -3,6 +3,8 @@
   "include": [".astro/types.d.ts", "**/*"],
   "exclude": ["dist", "node_modules", "art/out", "art/.venv"],
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
     "noEmit": true,
     "noUncheckedIndexedAccess": true,
     "erasableSyntaxOnly": true,

@@ -32,9 +32,11 @@
     "art:compare": "tsx art/scripts/compare.ts"
   },
   "dependencies": {
+    "@astrojs/preact": "^6.0.6",
     "@hono/node-server": "^2.1.4",
     "astro": "7.3.8",
     "hono": "^4.13.13",
+    "preact": "^11.0.1",
     "three": "0.186.1"
   },
   "devDependencies": {
