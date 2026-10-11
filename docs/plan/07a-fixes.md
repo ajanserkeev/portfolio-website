@@ -55,7 +55,7 @@
 **Interfaces:**
 - Produces: `parseGoogleFontsCss(css: string): FontSource[]`, `fontFileName(f: FontSource): string`, `fontFaceCss(f: FontSource): string`
 
-- [ ] **Step 1: Падающий тест разбора CSS**
+- [x] **Step 1: Падающий тест разбора CSS**
 
 ```ts
 // scripts/fonts-lib.test.ts
@@ -99,9 +99,9 @@ describe('parseGoogleFontsCss', () => {
 });
 ```
 
-- [ ] **Step 2:** `pnpm vitest run scripts/fonts-lib.test.ts` → FAIL (модуля нет).
+- [x] **Step 2:** `pnpm vitest run scripts/fonts-lib.test.ts` → FAIL (модуля нет).
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 ```ts
 // scripts/fonts-lib.ts
@@ -150,9 +150,9 @@ export function fontFaceCss(f: FontSource): string {
 
 `scripts/download-fonts.ts` переписать на `parseGoogleFontsCss` + `fontFaceCss`; URL: `Unbounded:wght@700`, `Manrope:wght@400;700` (в CSS используются веса 600–800 — без файла 700 браузер рисует фальшивый жирный), `JetBrains+Mono:wght@500`. Удалить старые `public/fonts/*` перед загрузкой.
 
-- [ ] **Step 4:** `pnpm vitest run scripts/fonts-lib.test.ts` → PASS. `pnpm tsx scripts/download-fonts.ts`, затем `pnpm biome format --write src/styles/fonts.css`. Проверить: каждый `*-cyrillic.woff2` ≥ 5 КБ.
+- [x] **Step 4:** `pnpm vitest run scripts/fonts-lib.test.ts` → PASS. `pnpm tsx scripts/download-fonts.ts`, затем `pnpm biome format --write src/styles/fonts.css`. Проверить: каждый `*-cyrillic.woff2` ≥ 5 КБ.
 
-- [ ] **Step 5: e2e-тест кириллицы**
+- [x] **Step 5: e2e-тест кириллицы**
 
 ```ts
 // tests/e2e/typography.spec.ts
@@ -180,7 +180,7 @@ test('heading and body fonts carry real Cyrillic glyphs', async ({ page }) => {
 });
 ```
 
-- [ ] **Step 6:** `pnpm verify` зелёный (бюджет первого экрана ≤ 120 КБ). Commit: `fix(fonts): download the real Cyrillic subsets and add Manrope 700`.
+- [x] **Step 6:** `pnpm verify` зелёный (бюджет первого экрана ≤ 120 КБ). Commit: `fix(fonts): download the real Cyrillic subsets and add Manrope 700`.
 
 ---
 
