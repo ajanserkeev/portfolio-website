@@ -134,3 +134,27 @@ test('the hero lead keeps the space between its sentences', async ({ page }) => 
   await page.goto('/?tier=static');
   await expect(page.locator('.hero__lead')).not.toContainText(/\.\S/);
 });
+
+test('on desktop the text column starts right of the tower', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/?tier=static#agents');
+  const box = await page.locator('#agents').boundingBox();
+  expect(box?.x ?? 0).toBeGreaterThanOrEqual(1440 * 0.59);
+  const panel = await page.locator('[data-elevator]').boundingBox();
+  expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(panel?.x ?? 0);
+});
+
+for (const tier of ['static', 'lite']) {
+  test(`a deep link lands on the floor text after the page settles (${tier})`, async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(tier === 'lite' && browserName !== 'chromium', 'WebGL runs on SwiftShader');
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`/?tier=${tier}#crm`);
+    await page.waitForTimeout(1500);
+    const top = await page.locator('#crm').evaluate((el) => el.getBoundingClientRect().top);
+    expect(top).toBeGreaterThan(100);
+    expect(top).toBeLessThan(260);
+  });
+}

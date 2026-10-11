@@ -50,7 +50,9 @@ const ticks = LEVEL_IDS.map((_, i) => {
 <script>
   import { initElevatorPanel } from '../ui/elevator-panel';
   import { initFloorKeeper } from '../ui/floor-keeper';
+  import { settleHashAnchor } from '../ui/hash-anchor';
 
   initElevatorPanel(document);
   initFloorKeeper(document);
+  settleHashAnchor(document);
 </script>

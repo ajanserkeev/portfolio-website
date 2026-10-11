@@ -83,13 +83,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   sun.position.set(-6, 10, 8);
   scene.add(sun);
 
-  if (window.location.hash) {
-    const target = document.getElementById(window.location.hash.slice(1));
-    if (target) {
-      target.scrollIntoView({ behavior: 'instant', block: 'start' });
-    }
-  }
-
+  // Deep links are aligned by src/ui/hash-anchor.ts once the layout settles.
   const rig = new CameraRig(tower, { width: stage.clientWidth, height: stage.clientHeight });
   if (options.shot !== undefined) {
     rig.setCentered(true);
