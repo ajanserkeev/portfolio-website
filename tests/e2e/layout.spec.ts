@@ -103,3 +103,34 @@ test('the dock chat button opens the agent chat', async ({ page }) => {
   await page.locator('[data-chat-open]').click();
   await expect(page.getByRole('dialog')).toBeVisible();
 });
+
+for (const { viewport, sceneShare } of [
+  { viewport: { width: 375, height: 667 }, sceneShare: 0.38 },
+  { viewport: { width: 390, height: 844 }, sceneShare: 0.45 },
+]) {
+  test(`the tower shows above the hero card at ${viewport.width}x${viewport.height}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(viewport);
+    await page.goto('/?tier=static');
+    const card = await page.locator('.hero .level__content').boundingBox();
+    expect(card?.y ?? 0).toBeGreaterThanOrEqual(viewport.height * sceneShare);
+    // The primary CTA is on the first screen and not under the bottom dock.
+    const cta = await page.locator('.hero .button--primary').boundingBox();
+    const dock = await page.locator('.dock').boundingBox();
+    expect((cta?.y ?? 9999) + (cta?.height ?? 0)).toBeLessThanOrEqual(dock?.y ?? 0);
+  });
+}
+
+test('the pain picker follows the hero on the second screen', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/?tier=static');
+  const pains = await page.locator('.hero__pains').boundingBox();
+  expect(pains?.y ?? 0).toBeGreaterThanOrEqual(844);
+});
+
+test('the hero lead keeps the space between its sentences', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/?tier=static');
+  await expect(page.locator('.hero__lead')).not.toContainText(/\.\S/);
+});

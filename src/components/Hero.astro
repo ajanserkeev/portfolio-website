@@ -1,34 +1,36 @@
 ---
-import { dict, type Locale } from '../i18n';
 import { ALL_PAINS } from '../engine/relevance';
+import { dict, type Locale } from '../i18n';
 import FloorAction from './FloorAction.astro';
 
 interface Props {
   locale: Locale;
 }
-const t = dict(Astro.props.locale);
+const { locale } = Astro.props;
+const t = dict(locale);
 ---
 <section class="level hero" data-level="roof" data-index="0" aria-labelledby="roof-title">
-  <div class="level__content" id="roof">
-    <p class="level__kicker">{t.hero.kicker}</p>
-    <h1 id="roof-title" class="hero__title">{t.hero.title}</h1>
-    <p class="level__lead">{t.hero.lead}</p>
-    <div class="hero__actions">
-      <a class="button button--primary" href="#agents">{t.hero.primary}</a>
-      <a class="button" href="#basement">{t.hero.secondary}</a>
+  <!-- First screen: the tower on top, the pitch at the bottom (phones), clear of the dock. -->
+  <div class="hero__screen">
+    <div class="level__content" id="roof">
+      <p class="level__kicker">{t.hero.kicker}</p>
+      <h1 id="roof-title" class="hero__title">{t.hero.title}</h1>
+      <p class="level__lead hero__lead">
+        <span class="hero__hook">{t.hero.leadHook} </span>{t.hero.lead}
+      </p>
+      <div class="hero__actions">
+        <a class="button button--primary" href="#agents">{t.hero.primary}</a>
+      </div>
     </div>
-    <FloorAction id="roof" locale={Astro.props.locale} />
+  </div>
 
+  <div class="hero__more">
+    <FloorAction id="roof" locale={locale} />
     <div class="hero__pains" aria-label={t.pains.title}>
       <p class="hero__pains-title">{t.pains.title}</p>
       <div class="hero__pains-list" role="group">
         {ALL_PAINS.map((pain) => (
-          <button
-            type="button"
-            class="pain-option"
-            data-pain-option={pain}
-            aria-pressed="false"
-          >
+          <button type="button" class="pain-option" data-pain-option={pain} aria-pressed="false">
             {t.pains.options[pain]}
           </button>
         ))}

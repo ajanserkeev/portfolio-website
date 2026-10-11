@@ -10,9 +10,9 @@ export const en = {
   hero: {
     kicker: 'Roof · Inbox',
     title: 'There are three of us. As many agents as you need.',
-    lead: 'Your business gets hundreds of messages a day. We build systems that reply, book and sell — while you run the business.',
+    leadHook: 'Your business gets hundreds of messages a day.',
+    lead: 'We build systems that reply, book and sell — while you run the business.',
     primary: 'Ride down the tower',
-    secondary: 'Discuss a project',
   },
   levels: {
     roof: {

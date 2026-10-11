@@ -127,7 +127,7 @@ test('on a phone the lift panel is a slim rail with the current floor name', asy
 
 Первый экран телефона: сверху ~55 % — сцена (камера в портрете уже ставит этаж на 33 % высоты), снизу — карточка героя: кикер, заголовок, одна строка, CTA «Спуститься в башню». Выбор боли и кнопка «Включить агента» — ниже, на втором экране. Карточки этажей — «шторки»: скругление сверху 1,5 rem, ручка-полоска, фон без прозрачности под текстом.
 
-- [ ] **Step 1: Падающие тесты**
+- [x] **Step 1: Падающие тесты**
 
 ```ts
 for (const viewport of [{ width: 360, height: 640 }, { width: 390, height: 844 }]) {
@@ -142,9 +142,9 @@ for (const viewport of [{ width: 360, height: 640 }, { width: 390, height: 844 }
 }
 ```
 
-- [ ] **Step 2:** → FAIL (карточка сейчас начинается под верхней панелью).
-- [ ] **Step 3:** CSS: `.hero .level__content { margin-top: calc(100svh - <высота карточки>) }` через `min-height: 100svh` у `.hero` + `display: flex; flex-direction: column; justify-content: flex-end` и вынос `.hero__pains` в отдельный блок после первого экрана; размер заголовка героя на телефоне `clamp(1.625rem, 7.4vw, 2.25rem)`; лид — одна-две строки (`max-width: 32ch`); шторки этажей.
-- [ ] **Step 4:** PASS (+ старые тесты раскладки, safe-area, rotation), `pnpm verify`. Commit: `feat(ui): show the tower above the hero card on phones`.
+- [x] **Step 2:** → FAIL (карточка сейчас начинается под верхней панелью).
+- [x] **Step 3:** CSS: `.hero .level__content { margin-top: calc(100svh - <высота карточки>) }` через `min-height: 100svh` у `.hero` + `display: flex; flex-direction: column; justify-content: flex-end` и вынос `.hero__pains` в отдельный блок после первого экрана; размер заголовка героя на телефоне `clamp(1.625rem, 7.4vw, 2.25rem)`; лид — одна-две строки (`max-width: 32ch`); шторки этажей.
+- [x] **Step 4:** PASS (+ старые тесты раскладки, safe-area, rotation), `pnpm verify`. Commit: `feat(ui): show the tower above the hero card on phones`.
 
 ---
 
