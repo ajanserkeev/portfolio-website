@@ -22,8 +22,8 @@ test.describe('Chat Agent E2E', () => {
 
     await page.goto('/?tier=static');
 
-    // Click floating chat trigger
-    const openBtn = page.locator('[data-testid="chat-open-btn"]');
+    // Open the chat from the bottom dock
+    const openBtn = page.locator('[data-chat-open]');
     await expect(openBtn).toBeVisible();
     await openBtn.click();
 

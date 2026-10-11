@@ -52,6 +52,7 @@ export const ru = {
   },
   panel: { label: 'Этажи башни' },
   cta: { discuss: 'Обсудить проект' },
+  chat: { open: 'Открыть чат с ИИ-агентом', label: 'ИИ-агент' },
   mode: { toStatic: 'Режим без 3D', toLive: 'Включить 3D' },
   lang: { switchTo: 'EN', href: '/en/', hreflang: 'en' },
   pains: {

@@ -85,3 +85,21 @@ test('case card badges stay inside the card on a 360 px phone', async ({ page })
     expect((badge?.x ?? 0) + (badge?.width ?? 0)).toBeLessThanOrEqual(box.x + box.width + 0.5);
   }
 });
+
+for (const viewport of [
+  { width: 360, height: 740 },
+  { width: 1440, height: 900 },
+]) {
+  test(`dock buttons do not overlap at ${viewport.width}px`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await page.goto('/?tier=static');
+    await expect(page.locator('[data-chat-open]')).toBeVisible();
+    expect(await overlap(page.locator('.dock .cta'), page.locator('[data-chat-open]'))).toBe(false);
+  });
+}
+
+test('the dock chat button opens the agent chat', async ({ page }) => {
+  await page.goto('/?tier=static');
+  await page.locator('[data-chat-open]').click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+});

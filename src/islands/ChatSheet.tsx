@@ -44,12 +44,16 @@ export default function ChatSheet({ locale = 'ru' }: Props) {
     }
   }, [messages, isOpen]);
 
-  // Listen for agent trigger from 3D scene or hotspots
+  // Opened from the bottom dock or the giant phone on the agents floor.
   useEffect(() => {
-    const unsub = bus.on('agent:enabled', () => {
-      setIsOpen(true);
+    const offOpen = bus.on('chat:open', () => setIsOpen(true));
+    const offHotspot = bus.on('hotspot:activated', (e) => {
+      if (e.level === 'agents' && e.action === 'open-chat') setIsOpen(true);
     });
-    return unsub;
+    return () => {
+      offOpen();
+      offHotspot();
+    };
   }, []);
 
   const handleSend = async (textToSend?: string) => {
@@ -163,25 +167,13 @@ export default function ChatSheet({ locale = 'ru' }: Props) {
 
   return (
     <>
-      {/* Floating launcher button */}
-      <button
-        type="button"
-        onClick={() => setIsOpen(true)}
-        class={`fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-3 rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold shadow-2xl shadow-emerald-500/30 transition-transform duration-200 hover:scale-105 ${
-          isOpen ? 'hidden' : 'flex'
-        }`}
-        data-testid="chat-open-btn"
-        aria-label={isRu ? 'Открыть чат с ассистентом' : 'Open AI Assistant'}
-      >
-        <span class="text-lg">🤖</span>
-        <span class="text-xs tracking-wide">{isRu ? 'ИИ-ассистент' : 'AI Assistant'}</span>
-      </button>
-
       {/* Drawer / Sheet */}
       {isOpen && (
         <div
           class="fixed inset-y-0 right-0 z-50 w-full sm:w-96 bg-neutral-950/95 border-l border-neutral-800 backdrop-blur-xl flex flex-col shadow-2xl text-neutral-100"
           data-testid="chat-sheet"
+          role="dialog"
+          aria-label={isRu ? 'Чат с ИИ-агентом' : 'AI agent chat'}
         >
           {/* Header */}
           <div class="p-4 border-b border-neutral-800 flex items-center justify-between bg-neutral-900/60">

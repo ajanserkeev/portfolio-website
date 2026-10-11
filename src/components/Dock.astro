@@ -1,0 +1,29 @@
+---
+import { dict, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const t = dict(Astro.props.locale);
+---
+<div class="dock">
+  <a class="cta" href="#basement">{t.cta.discuss}</a>
+  <button type="button" class="dock__chat" data-chat-open aria-label={t.chat.open}>
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+      <path
+        d="M4 5h16v11H9l-5 4z"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linejoin="round"></path>
+    </svg>
+    <span class="dock__chat-label">{t.chat.label}</span>
+  </button>
+</div>
+<script>
+  import { bus } from '../engine/events';
+
+  document
+    .querySelector('[data-chat-open]')
+    ?.addEventListener('click', () => bus.emit({ type: 'chat:open' }));
+</script>

@@ -54,6 +54,7 @@ export const en = {
   },
   panel: { label: 'Tower floors' },
   cta: { discuss: 'Discuss a project' },
+  chat: { open: 'Open the AI agent chat', label: 'AI agent' },
   mode: { toStatic: 'No-3D mode', toLive: 'Turn on 3D' },
   lang: { switchTo: 'RU', href: '/', hreflang: 'ru' },
   pains: {

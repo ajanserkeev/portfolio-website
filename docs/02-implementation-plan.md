@@ -164,6 +164,7 @@ export type TowerEvent =
   | { type: 'hotspot:activated'; level: LevelId; action: string }
   | { type: 'agent:enabled' }
   | { type: 'deal:run' }
+  | { type: 'chat:open' }
   | { type: 'chat:user-message' }
   | { type: 'chat:agent-reply' }
   | { type: 'chat:tool'; tool: 'get_free_slots' | 'book_call' | 'create_lead' | 'show_case' }

@@ -279,7 +279,7 @@ test('case card badges stay inside the card on a 360 px phone', async ({ page })
 - Produces: событие шины `{ type: 'chat:open' }`; i18n `chat.open`, `chat.label`.
 - ChatSheet открывается на `chat:open` и на `hotspot:activated` с `level: 'agents', action: 'open-chat'`. Рычаг крыши (`agent:enabled`) чат **больше не открывает**: он закрывал собой анимацию «до/после».
 
-- [ ] **Step 1: Падающие тесты**
+- [x] **Step 1: Падающие тесты**
 
 ```ts
 // tests/e2e/layout.spec.ts (добавить)
@@ -298,9 +298,9 @@ test('the dock chat button opens the agent chat', async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2:** → FAIL (нет `.dock`, `[data-chat-open]`).
+- [x] **Step 2:** → FAIL (нет `.dock`, `[data-chat-open]`).
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 ```astro
 ---
@@ -349,7 +349,7 @@ useEffect(() => {
 
 У панели чата — `role="dialog"` и `aria-label`, если их ещё нет. В `events.ts` и разделе 3.4 мастер-плана добавить `| { type: 'chat:open' }`. Тесты `tests/e2e/chat.spec.ts`, которые открывали чат по старой кнопке, перевести на `[data-chat-open]`.
 
-- [ ] **Step 4:** тесты PASS, `pnpm verify` зелёный. Commit: `fix(ui): merge the CTA and the chat launcher into one bottom dock`.
+- [x] **Step 4:** тесты PASS, `pnpm verify` зелёный. Commit: `fix(ui): merge the CTA and the chat launcher into one bottom dock`.
 
 ---
 
