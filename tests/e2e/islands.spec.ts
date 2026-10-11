@@ -1,11 +1,17 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Locator, test } from '@playwright/test';
+
+/** Astro drops the `ssr` attribute once an island has hydrated; typing earlier is lost. */
+async function hydrated(inner: Locator): Promise<void> {
+  await inner.scrollIntoViewIfNeeded();
+  await expect(inner.locator('xpath=ancestor::astro-island[1]')).not.toHaveAttribute('ssr', /.*/);
+}
 
 test.describe('Preact Islands E2E', () => {
   test('Calculator interacts and recalculates estimated range', async ({ page, browserName }) => {
     await page.goto(browserName === 'webkit' ? '/?tier=static' : '/');
 
     const calc = page.locator('#project-calculator');
-    await calc.scrollIntoViewIfNeeded();
+    await hydrated(calc);
     await expect(calc).toBeVisible();
 
     const priceText = page.locator('[data-testid="estimate-price"]');
@@ -37,7 +43,7 @@ test.describe('Preact Islands E2E', () => {
     await page.goto(browserName === 'webkit' ? '/?tier=static' : '/');
 
     const form = page.locator('[data-testid="lead-form"]');
-    await form.scrollIntoViewIfNeeded();
+    await hydrated(form);
     await expect(form).toBeVisible();
 
     await page.locator('[data-testid="lead-input-name"]').fill('Aman');
@@ -95,7 +101,7 @@ test.describe('Preact Islands E2E', () => {
     await page.goto(browserName === 'webkit' ? '/?tier=static' : '/');
 
     const widget = page.locator('#booking-widget');
-    await widget.scrollIntoViewIfNeeded();
+    await hydrated(widget);
     await expect(widget).toBeVisible();
 
     // Select slot chip
@@ -117,5 +123,18 @@ test.describe('Preact Islands E2E', () => {
     await expect(page.locator('[data-testid="booking-success"]')).toContainText(
       /Созвон забронирован/i,
     );
+  });
+
+  test('BookingWidget falls back to other channels when the slots API is down', async ({
+    page,
+  }) => {
+    await page.route('**/api/slots**', (route) => route.fulfill({ status: 503, body: '' }));
+    await page.goto('/?tier=static#booking');
+    // client:visible: the island hydrates only once it is on screen.
+    await page.locator('#booking-widget').scrollIntoViewIfNeeded();
+    const fallback = page.getByTestId('booking-unavailable');
+    await expect(fallback).toBeVisible();
+    await expect(fallback.getByRole('link')).toHaveCount(2);
+    await expect(fallback.getByRole('link').last()).toHaveAttribute('href', '#basement');
   });
 });
