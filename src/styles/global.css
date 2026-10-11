@@ -653,11 +653,13 @@ html[data-motion="reduced"] .elevator .elevator__needle {
   :root {
     --panel-w: 4.5rem;
     /* Where the text column starts; the tower is framed to the left of it (scene/tower.json). */
-    --column-left: 58vw;
+    --column-left: 60vw;
+    /* Clears the brass lift panel on the right. */
+    --column-right: calc(var(--panel-w) + 2.75rem);
   }
 
   .level__content {
-    margin: 32svh 6vw 0 var(--column-left);
+    margin: 32svh var(--column-right) 0 var(--column-left);
     max-width: 34rem;
     padding: 1.5rem 1.5rem 1.75rem;
     border-radius: 1.25rem;
@@ -680,7 +682,7 @@ html[data-motion="reduced"] .elevator .elevator__needle {
   }
 
   .hero__more {
-    margin: 1rem 6vw 8rem var(--column-left);
+    margin: 1rem var(--column-right) 8rem var(--column-left);
     max-width: 34rem;
     box-sizing: border-box;
   }

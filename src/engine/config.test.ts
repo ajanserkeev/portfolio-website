@@ -63,4 +63,9 @@ describe('level helpers', () => {
     expect(levelBaseY(0)).toBe(0);
     expect(levelBaseY(2)).toBe(-2 * tower.level.height);
   });
+
+  it('keeps the tower clear of the desktop text column, which starts at 60vw', () => {
+    const { centerX, fitWidth } = tower.camera.landscape;
+    expect(centerX + fitWidth / 2).toBeLessThanOrEqual(0.56);
+  });
 });

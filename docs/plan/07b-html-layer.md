@@ -156,7 +156,7 @@ for (const viewport of [{ width: 360, height: 640 }, { width: 390, height: 844 }
 
 Сейчас башня занимает 0,065–0,615 ширины, а колонка текста начинается с 0,58. Новые правила: `fitWidth 0.5`, `centerX 0.3` (башня 0,05–0,55), колонка с `60vw`, ширина до `34rem`, справа место под панель лифта.
 
-- [ ] **Step 1: Падающие тесты**
+- [x] **Step 1: Падающие тесты**
 
 ```ts
 // src/engine/config.test.ts (добавить)
@@ -178,9 +178,9 @@ test('on desktop the text column starts right of the tower', async ({ page }) =>
 });
 ```
 
-- [ ] **Step 2:** → FAIL.
-- [ ] **Step 3:** правки `tower.json` и CSS; `pnpm fixtures:camera`; `pnpm art:test:py`.
-- [ ] **Step 4:** PASS, `pnpm verify`. Commit: `feat(ui): frame the tower left of the desktop text column`.
+- [x] **Step 2:** → FAIL.
+- [x] **Step 3:** правки `tower.json` и CSS; `pnpm fixtures:camera`; `pnpm art:test:py`.
+- [x] **Step 4:** PASS, `pnpm verify`. Commit: `feat(ui): frame the tower left of the desktop text column`.
 
 ---
 

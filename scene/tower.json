@@ -16,7 +16,7 @@
     "targetHeight": 1.5,
     "travelBulge": 0.12,
     "portrait": { "fitWidth": 0.94, "centerX": 0.5, "centerY": 0.33 },
-    "landscape": { "fitWidth": 0.55, "centerX": 0.34, "centerY": 0.5, "minVisibleHeight": 5.4 }
+    "landscape": { "fitWidth": 0.5, "centerX": 0.3, "centerY": 0.5, "minVisibleHeight": 5.4 }
   },
   "tube": { "x": 5.3, "z": 1.6, "radius": 0.2 }
 }
