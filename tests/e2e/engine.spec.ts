@@ -54,10 +54,12 @@ test('the mode toggle switches to static mode and back', async ({ page }) => {
   await page.goto('/?tier=lite');
   const toggle = page.locator('[data-mode-toggle]');
   await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  await page.locator('[data-menu-button]').click();
   await toggle.click();
   await expect(page.locator('html')).toHaveAttribute('data-tier', 'static');
   await expect(page).toHaveURL(/tier=static/);
   expect(await page.evaluate(() => localStorage.getItem('tower:mode'))).toBe('static');
+  await page.locator('[data-menu-button]').click();
   await page.locator('[data-mode-toggle]').click();
   // SwiftShader counts as "would be static", so turning 3D back on forces the lite tier.
   await expect(page.locator('html')).toHaveAttribute('data-tier', 'lite');

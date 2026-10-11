@@ -62,6 +62,8 @@ export const ru = {
     'test-capsule': 'Отправить капсулу на пульт',
   },
   mode: { toStatic: 'Режим без 3D', toLive: 'Включить 3D' },
+  menu: { label: 'Меню' },
+  sound: { on: 'Включить звук', off: 'Выключить звук' },
   lang: { switchTo: 'EN', href: '/en/', hreflang: 'en' },
   pains: {
     title: 'Что у вас сейчас горит?',

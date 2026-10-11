@@ -4,29 +4,14 @@ import { dict, type Locale } from '../i18n';
 interface Props {
   locale: Locale;
 }
-const t = dict(Astro.props.locale);
+const { locale } = Astro.props;
+const t = dict(locale);
+const home = locale === 'ru' ? '/' : '/en/';
+const privacy = locale === 'ru' ? '/privacy/' : '/en/privacy/';
 ---
 <header class="topbar">
-  <span class="topbar__brand">{t.brand}</span>
+  <a class="topbar__brand" href={home}>{t.brand}</a>
   <div class="topbar__actions">
-    <button
-      type="button"
-      class="chip"
-      data-mode-toggle
-      data-label-static={t.mode.toStatic}
-      data-label-live={t.mode.toLive}
-    >
-      {t.mode.toStatic}
-    </button>
-    <button
-      type="button"
-      class="chip"
-      data-sound-toggle
-      aria-label="Включить звук"
-      title="Звук"
-    >
-      <span data-sound-icon>🔇</span>
-    </button>
     <a
       class="chip"
       href={t.lang.href}
@@ -36,41 +21,73 @@ const t = dict(Astro.props.locale);
     >
       {t.lang.switchTo}
     </a>
+    <button
+      type="button"
+      class="chip chip--icon"
+      data-sound-toggle
+      aria-pressed="false"
+      aria-label={t.sound.on}
+      data-label-on={t.sound.on}
+      data-label-off={t.sound.off}
+    >
+      <svg class="sound-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"></path>
+        <path class="sound-icon__waves" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+        <path class="sound-icon__mute" d="M16 9.5l5 5m0-5l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+      </svg>
+    </button>
+    <div class="menu">
+      <button
+        type="button"
+        class="chip chip--icon"
+        data-menu-button
+        aria-expanded="false"
+        aria-controls="topbar-menu"
+        aria-label={t.menu.label}
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path d="M5 8h14M5 12h14M5 16h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+        </svg>
+      </button>
+      <div class="menu__panel" id="topbar-menu" data-menu hidden>
+        <button
+          type="button"
+          class="menu__item"
+          data-mode-toggle
+          data-label-static={t.mode.toStatic}
+          data-label-live={t.mode.toLive}
+        >
+          {t.mode.toStatic}
+        </button>
+        <a class="menu__item" href={privacy}>{t.legal.privacy}</a>
+      </div>
+    </div>
   </div>
 </header>
 
 <script>
+  import { initMenu } from '../ui/menu';
   import { sound } from '../ui/sound';
 
+  initMenu(document);
+
   const toggle = document.querySelector<HTMLAnchorElement>('[data-lang-toggle]');
-  if (toggle) {
-    toggle.addEventListener('click', (event) => {
-      const hash = window.location.hash;
-      if (hash) {
-        event.preventDefault();
-        const base = toggle.getAttribute('href') ?? '/';
-        window.location.href = `${base}${hash}`;
-      }
-    });
-  }
+  toggle?.addEventListener('click', (event) => {
+    const hash = window.location.hash;
+    if (!hash) return;
+    event.preventDefault();
+    window.location.href = `${toggle.getAttribute('href') ?? '/'}${hash}`;
+  });
 
   const soundBtn = document.querySelector<HTMLButtonElement>('[data-sound-toggle]');
-  const soundIcon = document.querySelector<HTMLSpanElement>('[data-sound-icon]');
-
-  function updateSoundIcon(enabled: boolean) {
-    if (soundIcon) {
-      soundIcon.textContent = enabled ? '🔊' : '🔇';
-    }
-    if (soundBtn) {
-      soundBtn.setAttribute('aria-label', enabled ? 'Выключить звук' : 'Включить звук');
-    }
-  }
-
+  const renderSound = (enabled: boolean) => {
+    if (!soundBtn) return;
+    soundBtn.setAttribute('aria-pressed', String(enabled));
+    const label = enabled ? soundBtn.dataset.labelOff : soundBtn.dataset.labelOn;
+    if (label) soundBtn.setAttribute('aria-label', label);
+  };
   if (soundBtn) {
-    updateSoundIcon(sound.isEnabled());
-    soundBtn.addEventListener('click', () => {
-      const enabled = sound.toggle();
-      updateSoundIcon(enabled);
-    });
+    renderSound(sound.isEnabled());
+    soundBtn.addEventListener('click', () => renderSound(sound.toggle()));
   }
 </script>

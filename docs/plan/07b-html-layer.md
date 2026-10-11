@@ -40,11 +40,11 @@
 
 **Interfaces:**
 - Produces: `initMenu(root: ParentNode): () => void` — кнопка `[data-menu-button]` (aria-expanded, aria-controls) показывает/скрывает `[data-menu]` (`hidden`), Esc и клик вне закрывают, фокус возвращается на кнопку.
-- i18n: `menu.open`, `menu.close`, `sound.on`, `sound.off`.
+- i18n: `menu.label`, `sound.on`, `sound.off`.
 
 Что меняется: «Режим без 3D» уходит в меню (кнопка `[data-mode-toggle]` остаётся той же, её логика в `boot.ts` не меняется). Звук — иконка SVG вместо эмодзи, подписи из i18n. Логотип — текст `brand` шрифтом Unbounded.
 
-- [ ] **Step 1: Падающие тесты** — `menu.test.ts` на фейковом DOM (по образцу `floor-actions-dom.test.ts`): клик по кнопке снимает `hidden` и ставит `aria-expanded="true"`; Esc закрывает и вызывает `focus()` кнопки; клик вне меню закрывает. `topbar.spec.ts`:
+- [x] **Step 1: Падающие тесты** — `menu.test.ts` на фейковом DOM (по образцу `floor-actions-dom.test.ts`): клик по кнопке снимает `hidden` и ставит `aria-expanded="true"`; Esc закрывает и вызывает `focus()` кнопки; клик вне меню закрывает. `topbar.spec.ts`:
 
 ```ts
 test('the 3D switch lives in the menu and works from the keyboard', async ({ page }) => {
@@ -64,9 +64,9 @@ test('the sound button is labelled in the page language', async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2:** → FAIL.
-- [ ] **Step 3:** реализовать `menu.ts`, разметку и стили; в `engine.spec.ts` перед кликом по `[data-mode-toggle]` открыть меню.
-- [ ] **Step 4:** PASS, `pnpm verify`. Commit: `feat(ui): move the 3D switch into a top bar menu and label the sound toggle`.
+- [x] **Step 2:** → FAIL.
+- [x] **Step 3:** реализовать `menu.ts`, разметку и стили; в `engine.spec.ts` перед кликом по `[data-mode-toggle]` открыть меню.
+- [x] **Step 4:** PASS, `pnpm verify`. Commit: `feat(ui): move the 3D switch into a top bar menu and label the sound toggle`.
 
 ---
 

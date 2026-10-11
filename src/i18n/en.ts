@@ -63,6 +63,8 @@ export const en = {
     'next-stage': 'Next stage: mockup → code → live',
     'test-capsule': 'Send a capsule to the desk',
   },
+  menu: { label: 'Menu' },
+  sound: { on: 'Turn sound on', off: 'Turn sound off' },
   mode: { toStatic: 'No-3D mode', toLive: 'Turn on 3D' },
   lang: { switchTo: 'RU', href: '/', hreflang: 'ru' },
   pains: {
