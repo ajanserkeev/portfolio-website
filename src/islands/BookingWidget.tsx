@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 import type { AvailableSlot } from '../../api/src/booking/slots';
 import { bus } from '../engine/events';
+import { createTelegramDeepLink } from '../lib/deeplinks';
 
 interface Props {
   locale?: 'ru' | 'en';
@@ -162,10 +163,31 @@ export default function BookingWidget({ locale = 'ru' }: Props) {
           {isRu ? 'Загрузка свободных слотов...' : 'Loading available slots...'}
         </div>
       ) : slotsError ? (
-        <div class="p-4 rounded-xl bg-red-950/40 border border-red-800 text-red-300 text-xs mb-4">
-          {isRu
-            ? 'Не удалось загрузить слоты. Пожалуйста, воспользуйтесь формой заявки.'
-            : 'Unable to load slots. Please use the request form.'}
+        <div
+          class="p-4 rounded-xl bg-neutral-800/40 text-neutral-300 text-xs mb-4 space-y-3"
+          data-testid="booking-unavailable"
+        >
+          <p class="m-0">
+            {isRu
+              ? 'Календарь сейчас недоступен. Напишите нам — подберём время вручную.'
+              : 'The calendar is unavailable right now. Message us and we will find a time.'}
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <a
+              class="px-3 py-2 rounded-lg bg-emerald-500 text-black font-semibold no-underline"
+              href={createTelegramDeepLink('tower_studio_bot', 'booking')}
+              target="_blank"
+              rel="noopener"
+            >
+              {isRu ? 'Написать в Telegram' : 'Message on Telegram'}
+            </a>
+            <a
+              class="px-3 py-2 rounded-lg border border-neutral-600 text-neutral-100 no-underline"
+              href="#basement"
+            >
+              {isRu ? 'Оставить заявку' : 'Leave a request'}
+            </a>
+          </div>
         </div>
       ) : groupedDates.length === 0 ? (
         <div class="p-4 rounded-xl bg-neutral-800/40 text-neutral-400 text-xs text-center mb-4">

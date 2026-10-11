@@ -75,3 +75,12 @@ test('robots.txt and sitemap.xml are served and valid', async ({ request }) => {
   expect(sitemapText).toContain('<loc>https://tower.dev/en/cases/med-agent/</loc>');
   expect(sitemapText).toContain('<loc>https://tower.dev/privacy/</loc>');
 });
+
+test('the favicon referenced by the page is served', async ({ page, request }) => {
+  await page.goto('/?tier=static');
+  const href = await page.locator('link[rel="icon"]').getAttribute('href');
+  expect(href).toBe('/favicon.svg');
+  const res = await request.get('/favicon.svg');
+  expect(res.status()).toBe(200);
+  expect(res.headers()['content-type']).toContain('image/svg+xml');
+});

@@ -633,7 +633,7 @@ test('an action wakes the render loop after the scene went idle', async ({ page,
 - Modify: `src/layouts/Base.astro` (`<link rel="icon" href="/favicon.svg" type="image/svg+xml">`), `src/islands/BookingWidget.tsx`
 - Test: `tests/e2e/islands.spec.ts`
 
-- [ ] **Step 1: Падающий тест**
+- [x] **Step 1: Падающий тест**
 
 ```ts
 test('booking falls back to other channels when the slots API is down', async ({ page }) => {
@@ -644,9 +644,9 @@ test('booking falls back to other channels when the slots API is down', async ({
 });
 ```
 
-- [ ] **Step 2:** → FAIL.
-- [ ] **Step 3:** В `BookingWidget` при ошибке загрузки слотов показывать блок `data-testid="booking-unavailable"`: короткий текст и две ссылки — Telegram (`createTelegramDeepLink` из `src/lib/deeplinks.ts`) и форма заявки (`#basement`). Тексты — в том же месте, где остальные тексты виджета (перенос в i18n — этап 1). `favicon.svg` — латунная башня 32×32 на прозрачном фоне.
-- [ ] **Step 4:** PASS, `pnpm verify`. Commit: `fix(ui): add a favicon and a booking fallback when the API is down`.
+- [x] **Step 2:** → FAIL.
+- [x] **Step 3:** В `BookingWidget` при ошибке загрузки слотов показывать блок `data-testid="booking-unavailable"`: короткий текст и две ссылки — Telegram (`createTelegramDeepLink` из `src/lib/deeplinks.ts`) и форма заявки (`#basement`). Тексты — в том же месте, где остальные тексты виджета (перенос в i18n — этап 1). `favicon.svg` — латунная башня 32×32 на прозрачном фоне.
+- [x] **Step 4:** PASS, `pnpm verify`. Commit: `fix(ui): add a favicon and a booking fallback when the API is down`.
 
 ---
 

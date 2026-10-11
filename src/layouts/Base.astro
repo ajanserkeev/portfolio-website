@@ -20,6 +20,7 @@ const { lang, title, description, ogType, image } = Astro.props;
     <title>{title}</title>
     <meta name="description" content={description} />
     <Seo lang={lang} title={title} description={description} ogType={ogType} image={image} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link
       rel="preload"
       href="/fonts/unbounded-700-latin.woff2"
