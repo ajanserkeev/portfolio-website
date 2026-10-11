@@ -50,7 +50,13 @@ const floorCases = allCases
 
     {id === 'booking' && (
       <div class="level__widget">
-        <BookingWidget client:visible locale={locale} />
+        <BookingWidget
+          client:visible
+          copy={d.booking}
+          form={d.lead}
+          locale={locale}
+          privacyHref={locale === 'ru' ? '/privacy/' : '/en/privacy/'}
+        />
       </div>
     )}
 

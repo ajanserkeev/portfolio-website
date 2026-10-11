@@ -128,7 +128,7 @@ export default function LeadForm({ copy, locale, privacyHref }: Props) {
 
       <div class="ui-section">
         <span class="ui-label">{copy.channel}</span>
-        <div class="ui-segmented">
+        <div class="ui-segmented ui-segmented--pairs">
           {CHANNELS.map((ch) => (
             <button
               type="button"

@@ -236,9 +236,9 @@ test('the calculator uses the light theme and English copy on /en/', async ({ pa
 
 **Files:** Modify: `src/islands/BookingWidget.tsx` → разделить на `BookingWidget.tsx` (загрузка, состояние) и `src/islands/booking/SlotPicker.tsx`, `src/islands/booking/BookingForm.tsx` (каждый ≤ 250 строк); `src/components/LevelSection.astro`, `src/i18n/*`. Test: `tests/e2e/islands.spec.ts`.
 
-- [ ] **Step 1:** тест «светлая тема + нет кириллицы на `/en/`» для `#booking-widget` (со слотами из `page.route`) → FAIL.
-- [ ] **Step 2:** кит, тексты в `booking.*` (включая запасной блок `booking-unavailable` из этапа 0).
-- [ ] **Step 3:** PASS (все тесты брони, включая отказ API), `pnpm verify`. Commit: `feat(ui): restyle booking, split it into slot picker and form`.
+- [x] **Step 1:** тест «светлая тема + нет кириллицы на `/en/`» для `#booking-widget` (со слотами из `page.route`) → FAIL.
+- [x] **Step 2:** кит, тексты в `booking.*` (включая запасной блок `booking-unavailable` из этапа 0).
+- [x] **Step 3:** PASS (все тесты брони, включая отказ API), `pnpm verify`. Commit: `feat(ui): restyle booking, split it into slot picker and form`.
 
 ---
 

@@ -18,7 +18,8 @@
 
 :root {
   color-scheme: light;
-  --panel-w: 3.5rem;
+  /* Phone: room for the slim lift rail on the right. */
+  --panel-w: 3rem;
 }
 
 html {

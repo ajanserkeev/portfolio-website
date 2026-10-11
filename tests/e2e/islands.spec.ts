@@ -227,3 +227,79 @@ test.describe('LeadForm', () => {
     expect(body.pain).toBe('need-site');
   });
 });
+
+test.describe('BookingWidget', () => {
+  const slots = [
+    {
+      start: '2026-10-15T06:00:00.000Z',
+      end: '2026-10-15T06:30:00.000Z',
+      date: '2026-10-15',
+      time: '11:00',
+    },
+    {
+      start: '2026-10-16T06:00:00.000Z',
+      end: '2026-10-16T06:30:00.000Z',
+      date: '2026-10-16',
+      time: '11:00',
+    },
+  ];
+
+  test.beforeEach(async ({ page }) => {
+    await page.route('**/api/slots**', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ ok: true, slots }),
+      }),
+    );
+  });
+
+  test('sends consent and shows readable dates in the Almaty time zone', async ({ page }) => {
+    let body: Record<string, unknown> = {};
+    await page.route('**/api/book', async (route) => {
+      body = route.request().postDataJSON();
+      await route.fulfill({
+        status: 201,
+        contentType: 'application/json',
+        body: '{"ok":true,"id":"b"}',
+      });
+    });
+    await page.goto('/?tier=static');
+    const widget = page.locator('#booking-widget');
+    await hydrated(widget);
+    await expect(page.getByTestId('slot-date-2026-10-15')).toHaveText(/15 окт/);
+    await expect(widget).toContainText(/Алмат/);
+    await page.getByTestId('slot-time-11:00').click();
+    await page.getByTestId('booking-input-name').fill('Аман');
+    await page.getByTestId('booking-input-contact').fill('@aman');
+    await page.getByTestId('booking-consent').check();
+    await page.getByTestId('booking-submit-btn').click();
+    await expect(page.getByTestId('booking-success')).toContainText(/15 окт/);
+    await expect(page.getByTestId('booking-success')).not.toContainText(/UTC\)/);
+    expect(body.consent).toBe(true);
+    expect(body.slotStart).toBe('2026-10-15T06:00:00.000Z');
+  });
+
+  test('uses the light theme and English copy on /en/', async ({ page }) => {
+    await page.goto('/en/?tier=static');
+    const widget = page.locator('#booking-widget');
+    await hydrated(widget);
+    await expect(page.getByTestId('slot-time-11:00')).toBeVisible();
+    expect(await luminance(widget)).toBeGreaterThan(0.8);
+    expect(await widget.innerText()).not.toMatch(/[А-Яа-яЁё]/);
+  });
+});
+
+test('contact channels fit the narrow phone panel', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 740 });
+  await page.goto('/?tier=static');
+  const form = page.locator('[data-testid="lead-form"]');
+  await hydrated(form);
+  const panel = await form.boundingBox();
+  for (const button of await form.locator('.ui-segmented button').all()) {
+    const box = await button.boundingBox();
+    expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(
+      (panel?.x ?? 0) + (panel?.width ?? 0),
+    );
+  }
+});

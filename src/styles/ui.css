@@ -17,6 +17,13 @@
   container-type: inline-size;
 }
 
+/* On phones the panel sits inside a floor sheet: avoid doubling the padding. */
+@media (max-width: 30rem) {
+  .ui-panel {
+    padding: 1.25rem 1rem;
+  }
+}
+
 .ui-panel__title {
   margin: 0 0 0.375rem;
   font-family: var(--font-heading);
@@ -132,6 +139,14 @@
   font-weight: 700;
   white-space: nowrap;
   cursor: pointer;
+}
+
+/* Four options in a narrow panel: two rows of two instead of clipping the last one. */
+@container (max-width: 26rem) {
+  .ui-segmented--pairs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .ui-segmented > button[aria-pressed="true"] {
@@ -314,4 +329,47 @@
 .ui-textarea:focus-visible {
   outline: 2px solid var(--color-signal);
   outline-offset: 2px;
+}
+
+/* Booking: day tabs scroll sideways on phones, time chips wrap. */
+.booking-days {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: none;
+}
+
+.booking-day {
+  flex: none;
+  min-height: 2.75rem;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.booking-times {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
+  gap: 0.5rem;
+}
+
+.booking-time {
+  justify-content: center;
+  min-height: 2.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.booking-form {
+  padding-top: 1.25rem;
+  border-top: 1px dashed var(--ui-line);
+}
+
+.booking-note__text {
+  margin: 0 0 0.75rem;
+}
+
+.booking-note__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
