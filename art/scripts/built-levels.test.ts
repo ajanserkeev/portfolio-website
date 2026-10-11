@@ -1,6 +1,7 @@
 import { readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { FLOOR_ACTIONS } from '../../src/ui/floor-actions';
 import { checkBudgets, checkLevelDocument } from './level-contract';
 import { createIO } from './optimize';
 
@@ -27,5 +28,19 @@ describe.skipIf(levels.length === 0)('built levels in src/assets/levels', () => 
         }),
       ).toEqual([]);
     });
+
+    const id = file.replace(/\.glb$/, '');
+    if (id in FLOOR_ACTIONS) {
+      const action = FLOOR_ACTIONS[id as keyof typeof FLOOR_ACTIONS];
+      it(`${file} has a hit box for its DOM action "${action}"`, async () => {
+        const doc = await (await createIO()).read(join(DIR, file));
+        const actions = doc
+          .getRoot()
+          .listNodes()
+          .filter((node) => node.getName().startsWith('hit__'))
+          .map((node) => (node.getExtras() as { action?: string }).action);
+        expect(actions).toContain(action);
+      });
+    }
   }
 });

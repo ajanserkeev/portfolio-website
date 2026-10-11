@@ -373,7 +373,7 @@ useEffect(() => {
 | workshop | `next-stage` | да |
 | basement | `test-capsule` | да |
 
-- [ ] **Step 1: Падающие тесты карты действий**
+- [x] **Step 1: Падающие тесты карты действий**
 
 ```ts
 // src/ui/floor-actions.test.ts
@@ -436,9 +436,9 @@ describe('initFloorActions', () => {
 });
 ```
 
-- [ ] **Step 2:** `pnpm vitest run src/ui/floor-actions` → FAIL.
+- [x] **Step 2:** `pnpm vitest run src/ui/floor-actions` → FAIL.
 
-- [ ] **Step 3: Реализация**
+- [x] **Step 3: Реализация**
 
 ```ts
 // src/ui/floor-actions.ts
@@ -561,7 +561,7 @@ const unbindHotspot = bus.on('hotspot:activated', (e) => {
 
 В `art/scripts/built-levels.test.ts` добавить проверку: в GLB каждого этажа есть узел `hit__*` с `extras.action === FLOOR_ACTIONS[id]` — так сайт и фабрика не разъедутся.
 
-- [ ] **Step 4: e2e**
+- [x] **Step 4: e2e**
 
 ```ts
 // tests/e2e/floor-actions.spec.ts
@@ -601,7 +601,7 @@ test('an action wakes the render loop after the scene went idle', async ({ page,
 });
 ```
 
-- [ ] **Step 5:** `pnpm verify` зелёный. Commit: `fix(ui): add DOM twins for every floor's main 3D action`.
+- [x] **Step 5:** `pnpm verify` зелёный. Commit: `fix(ui): add DOM twins for every floor's main 3D action`.
 
 ---
 

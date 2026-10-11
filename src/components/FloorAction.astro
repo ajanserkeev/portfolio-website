@@ -1,0 +1,22 @@
+---
+import type { LevelId } from '../engine/config';
+import { dict, type Locale } from '../i18n';
+import { FLOOR_ACTIONS, NEEDS_3D } from '../ui/floor-actions';
+
+interface Props {
+  id: LevelId;
+  locale: Locale;
+}
+const { id, locale } = Astro.props;
+const action = FLOOR_ACTIONS[id];
+---
+<button
+  type="button"
+  class="action-chip"
+  data-hotspot={action}
+  data-level={id}
+  data-needs-3d={NEEDS_3D.has(action) ? '' : undefined}
+>
+  <span class="action-chip__dot" aria-hidden="true"></span>
+  {dict(locale).actions[action]}
+</button>

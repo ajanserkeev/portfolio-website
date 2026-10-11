@@ -2,9 +2,11 @@
 <script>
   import { boot } from '../engine/boot';
   import { initAnalytics } from '../ui/analytics';
+  import { initFloorActions } from '../ui/floor-actions-dom';
   import { initKeyboardNavigation } from '../ui/keyboard';
 
   initKeyboardNavigation();
+  initFloorActions(document);
   initAnalytics();
   void boot();
 </script>

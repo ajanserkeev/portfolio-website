@@ -262,6 +262,67 @@ pre,
   font-weight: 700;
 }
 
+/* DOM twin of the floor's main 3D interactive (see src/ui/floor-actions.ts). */
+.action-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 2.75rem;
+  margin-top: 1rem;
+  padding: 0 1.125rem 0 0.875rem;
+  border: 1px solid rgb(28 27 34 / 0.18);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #e2c58c, var(--color-brass));
+  color: var(--color-ink);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.45),
+    0 6px 14px -8px rgb(28 27 34 / 0.55);
+}
+
+.action-chip:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3);
+}
+
+.action-chip__dot {
+  position: relative;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: var(--color-signal);
+}
+
+.action-chip__dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--color-signal);
+  animation: action-pulse 1.6s ease-out infinite;
+}
+
+@keyframes action-pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+html[data-motion="reduced"] .action-chip__dot::after {
+  animation: none;
+}
+
+html[data-tier="static"] .action-chip[data-needs-3d] {
+  display: none;
+}
+
 .button {
   display: inline-flex;
   align-items: center;

@@ -13,7 +13,6 @@ export interface HotspotManager {
   registerLevel(levelId: LevelId, hits: readonly Object3D[]): void;
   unregisterLevel(levelId: LevelId): void;
   trigger(levelId: LevelId, action: string): void;
-  bindDom(container: ParentNode): () => void;
   handlePointerDown(event: MouseEvent | PointerEvent): boolean;
   handlePointerMove(event: MouseEvent | PointerEvent): boolean;
   dispose(): void;
@@ -121,26 +120,6 @@ export function createHotspotManager(options: HotspotManagerOptions): HotspotMan
   canvas.addEventListener?.('pointerdown', onPointerDown as EventListener);
   canvas.addEventListener?.('pointermove', onPointerMove as EventListener);
 
-  function bindDom(container: ParentNode): () => void {
-    const handleClick = (event: Event) => {
-      const target = event.target as HTMLElement | null;
-      const button = target?.closest('button[data-hotspot][data-level]');
-      if (!button) return;
-
-      const level = button.getAttribute('data-level') as LevelId | null;
-      const action = button.getAttribute('data-hotspot');
-      if (level && action) {
-        trigger(level, action);
-      }
-    };
-
-    container.addEventListener?.('click', handleClick);
-
-    return () => {
-      container.removeEventListener?.('click', handleClick);
-    };
-  }
-
   function registerLevel(levelId: LevelId, hits: readonly Object3D[]): void {
     levelHits.set(levelId, hits);
   }
@@ -160,7 +139,6 @@ export function createHotspotManager(options: HotspotManagerOptions): HotspotMan
     registerLevel,
     unregisterLevel,
     trigger,
-    bindDom,
     handlePointerDown,
     handlePointerMove,
     dispose,

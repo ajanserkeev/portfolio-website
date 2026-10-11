@@ -21,6 +21,9 @@ import { adjustTierByFps, type MotionPolicy, pixelRatioFor, type Tier } from './
 
 export type LiveTier = Exclude<Tier, 'static'>;
 
+/** Long enough for the longest floor sequence (the CRM deal runs about 4 s). */
+const INTERACTION_MS = 4500;
+
 export interface StartOptions {
   stage: HTMLElement;
   tier: LiveTier;
@@ -62,6 +65,8 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   let live = false;
   let reached = -1;
   let destroyed = false;
+  /** Until this time the floors animate even when ambient motion is off (reduced motion, idle). */
+  let interactionUntilMs = 0;
 
   const renderer = new WebGLRenderer({
     antialias: tier === 'high',
@@ -120,7 +125,6 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
     camera: rig.camera,
     bus,
   });
-  const unbindDomHotspots = hotspots.bindDom(document);
 
   const capsules = createCapsulePool(tower, shared.matcap);
   scene.add(capsules.mesh);
@@ -138,6 +142,15 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
     const channel = painChannelMap[e.pain] ?? 'default';
     capsules.setPersonalCapsule(rig.position, channel);
     capsules.launchCapsule({ channel });
+    loop.invalidate(2);
+  });
+
+  // Any hotspot (3D click or its DOM twin) wakes the loop so the floor's animation plays.
+  const unbindHotspot = bus.on('hotspot:activated', (e) => {
+    ambient.markActivity();
+    interactionUntilMs = performance.now() + INTERACTION_MS;
+    if (e.action === 'sort-demo') capsules.launchCapsule({ channel: 'default', durationSec: 2.0 });
+    loop.setContinuous('interaction', true);
     loop.invalidate(2);
   });
 
@@ -173,9 +186,11 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
     const moving = rig.update(dt);
     levels.update(rig.position, lastGoal, options.shot !== undefined ? 0 : 1);
     ambient.update(timeMs);
-    if (ambient.active) {
+    const interacting = timeMs < interactionUntilMs;
+    if (ambient.active || interacting) {
       for (const index of levels.ready()) levels.asset(index)?.update?.(timeMs / 1000);
     }
+    if (!interacting) loop.setContinuous('interaction', false);
     capsules.update(timeMs / 1000, rig.position);
     renderer.render(scene, rig.camera);
     frames += 1;
@@ -321,7 +336,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
       levels.dispose();
       ambient.dispose();
       for (const item of shared.keep) (item as { dispose?: () => void }).dispose?.();
-      unbindDomHotspots();
+      unbindHotspot();
       hotspots.dispose();
       unbindPain();
       unbindDeal();

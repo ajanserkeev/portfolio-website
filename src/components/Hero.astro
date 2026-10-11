@@ -1,6 +1,7 @@
 ---
 import { dict, type Locale } from '../i18n';
 import { ALL_PAINS } from '../engine/relevance';
+import FloorAction from './FloorAction.astro';
 
 interface Props {
   locale: Locale;
@@ -16,6 +17,7 @@ const t = dict(Astro.props.locale);
       <a class="button button--primary" href="#agents">{t.hero.primary}</a>
       <a class="button" href="#basement">{t.hero.secondary}</a>
     </div>
+    <FloorAction id="roof" locale={Astro.props.locale} />
 
     <div class="hero__pains" aria-label={t.pains.title}>
       <p class="hero__pains-title">{t.pains.title}</p>

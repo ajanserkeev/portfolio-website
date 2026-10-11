@@ -55,6 +55,14 @@ export const en = {
   panel: { label: 'Tower floors' },
   cta: { discuss: 'Discuss a project' },
   chat: { open: 'Open the AI agent chat', label: 'AI agent' },
+  actions: {
+    'toggle-agent': 'Switch the agent on',
+    'open-chat': 'Message the agent',
+    'run-deal': 'Run a deal',
+    'open-booking': 'Pick a call slot',
+    'next-stage': 'Next stage: mockup → code → live',
+    'test-capsule': 'Send a capsule to the desk',
+  },
   mode: { toStatic: 'No-3D mode', toLive: 'Turn on 3D' },
   lang: { switchTo: 'RU', href: '/', hreflang: 'ru' },
   pains: {
