@@ -11,6 +11,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "preview:lan": "astro build && astro preview --host",
+    "api:start": "tsx api/src/server.ts",
     "check": "astro check && tsc --noEmit",
     "lint": "biome check .",
     "format": "biome format --write .",

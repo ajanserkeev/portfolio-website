@@ -1,6 +1,9 @@
 import { chromium, expect, test } from '@playwright/test';
 
-test.skip(({ browserName }) => browserName !== 'chromium', 'Real bfcache needs Chromium');
+test.skip(
+  ({ browserName }) => browserName !== 'chromium' || process.platform === 'win32',
+  'Real bfcache needs Chromium with xvfb on Linux CI',
+);
 
 type Probe = { __marker?: string; __restored?: boolean; __tower?: { frames: number } };
 

@@ -1,0 +1,35 @@
+{$DOMAIN:localhost} {
+    encode zstd gzip
+
+    # Security headers
+    header {
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    }
+
+    # API reverse proxy
+    handle /api/* {
+        reverse_proxy api:3000 {
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Immutable static assets (hashed files)
+    @immutable path /_astro/* /assets/*
+    header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+    # Posters and preview textures
+    @media path /posters/* /textures/*
+    header @media Cache-Control "public, max-age=86400, stale-while-revalidate=604800"
+
+    # Static site serving with HTML fallback
+    handle {
+        root * /srv
+        file_server
+        try_files {path} {path}/ /index.html
+    }
+}

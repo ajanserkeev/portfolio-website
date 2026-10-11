@@ -23,4 +23,4 @@ const floors = LEVEL_IDS.slice(1);
   {floors.map((id, i) => <LevelSection id={id} index={i + 1} locale={locale} />)}
 </main>
 <CtaButton locale={locale} />
-<ChatSheet client:idle locale={locale} />
+<ChatSheet client:load locale={locale} />

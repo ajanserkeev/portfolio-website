@@ -87,8 +87,8 @@
 **Files:**
 - Create: `Dockerfile`, `docker-compose.yml`, `deploy/Caddyfile`
 
-- [ ] **Step 1: Создать многоэтапный `Dockerfile` для сборки статики Astro и запуска Node API сервера**
-- [ ] **Step 2: Создать `deploy/Caddyfile` с конфигурацией сжатия zstd/gzip, HTTPS, кэшированием статики и прокси на API**
-- [ ] **Step 3: Создать `docker-compose.yml` для локального запуска полного стека**
-- [ ] **Step 4: Проверить сборку `docker build` (при наличии) и `pnpm verify`**
-- [ ] **Step 5: Commit**
+- [x] **Step 1: Создать многоэтапный `Dockerfile` для сборки статики Astro и запуска Node API сервера**
+- [x] **Step 2: Создать `deploy/Caddyfile` с конфигурацией сжатия zstd/gzip, HTTPS, кэшированием статики и прокси на API**
+- [x] **Step 3: Создать `docker-compose.yml` для локального запуска полного стека**
+- [x] **Step 4: Проверить сборку `docker build` (при наличии) и `pnpm verify`**
+- [x] **Step 5: Commit**

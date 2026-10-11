@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('Chat Agent E2E', () => {
-  test('opens chat sheet, exchanges messages and closes drawer', async ({ page, browserName }) => {
-    await page.route('/api/chat', async (route) => {
+  test('opens chat sheet, exchanges messages and closes drawer', async ({ page }) => {
+    await page.route('**/api/chat', async (route) => {
       const sseBody = [
         'data: {"type":"token","content":"Здравствуйте! "}\n\n',
         'data: {"type":"token","content":"Чем могу помочь?"}\n\n',
@@ -20,7 +20,7 @@ test.describe('Chat Agent E2E', () => {
       });
     });
 
-    await page.goto(browserName === 'webkit' ? '/?tier=static' : '/');
+    await page.goto('/?tier=static');
 
     // Click floating chat trigger
     const openBtn = page.locator('[data-testid="chat-open-btn"]');

@@ -74,6 +74,7 @@ export function createLogRoute(options: LogRouteOptions) {
     if (data.level === 'error' && telegramNotifier) {
       telegramNotifier
         .notifyLead({
+          id: logId,
           name: 'SYSTEM CLIENT ERROR',
           contact: urlSnippet(data.url),
           channel: 'telegram',
