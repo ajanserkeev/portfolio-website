@@ -120,6 +120,8 @@
 /* Segmented control (single choice). */
 .ui-segmented {
   display: flex;
+  /* Options keep their labels on one line and wrap as a whole when the panel is narrow. */
+  flex-wrap: wrap;
   gap: 0.25rem;
   padding: 0.25rem;
   border-radius: 0.875rem;
@@ -127,7 +129,7 @@
 }
 
 .ui-segmented > button {
-  flex: 1;
+  flex: 1 1 auto;
   min-height: 2.5rem;
   padding: 0 0.5rem;
   border: 0;

@@ -258,6 +258,6 @@ test('the calculator uses the light theme and English copy on /en/', async ({ pa
 
 **Files:** по результатам; `docs/plan/07b-html-layer.md` (отметки), `docs/plan/07-redesign.md` (статус этапа 1).
 
-- [ ] **Step 1:** скриншоты всех этажей: телефон 390 × 844, 360 × 640, десктоп 1440 × 900, `/en/`; глазами проверить отступы, переносы, контраст.
-- [ ] **Step 2:** исправить найденное (каждое — с e2e-проверкой, если это поведение, а не пиксели).
-- [ ] **Step 3:** `pnpm verify`. Commit: `fix(ui): polish the HTML layer after the visual pass`.
+- [x] **Step 1:** скриншоты всех этажей: телефон 390 × 844, 360 × 640, десктоп 1440 × 900, `/en/`; глазами проверить отступы, переносы, контраст.
+- [x] **Step 2:** исправить найденное (каждое — с e2e-проверкой, если это поведение, а не пиксели).
+- [x] **Step 3:** `pnpm verify`. Commit: `fix(ui): polish the HTML layer after the visual pass`.

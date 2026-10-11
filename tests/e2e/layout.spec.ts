@@ -135,9 +135,10 @@ test('the hero lead keeps the space between its sentences', async ({ page }) => 
   await expect(page.locator('.hero__lead')).not.toContainText(/\.\S/);
 });
 
-test('on desktop the text column starts right of the tower', async ({ page }) => {
+test('on desktop the text column starts right of the tower', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'WebGL runs on SwiftShader in Chromium');
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/?tier=static#agents');
+  await page.goto('/?tier=lite#agents');
   const box = await page.locator('#agents').boundingBox();
   expect(box?.x ?? 0).toBeGreaterThanOrEqual(1440 * 0.59);
   const panel = await page.locator('[data-elevator]').boundingBox();
@@ -158,3 +159,18 @@ for (const tier of ['static', 'lite']) {
     expect(top).toBeLessThan(260);
   });
 }
+
+test('without 3D the desktop text column is centred', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/?tier=static#crm');
+  const box = await page.locator('#crm').boundingBox();
+  expect(Math.abs((box?.x ?? 0) + (box?.width ?? 0) / 2 - 720)).toBeLessThan(40);
+});
+
+test('legal links in the footer do not run together', async ({ page }) => {
+  await page.goto('/?tier=static');
+  const links = page.locator('.footer-legal__links a');
+  const [a, b] = [await links.nth(0).boundingBox(), await links.nth(1).boundingBox()];
+  const sameLine = Math.abs((a?.y ?? 0) - (b?.y ?? 0)) < 4;
+  if (sameLine) expect((b?.x ?? 0) - ((a?.x ?? 0) + (a?.width ?? 0))).toBeGreaterThanOrEqual(8);
+});

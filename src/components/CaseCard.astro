@@ -154,9 +154,9 @@ const caseUrl = locale === 'ru' ? `/cases/${item.id}/` : `/en/cases/${item.id}/`
 
   .case-card__footer {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.875rem;
     margin-top: auto;
     padding-top: 0.5rem;
   }

@@ -107,7 +107,7 @@ export default function Calculator({ copy, locale }: Props) {
 
       <div class="ui-section">
         <span class="ui-label">{copy.support}</span>
-        <div class="ui-segmented">
+        <div class="ui-segmented ui-segmented--pairs">
           {SUPPORT_MONTHS.map((months) => (
             <button
               type="button"

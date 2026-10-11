@@ -290,16 +290,18 @@ test.describe('BookingWidget', () => {
   });
 });
 
-test('contact channels fit the narrow phone panel', async ({ page }) => {
+test('segmented controls fit the narrow phone panels', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 740 });
   await page.goto('/?tier=static');
-  const form = page.locator('[data-testid="lead-form"]');
-  await hydrated(form);
-  const panel = await form.boundingBox();
-  for (const button of await form.locator('.ui-segmented button').all()) {
-    const box = await button.boundingBox();
-    expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(
-      (panel?.x ?? 0) + (panel?.width ?? 0),
-    );
+  for (const testId of ['lead-form', 'calculator']) {
+    const form = page.locator(`[data-testid="${testId}"]`);
+    await hydrated(form);
+    const panel = await form.boundingBox();
+    for (const button of await form.locator('.ui-segmented button').all()) {
+      const box = await button.boundingBox();
+      expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(
+        (panel?.x ?? 0) + (panel?.width ?? 0),
+      );
+    }
   }
 });

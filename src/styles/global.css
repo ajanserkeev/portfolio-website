@@ -661,6 +661,11 @@ html[data-motion="reduced"] .elevator .elevator__needle {
     --column-right: calc(var(--panel-w) + 2.75rem);
   }
 
+  /* No tower without 3D: centre the column instead of leaving the left half empty. */
+  html[data-tier="static"] {
+    --column-left: max(2rem, calc((100vw - 40rem) / 2));
+  }
+
   .level__content {
     margin: 32svh var(--column-right) 0 var(--column-left);
     max-width: 34rem;
@@ -688,6 +693,11 @@ html[data-motion="reduced"] .elevator .elevator__needle {
     margin: 1rem var(--column-right) 8rem var(--column-left);
     max-width: 34rem;
     box-sizing: border-box;
+  }
+
+  html[data-tier="static"] .level__content,
+  html[data-tier="static"] .hero__more {
+    max-width: 40rem;
   }
 
   /* Desktop: an art deco brass panel with a dial and engraved buttons. */
@@ -977,6 +987,12 @@ html[data-shot] .tower {
   gap: 1rem;
   font-size: 0.8125rem;
   color: rgba(28, 27, 34, 0.65);
+}
+
+.footer-legal__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
 }
 
 .footer-legal__links a {
