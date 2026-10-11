@@ -18,6 +18,15 @@ const t = dict(Astro.props.locale);
     >
       {t.mode.toStatic}
     </button>
+    <button
+      type="button"
+      class="chip"
+      data-sound-toggle
+      aria-label="Включить звук"
+      title="Звук"
+    >
+      <span data-sound-icon>🔇</span>
+    </button>
     <a
       class="chip"
       href={t.lang.href}
@@ -31,6 +40,8 @@ const t = dict(Astro.props.locale);
 </header>
 
 <script>
+  import { sound } from '../ui/sound';
+
   const toggle = document.querySelector<HTMLAnchorElement>('[data-lang-toggle]');
   if (toggle) {
     toggle.addEventListener('click', (event) => {
@@ -40,6 +51,26 @@ const t = dict(Astro.props.locale);
         const base = toggle.getAttribute('href') ?? '/';
         window.location.href = `${base}${hash}`;
       }
+    });
+  }
+
+  const soundBtn = document.querySelector<HTMLButtonElement>('[data-sound-toggle]');
+  const soundIcon = document.querySelector<HTMLSpanElement>('[data-sound-icon]');
+
+  function updateSoundIcon(enabled: boolean) {
+    if (soundIcon) {
+      soundIcon.textContent = enabled ? '🔊' : '🔇';
+    }
+    if (soundBtn) {
+      soundBtn.setAttribute('aria-label', enabled ? 'Выключить звук' : 'Включить звук');
+    }
+  }
+
+  if (soundBtn) {
+    updateSoundIcon(sound.isEnabled());
+    soundBtn.addEventListener('click', () => {
+      const enabled = sound.toggle();
+      updateSoundIcon(enabled);
     });
   }
 </script>
