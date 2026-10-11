@@ -61,10 +61,10 @@
 **Files:**
 - Create: `src/ui/analytics.ts`, `src/ui/analytics.test.ts`
 
-- [ ] **Step 1: Написать юнит-тесты маппинга событий `TowerEvent` в аналитические цели**
-- [ ] **Step 2: Реализовать `src/ui/analytics.ts` с поддержкой Яндекс Метрики и Umami без блокировки основного потока**
-- [ ] **Step 3: Проверить `pnpm test`**
-- [ ] **Step 4: Commit**
+- [x] **Step 1: Написать юнит-тесты маппинга событий `TowerEvent` в аналитические цели**
+- [x] **Step 2: Реализовать `src/ui/analytics.ts` с поддержкой Яндекс Метрики и Umami без блокировки основного потока**
+- [x] **Step 3: Проверить `pnpm test`**
+- [x] **Step 4: Commit**
 
 ---
 

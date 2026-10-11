@@ -1,9 +1,12 @@
 <div class="stage" id="stage" data-state="poster" aria-hidden="true"></div>
 <script>
   import { boot } from '../engine/boot';
+  import { initAnalytics } from '../ui/analytics';
   import { initKeyboardNavigation } from '../ui/keyboard';
 
   initKeyboardNavigation();
+  initAnalytics();
   void boot();
 </script>
+
 
