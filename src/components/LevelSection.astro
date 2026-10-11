@@ -57,7 +57,12 @@ const floorCases = allCases
     {id === 'basement' && (
       <div class="level__interactive">
         <Calculator client:visible copy={d.calc} locale={locale} />
-        <LeadForm client:visible locale={locale} />
+        <LeadForm
+          client:visible
+          copy={d.lead}
+          locale={locale}
+          privacyHref={locale === 'ru' ? '/privacy/' : '/en/privacy/'}
+        />
       </div>
     )}
 

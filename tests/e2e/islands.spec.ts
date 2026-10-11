@@ -182,3 +182,48 @@ test('island controls stay inside their panel in the narrow desktop column', asy
     );
   }
 });
+
+test.describe('LeadForm', () => {
+  test('uses the light theme and English copy on /en/', async ({ page }) => {
+    await page.goto('/en/?tier=static');
+    const form = page.locator('[data-testid="lead-form"]');
+    await hydrated(form);
+    expect(await luminance(form)).toBeGreaterThan(0.8);
+    expect(await form.innerText()).not.toMatch(/[А-Яа-яЁё]/);
+  });
+
+  test('shows a readable error when the request fails', async ({ page }) => {
+    await page.route('**/api/lead', (route) =>
+      route.fulfill({ status: 502, contentType: 'text/html', body: '<html>Bad gateway</html>' }),
+    );
+    await page.goto('/?tier=static');
+    const form = page.locator('[data-testid="lead-form"]');
+    await hydrated(form);
+    await page.getByTestId('lead-input-name').fill('Аман');
+    await page.getByTestId('lead-input-contact').fill('@aman');
+    await page.getByTestId('lead-checkbox-consent').check();
+    await page.getByTestId('lead-button-submit').click();
+    const error = page.getByTestId('lead-form-error');
+    await expect(error).toContainText(/Не получилось отправить/);
+    await expect(error).not.toContainText(/Unexpected|Failed|JSON/);
+  });
+
+  test('sends the pain picked earlier in the session', async ({ page }) => {
+    let body: Record<string, unknown> = {};
+    await page.route('**/api/lead', async (route) => {
+      body = route.request().postDataJSON();
+      await route.fulfill({ status: 201, contentType: 'application/json', body: '{"id":"x"}' });
+    });
+    await page.goto('/?tier=static');
+    await page.locator('[data-pain-option="need-site"]').click();
+    await page.reload();
+    const form = page.locator('[data-testid="lead-form"]');
+    await hydrated(form);
+    await page.getByTestId('lead-input-name').fill('Аман');
+    await page.getByTestId('lead-input-contact').fill('@aman');
+    await page.getByTestId('lead-checkbox-consent').check();
+    await page.getByTestId('lead-button-submit').click();
+    await expect(page.getByTestId('lead-form-success')).toBeVisible();
+    expect(body.pain).toBe('need-site');
+  });
+});

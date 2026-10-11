@@ -226,9 +226,9 @@ test('the calculator uses the light theme and English copy on /en/', async ({ pa
 
 **Files:** Modify: `src/islands/LeadForm.tsx` (≤ 250 строк), `src/components/LevelSection.astro`, `src/i18n/*`. Test: `tests/e2e/islands.spec.ts`.
 
-- [ ] **Step 1:** тест «светлая тема + нет кириллицы на `/en/`» для `[data-testid="lead-form"]` → FAIL.
-- [ ] **Step 2:** перевести на кит, тексты в `lead.*`; ссылки на политику — из пропсов.
-- [ ] **Step 3:** PASS, `pnpm verify`. Commit: `feat(ui): restyle the lead form and move its copy to i18n`.
+- [x] **Step 1:** тест «светлая тема + нет кириллицы на `/en/`» для `[data-testid="lead-form"]` → FAIL.
+- [x] **Step 2:** перевести на кит, тексты в `lead.*`; ссылки на политику — из пропсов.
+- [x] **Step 3:** PASS, `pnpm verify`. Commit: `feat(ui): restyle the lead form and move its copy to i18n`.
 
 ---
 

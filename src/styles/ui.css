@@ -236,6 +236,7 @@
 
 .ui-consent a {
   color: inherit;
+  text-decoration: underline;
   text-underline-offset: 2px;
 }
 
