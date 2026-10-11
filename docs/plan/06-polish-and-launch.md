@@ -49,10 +49,10 @@
 - Create: `src/ui/keyboard.ts`, `tests/e2e/a11y.spec.ts`
 - Modify: `src/components/Stage.astro`
 
-- [ ] **Step 1: Реализовать навигацию по этажам по клавишам PageUp / PageDown / Стрелки в `src/ui/keyboard.ts`**
-- [ ] **Step 2: Написать e2e тест доступности с клавиатуры и проверкой видимого фокуса**
-- [ ] **Step 3: Проверить прохождение теста Playwright**
-- [ ] **Step 4: Commit**
+- [x] **Step 1: Реализовать навигацию по этажам по клавишам PageUp / PageDown / Стрелки в `src/ui/keyboard.ts`**
+- [x] **Step 2: Написать e2e тест доступности с клавиатуры и проверкой видимого фокуса**
+- [x] **Step 3: Проверить прохождение теста Playwright**
+- [x] **Step 4: Commit**
 
 ---
 

@@ -1,6 +1,9 @@
 <div class="stage" id="stage" data-state="poster" aria-hidden="true"></div>
 <script>
   import { boot } from '../engine/boot';
+  import { initKeyboardNavigation } from '../ui/keyboard';
 
+  initKeyboardNavigation();
   void boot();
 </script>
+
