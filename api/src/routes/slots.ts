@@ -1,14 +1,23 @@
 import type { DatabaseSync } from 'node:sqlite';
 import { Hono } from 'hono';
-import { generateSlots, type SlotRuleOptions } from '../booking/slots';
+import { type BusyInterval, generateSlots, type SlotRuleOptions } from '../booking/slots';
 
 export interface SlotsRouteOptions {
   db: DatabaseSync;
   rules?: SlotRuleOptions;
+  now?: () => Date;
+}
+
+/** Intervals already taken by bookings that are not cancelled. */
+export function busyIntervals(db: DatabaseSync): BusyInterval[] {
+  const rows = db
+    .prepare("SELECT slot_start, slot_end FROM bookings WHERE status != 'cancelled'")
+    .all() as Array<{ slot_start: string; slot_end: string }>;
+  return rows.map((r) => ({ start: r.slot_start, end: r.slot_end }));
 }
 
 export function createSlotsRoute(options: SlotsRouteOptions) {
-  const { db, rules } = options;
+  const { db, rules, now = () => new Date() } = options;
   const router = new Hono();
 
   router.get('/', (c) => {
@@ -21,23 +30,7 @@ export function createSlotsRoute(options: SlotsRouteOptions) {
       }
     }
 
-    const rows = db
-      .prepare("SELECT slot_start, slot_end FROM bookings WHERE status != 'cancelled'")
-      .all() as Array<{ slot_start: string; slot_end: string }>;
-
-    const busy = rows.map((r) => ({
-      start: r.slot_start,
-      end: r.slot_end,
-    }));
-
-    const slots = generateSlots(
-      {
-        ...rules,
-        daysAhead,
-      },
-      busy,
-      new Date(),
-    );
+    const slots = generateSlots({ ...rules, daysAhead }, busyIntervals(db), now());
 
     return c.json({
       ok: true,

@@ -17,6 +17,8 @@ export interface AppDependencies {
   db?: DatabaseSync;
   telegramNotifier?: TelegramNotifier;
   crmSync?: CrmSync;
+  /** Clock for slot generation and booking checks; tests pin it. */
+  now?: () => Date;
 }
 
 export function createApp(options?: AppDependencies | ApiConfig) {
@@ -34,6 +36,7 @@ export function createApp(options?: AppDependencies | ApiConfig) {
   const crmSync = isConfig
     ? new RealCrmSync(config.crmWebhookUrl)
     : ((options as AppDependencies)?.crmSync ?? new RealCrmSync(config.crmWebhookUrl));
+  const now = (!isConfig && (options as AppDependencies)?.now) || (() => new Date());
 
   const app = new Hono();
 
@@ -129,6 +132,7 @@ export function createApp(options?: AppDependencies | ApiConfig) {
     '/api/slots',
     createSlotsRoute({
       db,
+      now,
     }),
   );
   app.route(
@@ -137,6 +141,7 @@ export function createApp(options?: AppDependencies | ApiConfig) {
       db,
       telegramNotifier,
       crmSync,
+      now,
     }),
   );
   app.route(

@@ -1,15 +1,21 @@
 import type { DatabaseSync } from 'node:sqlite';
 import { Hono } from 'hono';
 import { z } from 'zod';
+import { generateSlots, type SlotRuleOptions } from '../booking/slots';
 import type { CrmSync } from '../integrations/crm';
 import type { TelegramNotifier } from '../integrations/telegram';
+
+/** How far ahead a booking may be made; matches the longest range /api/slots serves. */
+const MAX_DAYS_AHEAD = 30;
 
 export const bookRequestSchema = z.object({
   name: z.string().trim().min(1, 'Name is required'),
   contact: z.string().trim().min(3, 'Contact is required'),
   channel: z.enum(['telegram', 'whatsapp', 'phone', 'email']).default('telegram'),
   slotStart: z.string().min(1, 'Slot start is required'),
-  slotEnd: z.string().min(1, 'Slot end is required'),
+  /** Ignored: the end comes from the server-side slot. Kept for older clients. */
+  slotEnd: z.string().optional(),
+  consent: z.literal(true),
   sessionId: z.string().optional(),
   locale: z.enum(['ru', 'en']).default('ru'),
   hp: z.string().optional(),
@@ -22,10 +28,12 @@ export interface BookRouteOptions {
   db: DatabaseSync;
   telegramNotifier?: TelegramNotifier;
   crmSync?: CrmSync;
+  rules?: SlotRuleOptions;
+  now?: () => Date;
 }
 
 export function createBookRoute(options: BookRouteOptions) {
-  const { db, telegramNotifier, crmSync } = options;
+  const { db, telegramNotifier, crmSync, rules, now = () => new Date() } = options;
   const router = new Hono();
 
   router.post('/', async (c) => {
@@ -39,10 +47,11 @@ export function createBookRoute(options: BookRouteOptions) {
     const parseResult = bookRequestSchema.safeParse(rawBody);
     if (!parseResult.success) {
       const issue = parseResult.error.issues[0];
+      const isConsent = issue?.path.includes('consent');
       return c.json(
         {
           error: issue?.message ?? 'Validation failed',
-          code: 'VALIDATION_ERROR',
+          code: isConsent ? 'CONSENT_REQUIRED' : 'VALIDATION_ERROR',
         },
         400,
       );
@@ -60,6 +69,15 @@ export function createBookRoute(options: BookRouteOptions) {
       return c.json({ error: 'Submission too fast', code: 'SPAM_DETECTED' }, 400);
     }
 
+    // Only a slot from the schedule can be booked (working hours, notice, horizon). Whether it is
+    // still free is settled by the unique index below, which also wins races between two visitors.
+    const slot = generateSlots({ ...rules, daysAhead: MAX_DAYS_AHEAD }, [], now()).find(
+      (candidate) => candidate.start === data.slotStart,
+    );
+    if (!slot) {
+      return c.json({ error: 'This slot is not available', code: 'SLOT_UNAVAILABLE' }, 409);
+    }
+
     const id = crypto.randomUUID();
     const createdAt = new Date().toISOString();
 
@@ -70,8 +88,8 @@ export function createBookRoute(options: BookRouteOptions) {
       `).run(
         id,
         createdAt,
-        data.slotStart,
-        data.slotEnd,
+        slot.start,
+        slot.end,
         data.name,
         data.contact,
         data.channel,
@@ -97,8 +115,8 @@ export function createBookRoute(options: BookRouteOptions) {
       name: data.name,
       contact: data.contact,
       channel: data.channel,
-      slotStart: data.slotStart,
-      slotEnd: data.slotEnd,
+      slotStart: slot.start,
+      slotEnd: slot.end,
       locale: data.locale,
     };
 

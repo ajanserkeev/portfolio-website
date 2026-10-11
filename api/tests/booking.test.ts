@@ -97,7 +97,8 @@ describe('Booking API endpoints', () => {
     const db = initDatabase(':memory:');
     const telegramNotifier = new FakeTelegramNotifier();
     const crmSync = new FakeCrmSync();
-    const app = createApp({ config, db, telegramNotifier, crmSync });
+    const now = () => new Date('2026-10-12T00:00:00.000Z');
+    const app = createApp({ config, db, telegramNotifier, crmSync, now });
 
     return { app, db, telegramNotifier, crmSync };
   }
@@ -126,6 +127,7 @@ describe('Booking API endpoints', () => {
       slotStart: '2026-10-15T06:00:00.000Z',
       slotEnd: '2026-10-15T06:30:00.000Z',
       locale: 'ru',
+      consent: true,
       startedAt: Date.now() - 3000,
     };
 
@@ -167,6 +169,7 @@ describe('Booking API endpoints', () => {
       channel: 'email',
       slotStart: '2026-10-15T07:00:00.000Z',
       slotEnd: '2026-10-15T07:30:00.000Z',
+      consent: true,
       startedAt: Date.now() - 2000,
     };
 
@@ -208,6 +211,7 @@ describe('Booking API endpoints', () => {
         contact: 'bot@spam.com',
         slotStart: '2026-10-15T08:00:00.000Z',
         slotEnd: '2026-10-15T08:30:00.000Z',
+        consent: true,
         hp: 'trap value',
       }),
     });
@@ -224,6 +228,7 @@ describe('Booking API endpoints', () => {
         contact: 'fast@spam.com',
         slotStart: '2026-10-15T08:00:00.000Z',
         slotEnd: '2026-10-15T08:30:00.000Z',
+        consent: true,
         startedAt: Date.now() - 100,
       }),
     });
@@ -231,6 +236,55 @@ describe('Booking API endpoints', () => {
     const fastBody = await fastRes.json();
     expect(fastBody.code).toBe('SPAM_DETECTED');
 
+    db.close();
+  });
+
+  function book(app: ReturnType<typeof setupTestApp>['app'], body: Record<string, unknown>) {
+    return app.request('/api/book', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'Aman',
+        contact: '@aman',
+        channel: 'telegram',
+        startedAt: Date.now() - 3000,
+        ...body,
+      }),
+    });
+  }
+
+  it('POST /api/book requires consent to personal data processing', async () => {
+    const { app, db } = setupTestApp();
+    const res = await book(app, { slotStart: '2026-10-15T06:00:00.000Z' });
+    expect(res.status).toBe(400);
+    expect((await res.json()).code).toBe('CONSENT_REQUIRED');
+    db.close();
+  });
+
+  it('POST /api/book only accepts a slot that /api/slots would offer', async () => {
+    const { app, db } = setupTestApp();
+    // 03:00 Almaty is outside working hours; garbage is not a slot at all.
+    for (const slotStart of ['2026-10-14T22:00:00.000Z', 'tomorrow']) {
+      const res = await book(app, { slotStart, consent: true });
+      expect(res.status, slotStart).toBe(409);
+      expect((await res.json()).code).toBe('SLOT_UNAVAILABLE');
+    }
+    db.close();
+  });
+
+  it('POST /api/book stores the server-side end of the slot', async () => {
+    const { app, db } = setupTestApp();
+    const res = await book(app, {
+      slotStart: '2026-10-15T06:00:00.000Z',
+      slotEnd: '2026-10-15T09:00:00.000Z',
+      consent: true,
+    });
+    expect(res.status).toBe(201);
+    const { id } = await res.json();
+    const row = db.prepare('SELECT slot_end FROM bookings WHERE id = ?').get(id) as {
+      slot_end: string;
+    };
+    expect(row.slot_end).toBe('2026-10-15T06:30:00.000Z');
     db.close();
   });
 });

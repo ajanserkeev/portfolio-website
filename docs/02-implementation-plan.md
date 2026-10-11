@@ -198,7 +198,7 @@ HTML-слой, острова и движок общаются только че
 | `POST` | `/api/chat` | `{ sessionId, message, locale, pain? }` → SSE: `delta {text}`, `tool {name, status, payload}`, `done`, `error {code}` |
 | `POST` | `/api/lead` | `{ name, contact, channel, message?, pain?, services[], estimate?, consent: true, locale, sessionId?, hp, startedAt }` → `201 { id }` |
 | `GET` | `/api/slots` | `?from=YYYY-MM-DD&days=7&tz=Asia/Almaty` → `{ slots: [{ start, end }] }` |
-| `POST` | `/api/book` | `{ slotStart, name, contact, channel, consent: true, locale, sessionId? }` → `201 { bookingId, start, end }` / `409` слот занят |
+| `POST` | `/api/book` | `{ slotStart, name, contact, channel, consent: true, locale, sessionId?, hp?, startedAt? }` → `201 { ok, id, status }` / `400 CONSENT_REQUIRED` / `409 SLOT_UNAVAILABLE` (нет в расписании) / `409 SLOT_ALREADY_BOOKED`. Конец слота сервер берёт из своего расписания |
 | `GET` | `/api/health` | → `{ ok: true, version }` |
 
 ---
