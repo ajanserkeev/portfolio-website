@@ -6,6 +6,7 @@ import BookingWidget from '../islands/BookingWidget';
 import Calculator from '../islands/Calculator';
 import LeadForm from '../islands/LeadForm';
 import CaseCard from './CaseCard.astro';
+import StaticLevel from './StaticLevel.astro';
 
 interface Props {
   id: LevelId;
@@ -31,6 +32,7 @@ const floorCases = allCases
     </div>
     <h2 id={`${id}-title`} class="level__title">{copy.title}</h2>
     <p class="level__lead">{copy.lead}</p>
+    <StaticLevel id={id} name={copy.name} />
     <slot />
 
     {floorCases.length > 0 && (

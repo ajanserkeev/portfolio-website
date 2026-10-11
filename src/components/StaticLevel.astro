@@ -1,0 +1,54 @@
+---
+import type { LevelId } from '../engine/config';
+
+interface Props {
+  id: LevelId;
+  name: string;
+}
+
+const { id, name } = Astro.props;
+const posterSrc = `/posters/${id}.webp`;
+---
+<div class="static-level" data-static-level={id} aria-hidden="true">
+  <img
+    src={posterSrc}
+    alt={`Постер уровня ${name}`}
+    class="static-level__img"
+    loading="lazy"
+    decoding="async"
+    width="900"
+    height="1200"
+  />
+</div>
+
+<style>
+  .static-level {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    margin: 2rem auto;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(10, 10, 12, 0.6);
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+    display: none;
+  }
+
+  html[data-tier='static'] .static-level {
+    display: block;
+  }
+
+  .static-level__img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .static-level:hover .static-level__img {
+    transform: scale(1.015);
+  }
+</style>

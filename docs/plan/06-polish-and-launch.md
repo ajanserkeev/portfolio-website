@@ -22,10 +22,10 @@
 - Create: `src/components/StaticLevel.astro`
 - Modify: `src/components/LevelSection.astro`
 
-- [ ] **Step 1: Создать компонент `StaticLevel.astro` с отображением фонового постера этажа**
-- [ ] **Step 2: Подключить в `LevelSection.astro` отображение постера в режиме `static` или при заголовке Save-Data**
-- [ ] **Step 3: Проверить тесты `tests/e2e/static.spec.ts`**
-- [ ] **Step 4: Commit**
+- [x] **Step 1: Создать компонент `StaticLevel.astro` с отображением фонового постера этажа**
+- [x] **Step 2: Подключить в `LevelSection.astro` отображение постера в режиме `static` или при заголовке Save-Data**
+- [x] **Step 3: Проверить тесты `tests/e2e/static.spec.ts`**
+- [x] **Step 4: Commit**
 
 ---
 
