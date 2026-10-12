@@ -74,3 +74,24 @@ export function checkBudgets(
   }
   return problems;
 }
+
+export interface CastNames {
+  characters: readonly string[];
+  clips: readonly string[];
+}
+
+/** `anchor__cast__<slot>` nodes must name a person and a clip that art/cast.json ships. */
+export function checkCastSlots(doc: Document, cast: CastNames): string[] {
+  const problems: string[] = [];
+  for (const node of doc.getRoot().listNodes()) {
+    const name = node.getName();
+    if (!name.startsWith('anchor__cast__')) continue;
+    const extras = node.getExtras() as { character?: unknown; clip?: unknown };
+    if (typeof extras.character !== 'string' || !cast.characters.includes(extras.character)) {
+      problems.push(`${name}: unknown character "${String(extras.character)}"`);
+    } else if (extras.clip !== undefined && !cast.clips.includes(String(extras.clip))) {
+      problems.push(`${name}: unknown clip "${String(extras.clip)}"`);
+    }
+  }
+  return problems;
+}

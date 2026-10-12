@@ -3,7 +3,7 @@ import { mkdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { requireBlender, runBlender } from './blender.ts';
 import { parseBuildArgs } from './build-args.ts';
-import { checkBudgets, checkLevelDocument } from './level-contract.ts';
+import { checkBudgets, checkCastSlots, checkLevelDocument } from './level-contract.ts';
 import { createIO, encodeLightmap, optimizeLevel } from './optimize.ts';
 
 const args = parseBuildArgs(process.argv.slice(2));
@@ -34,9 +34,19 @@ const lightmap = join(target, `${args.level}.lightmap.webp`);
 await optimizeLevel(join(work, `${args.level}.raw.glb`), glb);
 await encodeLightmap(join(work, `${args.level}.lightmap.png`), lightmap);
 
-const report = checkLevelDocument(await (await createIO()).read(glb));
+const document = await (await createIO()).read(glb);
+const report = checkLevelDocument(document);
+const cast = JSON.parse(readFileSync(join('art', 'cast.json'), 'utf8')) as {
+  clips: string[];
+  characters: Array<{ id: string }>;
+};
+const castNames = { characters: cast.characters.map((c) => c.id), clips: cast.clips };
 const sizes = { glb: statSync(glb).size, lightmap: statSync(lightmap).size };
-const problems = [...report.errors, ...checkBudgets(report, sizes)];
+const problems = [
+  ...report.errors,
+  ...checkBudgets(report, sizes),
+  ...checkCastSlots(document, castNames),
+];
 const hash = createHash('sha256').update(readFileSync(glb)).digest('hex').slice(0, 16);
 
 console.table({

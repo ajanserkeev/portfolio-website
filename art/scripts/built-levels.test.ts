@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { FLOOR_ACTIONS } from '../../src/ui/floor-actions';
 import { CAST_BUDGET, checkCastDocument } from './cast-contract';
-import { checkBudgets, checkLevelDocument } from './level-contract';
+import { checkBudgets, checkCastSlots, checkLevelDocument } from './level-contract';
 import { createIO } from './optimize';
 
 const DIR = join('src', 'assets', 'levels');
@@ -21,6 +21,13 @@ describe.skipIf(levels.length === 0)('built levels in src/assets/levels', () => 
       const doc = await (await createIO()).read(join(DIR, file));
       const report = checkLevelDocument(doc);
       expect(report.errors).toEqual([]);
+      const cast = JSON.parse(readFileSync(join('art', 'cast.json'), 'utf8')) as {
+        clips: string[];
+        characters: Array<{ id: string }>;
+      };
+      expect(
+        checkCastSlots(doc, { characters: cast.characters.map((c) => c.id), clips: cast.clips }),
+      ).toEqual([]);
       const lightmap = join(DIR, file.replace(/\.glb$/, '.lightmap.webp'));
       expect(
         checkBudgets(report, {

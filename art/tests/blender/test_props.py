@@ -89,3 +89,16 @@ def test_split_flap_board_fits_under_the_ceiling():
     assert frame_top <= 2.9 and frame_bottom >= 0.7, (frame_bottom, frame_top)
     flap_bottom, flap_top = world_z("dyn__board__flap")
     assert frame_bottom <= flap_bottom and flap_top <= frame_top, (flap_bottom, flap_top)
+
+
+def test_cast_slot_names_the_person_clip_and_facing():
+    import math
+
+    from towerlib.core.naming import is_valid
+    from towerlib.kit.cast_slot import cast_slot
+
+    slot = cast_slot("desk-1", (1.0, 0.0, -0.5), character="founder-lead", clip="type", yaw_deg=90.0)
+    assert slot.name == "anchor__cast__desk-1" and is_valid(slot.name)
+    assert slot["character"] == "founder-lead" and slot["clip"] == "type" and slot["speed"] == 1.0
+    assert abs(slot.rotation_euler.z - math.radians(90.0)) < 1e-6
+    assert slot.users_collection[0].name == "anchors"

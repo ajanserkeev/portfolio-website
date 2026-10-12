@@ -94,7 +94,7 @@
 - Produces (TS): `castPlacements(anchors: ReadonlyMap<string, Object3D>): CastPlacement[]`, `CastPlacement = { slot; character; clip; position: Vector3; yaw: number; speed: number }` — чистая функция по якорям с префиксом `cast__`.
 - Контракт уровня проверяет: персонаж и клип якоря существуют в `art/cast.json`.
 
-- [ ] Тесты: `castPlacements` берёт только `cast__*`, читает extras, значения по умолчанию (`clip: 'idle'`, `speed: 1`); контракт уровня отклоняет неизвестного персонажа/клип. → FAIL → PASS. Commit: `feat(engine): place cast members from level anchors`.
+- [x] Тесты: `castPlacements` берёт только `cast__*`, читает extras, значения по умолчанию (`clip: 'idle'`, `speed: 1`); контракт уровня отклоняет неизвестного персонажа/клип. → FAIL → PASS. Commit: `feat(engine): place cast members from level anchors`.
 
 ### Task 5: Труппа в движке
 

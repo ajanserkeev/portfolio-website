@@ -1,6 +1,11 @@
 import { Document } from '@gltf-transform/core';
 import { describe, expect, it } from 'vitest';
-import { checkBudgets, checkLevelDocument, DEFAULT_LEVEL_BUDGET } from './level-contract';
+import {
+  checkBudgets,
+  checkCastSlots,
+  checkLevelDocument,
+  DEFAULT_LEVEL_BUDGET,
+} from './level-contract';
 
 type Attr = 'POSITION' | 'NORMAL' | 'COLOR_0' | 'TEXCOORD_0';
 const SIZES: Record<Attr, [type: 'VEC2' | 'VEC3' | 'VEC4', count: number]> = {
@@ -82,5 +87,38 @@ describe('checkBudgets', () => {
     );
     expect(fat).toHaveLength(3);
     expect(DEFAULT_LEVEL_BUDGET.maxTriangles).toBe(60_000);
+  });
+});
+
+describe('checkCastSlots', () => {
+  const cast = { characters: ['founder-lead', 'guest'], clips: ['idle', 'type'] };
+  function withSlots(slots: Array<Record<string, unknown>>): Document {
+    const doc = level(VALID);
+    const scene = doc.getRoot().listScenes()[0];
+    for (const [i, extras] of slots.entries()) {
+      scene?.addChild(doc.createNode(`anchor__cast__slot-${i}`).setExtras(extras));
+    }
+    return doc;
+  }
+
+  it('accepts people from the cast with known clips', () => {
+    expect(
+      checkCastSlots(
+        withSlots([{ character: 'guest' }, { character: 'founder-lead', clip: 'type' }]),
+        cast,
+      ),
+    ).toEqual([]);
+  });
+
+  it('rejects an unknown person or clip, naming the slot', () => {
+    expect(
+      checkCastSlots(
+        withSlots([{ character: 'pirate' }, { character: 'guest', clip: 'dance' }]),
+        cast,
+      ),
+    ).toEqual([
+      'anchor__cast__slot-0: unknown character "pirate"',
+      'anchor__cast__slot-1: unknown clip "dance"',
+    ]);
   });
 });
