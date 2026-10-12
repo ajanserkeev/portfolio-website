@@ -123,4 +123,4 @@
 
 ### Task 7: Документация и благодарность
 
-- [ ] `docs/plan/07-redesign.md` — статус этапа 2; `docs/01-brief.md` — пункт «три члена команды» отмечен; `README` или `docs/credits.md` — «Персонажи: Kenney Mini Characters (CC0), kenney.nl». Commit: `docs: credit Kenney and record stage 2`.
+- [x] `docs/plan/07-redesign.md` — статус этапа 2; `docs/01-brief.md` — пункт «три члена команды» отмечен; `README` или `docs/credits.md` — «Персонажи: Kenney Mini Characters (CC0), kenney.nl». Commit: `docs: credit Kenney and record stage 2`.
