@@ -29,7 +29,7 @@
 
 **Найденные подводные камни (уже с решениями):**
 1. Импортёр glTF в Blender добавляет лишний меш `Icosphere` — удалять всё, что не привязано к скелету.
-2. Рост персонажа 0,79 м; масштаб ×1,45 → ~1,15 м (роботы ~1,2 м). Мерить по вершинам с учётом скелета, не по `bound_box`.
+2. Рост персонажей 0,61–0,79 м (причёски и шапки разные); масштаб ×1,7 → 1,0–1,35 м (роботы ~1,4 м с антенной). Сначала брал ×1,45 по одному персонажу — низкие вышли 0,89 м. Мерить по вершинам с учётом скелета, не по `bound_box`.
 3. У второго и следующих импортов действия получают суффиксы `.001`… — брать клипы только с первого скелета.
 4. GLTFLoader делает имена узлов уникальными (`leg-left_1`…), из-за чего общие клипы не цепляются к остальным персонажам. После загрузки вернуть костям исходные имена (`/_\d+$/` → ``): клипы ищут кости внутри своего клона.
 5. Текстура-палитра 512×512 в WebP — 1,9 КБ; лица нарисованы в ней, поэтому оставляем текстуру (`MeshMatcapMaterial({ matcap, map })`), а не переводим в цвет вершин.
@@ -58,9 +58,9 @@
 - Create: `art/vendor/kenney-mini-characters/` (12 GLB персонажей, `Textures/colormap.png`, `License.txt`), `art/cast.json`, `art/blender/towerlib/core/cast.py`, `art/tests/test_cast.py`
 
 **Interfaces:**
-- Produces: `art/cast.json` — `{ "scale": 1.45, "clips": [...], "characters": [{ "id": "founder-lead", "source": "character-male-c", "role": "founder" }, …] }`; `towerlib.core.cast.load_cast(path) -> CastSpec` с проверками: уникальные `id` (regex `^[a-z0-9-]+$`), файл источника существует, клипы из набора исходника или из `CUSTOM_CLIPS = ("type", "wave")`.
+- Produces: `art/cast.json` — `{ "scale": 1.7, "clips": [...], "characters": [{ "id": "founder-lead", "source": "character-male-c", "role": "founder" }, …] }`; `towerlib.core.cast.load_cast(path) -> CastSpec` с проверками: уникальные `id` (regex `^[a-z0-9-]+$`), файл источника существует, клипы из набора исходника или из `CUSTOM_CLIPS = ("type", "wave")`.
 
-- [ ] Тесты pytest: валидная спецификация читается; повтор `id`, неизвестный источник, неизвестный клип, `id` с точкой → `ValueError` с понятным текстом. → FAIL → реализация → PASS. Commit: `feat(art): vendor Kenney Mini Characters and describe the cast`.
+- [x] Тесты pytest: валидная спецификация читается; повтор `id`, неизвестный источник, неизвестный клип, `id` с точкой → `ValueError` с понятным текстом. → FAIL → реализация → PASS. Commit: `feat(art): vendor Kenney Mini Characters and describe the cast`.
 
 ### Task 2: Сборка `cast.raw.glb` в Blender
 

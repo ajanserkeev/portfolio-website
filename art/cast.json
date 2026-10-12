@@ -1,0 +1,14 @@
+{
+  "scale": 1.7,
+  "clips": ["idle", "walk", "sit", "interact-right", "emote-yes", "pick-up", "type", "wave"],
+  "characters": [
+    { "id": "founder-lead", "source": "character-male-a", "role": "founder" },
+    { "id": "founder-creative", "source": "character-male-f", "role": "founder" },
+    { "id": "founder-automation", "source": "character-male-b", "role": "founder" },
+    { "id": "owner", "source": "character-male-d", "role": "client" },
+    { "id": "manager", "source": "character-female-d", "role": "client" },
+    { "id": "guest-senior", "source": "character-female-c", "role": "client" },
+    { "id": "guest-young", "source": "character-female-b", "role": "client" },
+    { "id": "customer", "source": "character-female-f", "role": "client" }
+  ]
+}
