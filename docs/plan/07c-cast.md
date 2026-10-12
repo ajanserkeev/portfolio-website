@@ -69,7 +69,7 @@
 
 Шаги скрипта (выверены спайком): импорт каждого источника → удалить меши вне скелета → склеить тело и голову → удалить второй UV → переименовать в `cast__<id>` / `cast__<id>__mesh` → масштаб → снять анимации со всех скелетов, кроме первого → дописать клипы `type` (руки вперёд, кисти поочерёдно вверх-вниз, 0,4 с, цикл) и `wave` (правая рука вверх и покачивание, 1,2 с) ключами по 7 костям → оставить только клипы из `cast.json` как NLA-дорожки первого скелета → экспорт GLB (`export_animation_mode="NLA_TRACKS"`, без тангенсов, текстура WebP).
 
-- [ ] Тесты в Blender: после сборки на сцене N скелетов `cast__*`, у каждого ровно один меш-ребёнок; рост каждого 1,05–1,25 м; клипы `type` и `wave` существуют и двигают кости `arm-left`/`arm-right`; в файле нет `Icosphere`. → FAIL → реализация → PASS. Commit: `feat(art): build the character cast in Blender with custom typing and waving clips`.
+- [x] Тесты в Blender: после сборки на сцене N скелетов `cast__*`, у каждого ровно один меш-ребёнок; рост каждого 1,05–1,25 м; клипы `type` и `wave` существуют и двигают кости `arm-left`/`arm-right`; в файле нет `Icosphere`. → FAIL → реализация → PASS. Commit: `feat(art): build the character cast in Blender with custom typing and waving clips`.
 
 ### Task 3: Команда `pnpm art:cast` и контракт файла труппы
 
