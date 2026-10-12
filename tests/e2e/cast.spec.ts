@@ -30,3 +30,11 @@ test('the founders sit in the basement within the draw call budget', async ({ pa
     .toBeGreaterThanOrEqual(3);
   expect((await state()).drawCalls).toBeLessThanOrEqual(60);
 });
+
+test('a shot of the basement waits for the founders', async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 720 });
+  await page.goto('/?shot=basement');
+  const html = page.locator('html');
+  await expect(html).toHaveAttribute('data-shot-ready', 'true', { timeout: 30_000 });
+  expect(Number(await html.getAttribute('data-shot-people'))).toBeGreaterThanOrEqual(3);
+});

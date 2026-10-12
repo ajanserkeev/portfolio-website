@@ -210,12 +210,20 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
       stage.dataset.state = 'live';
       if (options.probeFps) void probe();
       if (options.shot !== undefined) {
-        loop.invalidate(2);
-        requestAnimationFrame(() =>
-          requestAnimationFrame(() => {
-            document.documentElement.dataset.shotReady = 'true';
-          }),
-        );
+        // A still frame includes the people: wait for the cast (they spawn when it resolves).
+        void castLibrary.then(() => {
+          loop.invalidate(2);
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => {
+              let people = 0;
+              scene.traverse((node) => {
+                if (node.userData.castMember) people += 1;
+              });
+              document.documentElement.dataset.shotPeople = String(people);
+              document.documentElement.dataset.shotReady = 'true';
+            }),
+          );
+        });
       }
     }
   }
