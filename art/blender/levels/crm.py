@@ -23,7 +23,7 @@ def build(ctx: BuildContext) -> None:
     props.deal_button(ctx, "deal", (2.2, 0.0, 1.0), action="run-deal", yaw_deg=-15.0)
 
     # Wall kanban screen displaying the live CRM pipeline stages
-    props.wall_screen(ctx, "kanban", (-0.6, 1.8, -2.85), screen_id="crm-kanban", size=(1.6, 1.0))
+    props.wall_screen(ctx, "kanban", (-0.6, 1.8, shell.back_wall_z(ctx)), screen_id="crm-kanban", size=(1.6, 1.0))
 
     # Filing cabinets along the back-left wall (CRM customer records)
     props.filing_cabinet(ctx, "cabinet-1", (-4.2, 0.0, -2.1), yaw_deg=15.0)
