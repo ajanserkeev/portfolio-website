@@ -75,13 +75,13 @@
 
 **Files:**
 - Create: `art/scripts/cast.ts`, `art/scripts/cast-contract.ts`, `art/scripts/cast-contract.test.ts`
-- Modify: `package.json` (`art:cast`), `art/scripts/built-levels.test.ts` (проверка готового `src/assets/cast.glb`), `docs/02-implementation-plan.md` (новый раздел контракта 3.2.1 «Файл труппы»), `scripts/check-budgets.ts` (бюджет `cast.glb`)
+- Modify: `package.json` (`art:cast`), `art/scripts/built-levels.test.ts` (проверка готового `src/assets/cast.glb`), `docs/02-implementation-plan.md` (новый раздел контракта 3.2.1 «Файл труппы»). Бюджет `cast.glb` проверяют `pnpm art:cast` и `built-levels.test.ts` (в `check-budgets.ts` не нужен: тот меряет JS)
 - Output: `src/assets/cast.glb`
 
 **Interfaces:**
 - Produces: `checkCastDocument(doc): { errors: string[]; characters: string[]; clips: string[]; maxTriangles: number }` — каждый `cast__<id>` (без `__mesh`) имеет ровно один скинированный меш, ≤ 3 000 треугольников, клипы — непустой набор, имена по regex контракта.
 
-- [ ] Тесты Vitest на синтетических документах (gltf-transform `Document`): верный; персонаж без скина; лишний меш; превышение треугольников. → FAIL → PASS. Сборка, оптимизация (`dedup → prune → weld → quantize → meshopt`), проверка контракта и бюджета. Commit: `feat(art): pnpm art:cast exports and checks src/assets/cast.glb`.
+- [x] Тесты Vitest на синтетических документах (gltf-transform `Document`): верный; персонаж без скина; лишний меш; превышение треугольников. → FAIL → PASS. Сборка, оптимизация (`dedup → prune → weld → quantize → meshopt`), проверка контракта и бюджета. Commit: `feat(art): pnpm art:cast exports and checks src/assets/cast.glb`.
 
 ### Task 4: Якоря людей на этажах
 

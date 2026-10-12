@@ -1,7 +1,8 @@
-import { readdirSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { FLOOR_ACTIONS } from '../../src/ui/floor-actions';
+import { CAST_BUDGET, checkCastDocument } from './cast-contract';
 import { checkBudgets, checkLevelDocument } from './level-contract';
 import { createIO } from './optimize';
 
@@ -43,4 +44,20 @@ describe.skipIf(levels.length === 0)('built levels in src/assets/levels', () => 
       });
     }
   }
+});
+
+const CAST = join('src', 'assets', 'cast.glb');
+
+describe.skipIf(!existsSync(CAST))('built cast in src/assets/cast.glb', () => {
+  it('follows the cast contract, fits the budget and matches art/cast.json', async () => {
+    const spec = JSON.parse(readFileSync(join('art', 'cast.json'), 'utf8')) as {
+      clips: string[];
+      characters: Array<{ id: string }>;
+    };
+    const report = checkCastDocument(await (await createIO()).read(CAST));
+    expect(report.errors).toEqual([]);
+    expect(statSync(CAST).size).toBeLessThanOrEqual(CAST_BUDGET.maxBytes);
+    expect(report.characters).toEqual(spec.characters.map((c) => c.id));
+    expect([...report.clips].sort()).toEqual([...spec.clips].sort());
+  });
 });

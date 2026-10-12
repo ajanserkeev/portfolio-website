@@ -138,6 +138,20 @@
 - **Бюджет на этаж:** ≤ 60 000 треугольников, GLB ≤ 450 КБ, лайтмап ≤ 250 КБ (итого ≤ 700 КБ на первую сцену). Проверяется `art/scripts/level-contract.ts` при сборке и в тестах.
 - **Слов в 3D нет** — надписи только в HTML (i18n).
 
+### 3.2.1. Файл труппы `src/assets/cast.glb`
+
+Люди башни (план 07, этап 2). Собирается `pnpm art:cast` из `art/cast.json` и CC0-исходников `art/vendor/kenney-mini-characters/`; проверяется `art/scripts/cast-contract.ts`.
+
+| Узел | Что это |
+|---|---|
+| `cast__<id>` | Скелет персонажа (кости `root`, `torso`, `head`, `arm-left`, `arm-right`, `leg-left`, `leg-right`) |
+| `cast__<id>__mesh` | Единственный меш персонажа, скинированный; `POSITION`, `NORMAL`, `TEXCOORD_0` (общая текстура-палитра WebP), `JOINTS_0`, `WEIGHTS_0`. В рантайме — `MeshMatcapMaterial({ matcap, map })` |
+| анимации | Общие для всех: клипы адресуют кости по имени, поэтому подходят любому `cast__<id>`. Обязателен `idle` |
+
+- Бюджет: ≤ 3 000 треугольников на персонажа, файл ≤ 350 КБ.
+- GLTFLoader делает повторяющиеся имена узлов уникальными (`leg-left_1`); движок после загрузки возвращает костям исходные имена.
+- Этаж ставит людей пустыми узлами `anchor__cast__<слот>` с `extras.character` (id из `art/cast.json`), `extras.clip` (по умолчанию `idle`), `extras.speed` (по умолчанию 1).
+
 ### 3.3. Интерфейс уровня в движке (`src/engine/level-asset.ts`)
 
 ```ts

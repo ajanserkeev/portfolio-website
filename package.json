@@ -29,6 +29,7 @@
     "art:screens": "tsx art/scripts/screens.ts",
     "art:faces": "tsx art/scripts/faces.ts",
     "art:build": "tsx art/scripts/build.ts",
+    "art:cast": "tsx art/scripts/cast.ts",
     "art:preview": "tsx art/scripts/preview.ts",
     "art:matcap": "tsx art/scripts/matcap.ts",
     "art:compare": "tsx art/scripts/compare.ts"

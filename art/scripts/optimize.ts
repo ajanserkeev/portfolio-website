@@ -37,3 +37,17 @@ export async function optimizeLevel(input: string, output: string): Promise<void
 export async function encodeLightmap(input: string, output: string): Promise<void> {
   await sharp(input).webp({ quality: 92, smartSubsample: true, effort: 6 }).toFile(output);
 }
+
+/** Character cast: skinned meshes keep their normals (matcap) and skin weights. */
+export async function optimizeCast(input: string, output: string): Promise<void> {
+  const io = await createIO();
+  const doc = await io.read(input);
+  await doc.transform(
+    dedup(),
+    prune(),
+    weld(),
+    quantize(),
+    meshopt({ encoder: MeshoptEncoder, level: 'medium' }),
+  );
+  await io.write(output, doc);
+}
