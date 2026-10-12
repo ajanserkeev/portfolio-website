@@ -3,6 +3,9 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { findRobots, RobotActor } from './actors/robot';
 import { seedFrom } from './actors/robot-pose';
+import type { CastLibrary } from './cast/cast-library';
+import { castPlacements } from './cast/casting';
+import { populateLevel } from './cast/level-people';
 import { levelBaseY, type TowerConfig, tower } from './config';
 import { prepareLevel } from './glb-level';
 import { disposeObject3D, type LevelSource } from './level-asset';
@@ -49,11 +52,20 @@ export function defaultLoaders(): GlbLoaders {
   return { loadGltf: (url) => gltf.loadAsync(url), loadTexture: (url) => textures.loadAsync(url) };
 }
 
+/** People for the floors (contract 3.2.1). `onReady` fires when they appear on a floor. */
+export interface CastHooks {
+  library: Promise<CastLibrary | null>;
+  onReady?: () => void;
+}
+
+const NO_CAST: CastHooks = { library: Promise.resolve(null) };
+
 export function createGlbSource(
   files: ReadonlyMap<string, LevelFiles>,
   shared: SharedMaterials,
   loaders: GlbLoaders = defaultLoaders(),
   cfg: TowerConfig = tower,
+  cast: CastHooks = NO_CAST,
 ): LevelSource {
   return async (index, signal) => {
     const id = cfg.levels[index]?.id;
@@ -80,6 +92,7 @@ export function createGlbSource(
     const actors = findRobots(root).map(
       (robot) => new RobotActor(robot, shared.faces, seedFrom(robot.name)),
     );
+    const people = populateLevel(anchors, cast.library, cast.onReady);
     const roofCtrl = id === 'roof' ? createRoofController({ root }) : undefined;
     const crmCtrl = id === 'crm' ? createCrmController({ root }) : undefined;
     const bookingCtrl = id === 'booking' ? createBookingController({ root }) : undefined;
@@ -87,6 +100,7 @@ export function createGlbSource(
     const basementCtrl = id === 'basement' ? createBasementController({ root }) : undefined;
     const hasUpdate =
       actors.length > 0 ||
+      castPlacements(anchors).length > 0 ||
       roofCtrl !== undefined ||
       crmCtrl !== undefined ||
       bookingCtrl !== undefined ||
@@ -100,6 +114,7 @@ export function createGlbSource(
       update: hasUpdate
         ? (timeSec: number) => {
             for (const actor of actors) actor.update(timeSec);
+            people.update(timeSec);
             roofCtrl?.update(timeSec);
             crmCtrl?.update(timeSec);
             bookingCtrl?.update(timeSec);
@@ -114,6 +129,8 @@ export function createGlbSource(
         workshopCtrl?.dispose();
         basementCtrl?.dispose();
         for (const actor of actors) actor.dispose();
+        // People share geometry with the cast library: detach them before disposing the floor.
+        people.dispose();
         disposeObject3D(root, shared.keep);
         baked.dispose();
         lightmap.dispose();

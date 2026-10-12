@@ -106,9 +106,9 @@
 - Produces: `loadCastLibrary(url, matcap): Promise<CastLibrary | null>` (`null` при ошибке, без исключений); `CastLibrary.spawn(character): Object3D | null`; `createActor(root, clips, { clip, speed, motion }): Actor` с `update(dt)`, `play(clip, fadeSec?)`, `dispose()`.
 - Имена костей нормализуются при загрузке (подводный камень 4).
 
-- [ ] Тесты: `actor.test.ts` на синтетическом скелете (Bone + AnimationClip из `NumberKeyframeTrack`/`QuaternionKeyframeTrack`): `update` двигает кость; при `motion.ambient === false` поза — первый кадр и `update` ничего не меняет; `dispose` останавливает миксер и снимает кэш (`mixer.uncacheRoot`).
-- [ ] e2e: `?tier=lite&debug=1#basement` → `__tower.actors ≥ 3`, draw calls ≤ 60; с подменой `cast.glb` на 404 — этаж живой, ошибок в консоли нет.
-- [ ] Бюджет JS движка ≤ 200 КБ (`pnpm budgets`). Commit: `feat(engine): load the cast once and animate people on every floor`.
+- [x] Тесты: `actor.test.ts` на синтетическом скелете (Bone + AnimationClip из `NumberKeyframeTrack`/`QuaternionKeyframeTrack`): `update` двигает кость; при `motion.ambient === false` поза — первый кадр и `update` ничего не меняет; `dispose` останавливает миксер и снимает кэш (`mixer.uncacheRoot`).
+- [x] e2e: с подменой `cast.glb` на 404 — этаж живой, ошибок нет, `__tower.actors === 0` (`tests/e2e/cast.spec.ts`). Проверка «в подвале ≥ 3 человека, draw calls ≤ 60» — в задаче 6, когда появятся якоря. Логика «людей этажа» вынесена в `src/engine/cast/level-people.ts` (+ тест), чтобы `glb-source.ts` не разрастался.
+- [x] Бюджет JS движка ≤ 200 КБ (`pnpm budgets`). Commit: `feat(engine): load the cast once and animate people on every floor`.
 
 ### Task 6: Основатели в подвале (B3)
 

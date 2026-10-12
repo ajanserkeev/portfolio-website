@@ -1,9 +1,10 @@
 import { Color, DirectionalLight, HemisphereLight, Scene, WebGLRenderer } from 'three';
 import { createAmbientManager } from './ambient';
-import { levelFiles, textureUrl } from './assets';
+import { castUrl, levelFiles, textureUrl } from './assets';
 import { CameraRig } from './camera-rig';
 import { createCapsulePool } from './capsules/capsule-pool';
 import type { CapsuleChannel } from './capsules/types';
+import { type CastLibrary, loadCastLibrary } from './cast/cast-library';
 import { tower } from './config';
 import type { PainId } from './events';
 import { bus } from './events';
@@ -48,6 +49,8 @@ export interface TowerDebug {
   readonly drawCalls: number;
   readonly triangles: number;
   readonly frames: number;
+  /** People from the cast currently in the scene. */
+  readonly actors: number;
   readonly sources: Record<number, string>;
   loseContext(): void;
 }
@@ -92,14 +95,25 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   let travels: Travel[] = measureTravels(document);
   let lastGoal = options.shot ?? liftPosition(window.scrollY, travels);
 
-  const shared = createSharedMaterials(
-    await loadSharedTextures({
-      matcap: textureUrl('matcap'),
-      screens: textureUrl('screens'),
-      faces: textureUrl('faces'),
-    }),
-  );
-  const source = options.source ?? withFallback(createGlbSource(levelFiles, shared), greyboxSource);
+  const textures = await loadSharedTextures({
+    matcap: textureUrl('matcap'),
+    screens: textureUrl('screens'),
+    faces: textureUrl('faces'),
+  });
+  const shared = createSharedMaterials(textures);
+  // The cast loads alongside the first floor; people step in when it arrives.
+  const castLibrary: Promise<CastLibrary | null> = castUrl
+    ? loadCastLibrary(castUrl, textures.matcap)
+    : Promise.resolve(null);
+  const source =
+    options.source ??
+    withFallback(
+      createGlbSource(levelFiles, shared, undefined, undefined, {
+        library: castLibrary,
+        onReady: () => loop.invalidate(2),
+      }),
+      greyboxSource,
+    );
 
   const loop = new RenderLoop(renderFrame);
   const ambient = createAmbientManager({
@@ -305,6 +319,13 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
       get frames() {
         return frames;
       },
+      get actors() {
+        let count = 0;
+        scene.traverse((node) => {
+          if (node.userData.castMember) count += 1;
+        });
+        return count;
+      },
       get sources() {
         return Object.fromEntries(
           levels
@@ -328,6 +349,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
       document.removeEventListener('visibilitychange', onVisibility);
       renderer.domElement.removeEventListener('webglcontextlost', onContextLost);
       levels.dispose();
+      void castLibrary.then((library) => library?.dispose());
       ambient.dispose();
       for (const item of shared.keep) (item as { dispose?: () => void }).dispose?.();
       unbindHotspot();
