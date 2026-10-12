@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 test.describe('Accessibility and Keyboard Navigation', () => {
   test('navigates through floors with PageDown and Home keys', async ({ page }) => {
     await page.goto('/?tier=static');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     // Initial scroll position
     const initialY = await page.evaluate(() => window.scrollY);
