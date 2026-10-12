@@ -112,12 +112,14 @@
 
 ### Task 6: Основатели в подвале (B3)
 
+> **По факту реализации.** Основатели сидят *за* длинным пультом лицом к камере: мониторы на столе закрыли бы лица, поэтому на столе только клавиатуры, а экраны (код, график, канбан) висят на задней стене. Стул и клавиатура — новый модуль кита `towerlib/kit/office.py` (`props.py` уже 446 строк); якорь сидящего — на высоте сиденья минус 5 см (`SEATED_ANCHOR_Y`), потому что поза `sit`/`type` у Kenney опускает таз почти к полу. Нашёлся баг стен: внутренняя грань задней стены на `z = −2,8`, и экраны на `−2,85…−2,9` прятались в ней (канбан CRM не был виден никогда) — добавлен `shell.back_wall_z(ctx)` и тест. Док капсулы сдвинут вправо, чтобы труба не закрывала основателя. Старый «кивок» по клику на человека (`view-<id>`) удалён вместе с людьми-экранами; реакции на тап для всех персонажей — этап 3.
+
 **Files:**
 - Modify: `art/cast.json` (три основателя — после ответа студии о составе и внешности; до него — по `art/team.json`), `art/blender/levels/basement.py` (стулья, `cast_slot` × 3 с клипом `type`), `src/engine/levels/basement.ts` (при прилёте капсулы основатели встают и машут: `play('wave')`)
 - Delete: `art/blender/towerlib/kit/person.py` и его тесты (люди с лицами-экранами), `art/team.json` (данные переезжают в `art/cast.json`)
 - Output: `src/assets/levels/basement.*`
 
-- [ ] Тест контроллера: событие `lead:submitted` → у всех основателей клип `wave`, через 3 с — обратно `type`. → FAIL → PASS. `pnpm art:build basement`, скриншот, `pnpm verify`. Commit: `feat(levels): seat the founders in the basement as real people`.
+- [x] Тест контроллера: событие `lead:submitted` → у всех основателей клип `wave`, через 3 с — обратно `type`. → FAIL → PASS. `pnpm art:build basement`, скриншот, `pnpm verify`. Commit: `feat(levels): seat the founders in the basement as real people`.
 
 ### Task 7: Документация и благодарность
 

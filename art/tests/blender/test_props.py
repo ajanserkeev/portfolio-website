@@ -102,3 +102,21 @@ def test_cast_slot_names_the_person_clip_and_facing():
     assert slot["character"] == "founder-lead" and slot["clip"] == "type" and slot["speed"] == 1.0
     assert abs(slot.rotation_euler.z - math.radians(90.0)) < 1e-6
     assert slot.users_collection[0].name == "anchors"
+
+
+def test_wall_screens_on_the_back_wall_are_in_front_of_it():
+    import bpy
+
+    ctx = _ctx()
+    shell.level_shell(ctx, kind="floor")
+    props.wall_screen(ctx, "kanban", (0.0, 1.6, shell.back_wall_z(ctx)), screen_id="crm-kanban")
+    bpy.context.view_layer.update()
+
+    def blender_y(name):
+        obj = bpy.data.objects[name]
+        return [(obj.matrix_world @ v.co).y for v in obj.data.vertices]
+
+    # three.js +Z (towards the camera) is Blender -Y: the wall's face is its smallest Y.
+    wall_face = min(blender_y("shell-back"))
+    assert max(blender_y("screen-kanban")) < wall_face
+    assert max(blender_y("kanban-frame")) <= wall_face + 1e-6

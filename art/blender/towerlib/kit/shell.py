@@ -22,6 +22,14 @@ def level_shell(ctx: BuildContext, *, kind: str) -> list:
     return parts
 
 
+def back_wall_z(ctx: BuildContext, gap: float = 0.035) -> float:
+    """Z for things hung on the back wall: its inner face is WALL in front of -depth/2.
+
+    The default gap clears a 6 cm wall-screen frame, centred on its z.
+    """
+    return -ctx.dims.depth / 2 + WALL + gap
+
+
 def ceiling_occluder(ctx: BuildContext):
     """The slab of the level above: blocks sky light during the bake, removed before export."""
     d = ctx.dims

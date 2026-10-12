@@ -2,27 +2,40 @@ import type { Object3D } from 'three';
 import { bus as defaultBus, type TowerBus } from '../events';
 import { TweenManager } from '../tween';
 
+/** The people on this floor, as src/engine/cast/level-people.ts provides them. */
+export interface BasementPeople {
+  readonly actors: ReadonlyArray<{
+    readonly root: Object3D;
+    play(clip: string, fade?: number): void;
+  }>;
+}
+
 export interface BasementControllerOptions {
   root: Object3D;
   bus?: TowerBus;
+  people?: BasementPeople;
   onCapsuleArrival?: () => void;
-  onPersonSelect?: (personId: string) => void;
 }
 
 export interface BasementController {
   readonly hasReceivedCapsule: boolean;
   readonly isReceiving: boolean;
   receiveCapsule(currentTimeSec?: number): void;
-  selectPerson(personId: string, currentTimeSec?: number): void;
   update(timeSec: number): void;
   dispose(): void;
 }
 
+/** How long the founders wave at a capsule that just landed. */
+const WAVE_SECONDS = 3;
+
 export function createBasementController(options: BasementControllerOptions): BasementController {
   const { root } = options;
   const bus = options.bus ?? defaultBus;
-  const onCapsuleArrival = options.onCapsuleArrival;
-  const onPersonSelect = options.onPersonSelect;
+  const people = options.people;
+  const onCapsuleArrival = () => {
+    greet();
+    options.onCapsuleArrival?.();
+  };
 
   const cradle = root.getObjectByName('dyn__dock__cradle') ?? root.getObjectByName('dyn__dock');
   const cradleRestY = cradle?.position.y ?? 0;
@@ -32,6 +45,18 @@ export function createBasementController(options: BasementControllerOptions): Ba
   let hasReceivedCapsule = false;
   let isReceiving = false;
   let lastTimeSec: number | undefined;
+  let waveUntil: number | undefined;
+
+  const founders = () =>
+    (people?.actors ?? []).filter((actor) =>
+      String(actor.root.userData.castMember ?? '').startsWith('founder'),
+    );
+
+  /** The founders look up from their keyboards and wave at the new request. */
+  function greet(): void {
+    for (const founder of founders()) founder.play('wave', 0.25);
+    waveUntil = (lastTimeSec ?? 0) + WAVE_SECONDS;
+  }
 
   function receiveCapsule(currentTimeSec = 0): void {
     isReceiving = true;
@@ -75,39 +100,6 @@ export function createBasementController(options: BasementControllerOptions): Ba
     }
   }
 
-  function selectPerson(personId: string, currentTimeSec = 0): void {
-    onPersonSelect?.(personId);
-    const head = root.getObjectByName(`dyn__${personId}__head`);
-    if (head) {
-      tweens.add(
-        {
-          from: 0,
-          to: 0.25,
-          durationSec: 0.1,
-          ease: 'easeInOutQuad',
-          onUpdate: (rot) => {
-            head.rotation.x = rot;
-          },
-          onComplete: () => {
-            tweens.add(
-              {
-                from: 0.25,
-                to: 0,
-                durationSec: 0.18,
-                ease: 'easeOutQuad',
-                onUpdate: (rot) => {
-                  head.rotation.x = rot;
-                },
-              },
-              currentTimeSec + 0.1,
-            );
-          },
-        },
-        currentTimeSec,
-      );
-    }
-  }
-
   const unbindLead = bus.on('lead:submitted', () => {
     receiveCapsule(lastTimeSec ?? 0);
   });
@@ -117,19 +109,16 @@ export function createBasementController(options: BasementControllerOptions): Ba
   });
 
   const unbindHotspot = bus.on('hotspot:activated', (e) => {
-    if (e.level === 'basement') {
-      if (e.action === 'test-capsule') {
-        receiveCapsule(lastTimeSec ?? 0);
-      } else if (e.action.startsWith('view-')) {
-        const id = e.action.slice('view-'.length);
-        selectPerson(id, lastTimeSec ?? 0);
-      }
-    }
+    if (e.level === 'basement' && e.action === 'test-capsule') receiveCapsule(lastTimeSec ?? 0);
   });
 
   function update(timeSec: number): void {
     lastTimeSec = timeSec;
     tweens.update(timeSec);
+    if (waveUntil !== undefined && timeSec >= waveUntil) {
+      waveUntil = undefined;
+      for (const founder of founders()) founder.play('type', 0.3);
+    }
   }
 
   function dispose(): void {
@@ -147,7 +136,6 @@ export function createBasementController(options: BasementControllerOptions): Ba
       return isReceiving;
     },
     receiveCapsule,
-    selectPerson,
     update,
     dispose,
   };

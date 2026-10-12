@@ -1,15 +1,21 @@
-"""Floor 0 — Basement: studio control room with the three founders, command desk, pneumatic capsule receiver dock, and server stacks."""
+"""Floor 0 — Basement: the studio's control desk. The three founders (cast members) type at a long
+desk facing the camera, wall screens behind them, the capsule dock in front."""
 from __future__ import annotations
-
-import json
-from pathlib import Path
 
 from towerlib import rig
 from towerlib.core.spec import BuildContext
 from towerlib.kit import props, shell
-from towerlib.kit.person import PersonSpec, build_person
+from towerlib.kit.cast_slot import cast_slot
+from towerlib.kit.office import SEATED_ANCHOR_Y, keyboard, office_chair
 
-ART = Path(__file__).resolve().parents[2]
+# (cast id, x, yaw toward the middle, typing speed, chair colour)
+FOUNDERS = (
+    ("founder-lead", -1.6, 12.0, 1.0, "teal"),
+    ("founder-creative", 0.0, 0.0, 1.15, "mustard"),
+    ("founder-automation", 1.6, -12.0, 0.9, "signal"),
+)
+DESK_Z = -0.45
+SEAT_Z = -1.3
 
 
 def build(ctx: BuildContext) -> None:
@@ -18,36 +24,22 @@ def build(ctx: BuildContext) -> None:
     shell.ceiling_occluder(ctx)
     shell.spine(ctx)
 
-    # Long command desk for the three founders
-    props.command_desk(ctx, "desk", (0.0, 0.0, -0.6))
+    # Long control desk; the founders sit behind it, so their faces are towards the camera.
+    props.command_desk(ctx, "desk", (0.0, 0.0, DESK_Z), width=4.8, depth=0.9)
+    for cast_id, x, yaw, speed, color in FOUNDERS:
+        slot = cast_id.removeprefix("founder-")
+        office_chair(ctx, f"chair-{slot}", (x, 0.0, SEAT_Z), color=color, yaw_deg=yaw)
+        keyboard(ctx, f"keyboard-{slot}", (x, 0.74, DESK_Z - 0.2))
+        cast_slot(slot, (x, SEATED_ANCHOR_Y, SEAT_Z), character=cast_id, clip="type", yaw_deg=yaw, speed=speed)
 
-    # The three founders loaded from art/team.json
-    team_data = json.loads((ART / "team.json").read_text(encoding="utf-8"))
-    for member in team_data:
-        spec = PersonSpec(
-            id=member["id"],
-            name=member["name"],
-            role=member["role"],
-            at=tuple(member["at"]),
-            yaw_deg=member.get("yaw_deg", 0.0),
-            hair=member.get("hair", "ink"),
-            shirt=member.get("shirt", "teal"),
-            skin=member.get("skin", "wood"),
-            glasses=member.get("glasses", False),
-            activity=member.get("activity", "typing"),
-        )
-        build_person(spec, ctx)
+    # The tower's dashboards on the wall behind them.
+    for name, x, screen in (("left", -2.0, "code"), ("middle", 0.0, "dashboard"), ("right", 2.0, "crm-kanban")):
+        props.wall_screen(ctx, f"wall-{name}", (x, 1.65, shell.back_wall_z(ctx)), screen_id=screen, size=(1.4, 0.85))
 
-    # 3 developer monitors on the command desk
-    props.monitor(ctx, "mon-lead", (-2.2, 0.74, -0.5), screen_id="code", yaw_deg=15.0)
-    props.monitor(ctx, "mon-creative", (0.0, 0.74, -0.6), screen_id="phone", yaw_deg=0.0)
-    props.monitor(ctx, "mon-auto", (2.2, 0.74, -0.5), screen_id="dashboard", yaw_deg=-15.0)
+    # Pneumatic capsule dock, front right (clear of the founders): the visitor's capsule lands here.
+    props.capsule_dock(ctx, "dock", (3.0, 0.0, 0.9), action="test-capsule")
+    props.pipe(ctx, "pipe-capsule", [(3.0, 3.6, 0.9), (3.0, 0.6, 0.9)], color="brass", radius=0.08)
 
-    # Pneumatic capsule dock station in foreground
-    props.capsule_dock(ctx, "dock", (0.0, 0.0, 1.1), action="test-capsule")
-    props.pipe(ctx, "pipe-capsule", [(0.0, 3.6, 1.1), (0.0, 0.6, 1.1)], color="brass", radius=0.08)
-
-    # Server stacks and infrastructure
     props.server_rack(ctx, "rack-1", (-5.35, 0.0, -2.35))
     props.server_rack(ctx, "rack-2", (5.35, 0.0, -2.35))
     props.coffee_counter(ctx, "coffee", (-4.2, 0.0, 1.2), yaw_deg=45.0)

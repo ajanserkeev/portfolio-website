@@ -16,3 +16,17 @@ test('floors keep working without the cast file', async ({ page }) => {
     ),
   ).toBe(0);
 });
+
+test('the founders sit in the basement within the draw call budget', async ({ page }) => {
+  await page.goto('/?tier=lite&debug=1#basement');
+  await expect(page.locator('#stage')).toHaveAttribute('data-state', 'live');
+  const state = () =>
+    page.evaluate(() => {
+      const t = (window as unknown as { __tower: { actors: number; drawCalls: number } }).__tower;
+      return { actors: t.actors, drawCalls: t.drawCalls };
+    });
+  await expect
+    .poll(async () => (await state()).actors, { timeout: 20_000 })
+    .toBeGreaterThanOrEqual(3);
+  expect((await state()).drawCalls).toBeLessThanOrEqual(60);
+});

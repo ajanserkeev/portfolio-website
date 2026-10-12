@@ -3,6 +3,16 @@ import { describe, expect, it } from 'vitest';
 import { TowerBus } from '../events';
 import { createBasementController } from './basement';
 
+function fakePeople(ids: string[]) {
+  const log = new Map<string, string[]>(ids.map((id) => [id, []]));
+  const actors = ids.map((id) => {
+    const root = new Group();
+    root.userData.castMember = id;
+    return { root, play: (clip: string) => log.get(id)?.push(clip) };
+  });
+  return { actors, played: (id: string) => log.get(id) ?? [] };
+}
+
 function createMockBasementScene(): Group {
   const root = new Group();
 
@@ -12,15 +22,6 @@ function createMockBasementScene(): Group {
   cradle.name = 'dyn__dock__cradle';
   dockRoot.add(cradle);
   root.add(dockRoot);
-
-  for (const id of ['lead', 'creative', 'automation']) {
-    const personRoot = new Group();
-    personRoot.name = `dyn__${id}`;
-    const head = new Mesh(undefined, new MeshBasicMaterial());
-    head.name = `dyn__${id}__head`;
-    personRoot.add(head);
-    root.add(personRoot);
-  }
 
   return root;
 }
@@ -79,43 +80,22 @@ describe('createBasementController', () => {
     expect(ctrl.isReceiving).toBe(true);
   });
 
-  it('handles person selection and animates head nod', () => {
+  it('makes the founders wave when the capsule lands, then back to typing', () => {
     const root = createMockBasementScene();
-    let selectedPerson: string | undefined;
-    const ctrl = createBasementController({
-      root,
-      onPersonSelect: (id) => {
-        selectedPerson = id;
-      },
-    });
+    const people = fakePeople(['founder-lead', 'founder-creative', 'guest']);
+    const ctrl = createBasementController({ root, people });
 
-    const leadHead = root.getObjectByName('dyn__lead__head');
-    if (!leadHead) throw new Error('missing lead head');
+    ctrl.receiveCapsule(0);
+    ctrl.update(0.05);
+    ctrl.update(0.6);
+    expect(people.played('founder-lead')).toEqual(['wave']);
+    expect(people.played('founder-creative')).toEqual(['wave']);
+    expect(people.played('guest')).toEqual([]);
 
-    ctrl.selectPerson('lead', 0.0);
-    expect(selectedPerson).toBe('lead');
-
-    ctrl.update(0.08);
-    expect(leadHead.rotation.x).not.toBe(0);
-
-    ctrl.update(0.3);
-    expect(leadHead.rotation.x).toBeCloseTo(0, 2);
-  });
-
-  it('responds to view-person hotspots', () => {
-    const root = createMockBasementScene();
-    const bus = new TowerBus();
-    let selectedPerson: string | undefined;
-    createBasementController({
-      root,
-      bus,
-      onPersonSelect: (id) => {
-        selectedPerson = id;
-      },
-    });
-
-    bus.emit({ type: 'hotspot:activated', level: 'basement', action: 'view-creative' });
-    expect(selectedPerson).toBe('creative');
+    ctrl.update(2.0);
+    expect(people.played('founder-lead')).toEqual(['wave']);
+    ctrl.update(3.7);
+    expect(people.played('founder-lead')).toEqual(['wave', 'type']);
   });
 
   it('cleans up handlers on dispose', () => {

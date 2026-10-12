@@ -97,7 +97,7 @@ export function createGlbSource(
     const crmCtrl = id === 'crm' ? createCrmController({ root }) : undefined;
     const bookingCtrl = id === 'booking' ? createBookingController({ root }) : undefined;
     const workshopCtrl = id === 'workshop' ? createWorkshopController({ root }) : undefined;
-    const basementCtrl = id === 'basement' ? createBasementController({ root }) : undefined;
+    const basementCtrl = id === 'basement' ? createBasementController({ root, people }) : undefined;
     const hasUpdate =
       actors.length > 0 ||
       castPlacements(anchors).length > 0 ||
