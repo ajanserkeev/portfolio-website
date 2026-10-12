@@ -49,6 +49,8 @@ export default function ChatSheet({ copy, locale }: Props) {
 
   // Opened from the bottom dock or the giant phone on the agents floor.
   useEffect(() => {
+    const root = document.documentElement;
+    if ('chatRequested' in root.dataset) setIsOpen(true); // clicked before this island loaded
     const offOpen = bus.on('chat:open', () => setIsOpen(true));
     const offHotspot = bus.on('hotspot:activated', (e) => {
       if (e.level === 'agents' && e.action === 'open-chat') setIsOpen(true);
@@ -61,6 +63,7 @@ export default function ChatSheet({ copy, locale }: Props) {
 
   const close = () => {
     setIsOpen(false);
+    delete document.documentElement.dataset.chatRequested;
     document.querySelector<HTMLElement>('[data-chat-open]')?.focus();
   };
 
@@ -121,6 +124,7 @@ export default function ChatSheet({ copy, locale }: Props) {
 
   const goTo = (id: string) => {
     setIsOpen(false);
+    delete document.documentElement.dataset.chatRequested;
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 

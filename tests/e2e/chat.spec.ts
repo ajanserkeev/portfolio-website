@@ -70,3 +70,21 @@ test.describe('Chat sheet', () => {
     await expect(opener).toBeFocused();
   });
 });
+
+test('a click on the chat button before the island hydrates still opens the chat', async ({
+  page,
+}) => {
+  // Hold the island's JS back so the click lands before ChatSheet subscribes to the bus.
+  let release = () => {};
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route('**/ChatSheet*.js', async (route) => {
+    await held;
+    await route.continue();
+  });
+  await page.goto('/?tier=static', { waitUntil: 'domcontentloaded' });
+  await page.locator('[data-chat-open]').click();
+  release();
+  await expect(page.getByRole('dialog')).toBeVisible();
+});

@@ -23,7 +23,9 @@ const t = dict(Astro.props.locale);
 <script>
   import { bus } from '../engine/events';
 
-  document
-    .querySelector('[data-chat-open]')
-    ?.addEventListener('click', () => bus.emit({ type: 'chat:open' }));
+  document.querySelector('[data-chat-open]')?.addEventListener('click', () => {
+    // The chat island may still be loading: leave a note it reads when it mounts.
+    document.documentElement.dataset.chatRequested = '';
+    bus.emit({ type: 'chat:open' });
+  });
 </script>
