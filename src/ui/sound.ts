@@ -142,7 +142,7 @@ export const sound = createSoundManager();
 
 // Link sound manager to bus events if running in browser
 if (typeof window !== 'undefined') {
-  bus.on('level:reached', () => sound.play('chime'));
+  bus.on('lift:arrived', () => sound.play('chime'));
   bus.on('capsule:selected', () => sound.play('whoosh'));
   bus.on('hotspot:activated', () => sound.play('click'));
 }

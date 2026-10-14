@@ -5,6 +5,8 @@ export type PainId = 'lost-leads' | 'manual-routine' | 'need-site' | 'need-booki
 export type TowerEvent =
   | { type: 'lift:moved'; position: number }
   | { type: 'level:reached'; level: LevelId }
+  /** The lift stopped at a floor (passing through does not count): doors, chime. */
+  | { type: 'lift:arrived'; level: LevelId }
   | { type: 'tier:changed'; tier: 'high' | 'lite' | 'static' }
   | { type: 'capsule:selected'; pain: PainId }
   | { type: 'hotspot:activated'; level: LevelId; action: string }

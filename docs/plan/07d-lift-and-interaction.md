@@ -53,7 +53,7 @@
 
 **Interfaces:** `createArrivalTracker(): { update(position: number, settled: boolean): number | null }` — возвращает индекс этажа один раз, когда лифт *остановился* на целом этаже (|position − round| < 0,01 и `settled`); транзит не считается; повторный вызов на том же этаже без отъезда — `null`.
 
-- [ ] Тесты: остановка на 2 → `2` один раз; проезд через 1, 2, 3 без остановки → `null`; отъезд и возврат на тот же этаж → снова `2`. → FAIL → PASS → commit `feat(engine): announce when the lift stops at a floor`.
+- [x] Тесты: остановка на 2 → `2` один раз; проезд через 1, 2, 3 без остановки → `null`; отъезд и возврат на тот же этаж → снова `2`. → FAIL → PASS → commit `feat(engine): announce when the lift stops at a floor`.
 
 ### Task 3: Двери и стрелка
 

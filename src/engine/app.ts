@@ -5,6 +5,7 @@ import { createCapsulePool } from './capsules/capsule-pool';
 import { type CastLibrary, loadCastLibrary } from './cast/cast-library';
 import { LEVEL_IDS, tower } from './config';
 import { installDebugHandle } from './debug-handle';
+import { createLiftAnnouncer } from './elevator/arrival';
 import { bus } from './events';
 import { createGlbSource } from './glb-source';
 import { greyboxSource } from './greybox';
@@ -48,12 +49,12 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   let tier = options.tier;
   let frames = 0;
   let live = false;
-  let reached = -1;
   let destroyed = false;
   /** Until this time the floors animate even when ambient motion is off (reduced motion, idle). */
   let interactionUntilMs = 0;
 
   const { renderer, scene } = createRendererAndScene(stage, tier);
+  const announceFloors = createLiftAnnouncer(LEVEL_IDS, (event) => bus.emit(event));
 
   // Deep links are aligned by src/ui/hash-anchor.ts once the layout settles.
   const rig = new CameraRig(tower, { width: stage.clientWidth, height: stage.clientHeight });
@@ -137,7 +138,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
     renderer.render(scene, rig.camera);
     frames += 1;
     bus.emit({ type: 'lift:moved', position: rig.position });
-    announceLevel();
+    announceFloors(rig.position, !moving);
     if (!moving) loop.setContinuous('camera', false);
     if (!live && levels.ready().includes(Math.round(rig.position))) {
       live = true;
@@ -145,14 +146,6 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
       if (options.probeFps) void probe();
       if (options.shot !== undefined) signalShotReady(scene, castLibrary, () => loop.invalidate(2));
     }
-  }
-
-  function announceLevel(): void {
-    const nearest = Math.round(rig.position);
-    if (nearest === reached || Math.abs(rig.position - nearest) > 0.05) return;
-    reached = nearest;
-    const id = tower.levels[nearest]?.id;
-    if (id) bus.emit({ type: 'level:reached', level: id });
   }
 
   function probe(): Promise<void> {
