@@ -1,11 +1,19 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createSoundManager } from './sound';
 
 describe('SoundManager', () => {
+  // Our own storage: Node 25+ has a built-in sessionStorage, Node 24 (CI) does not.
   beforeEach(() => {
-    try {
-      sessionStorage.clear();
-    } catch {}
+    const data = new Map<string, string>();
+    vi.stubGlobal('sessionStorage', {
+      getItem: (key: string) => data.get(key) ?? null,
+      setItem: (key: string, value: string) => void data.set(key, value),
+      clear: () => data.clear(),
+    });
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it('is disabled by default', () => {
@@ -18,9 +26,7 @@ describe('SoundManager', () => {
     expect(sound.toggle()).toBe(true);
     expect(sound.isEnabled()).toBe(true);
 
-    try {
-      expect(sessionStorage.getItem('tower_sound_enabled')).toBe('true');
-    } catch {}
+    expect(sessionStorage.getItem('tower_sound_enabled')).toBe('true');
 
     expect(sound.toggle()).toBe(false);
     expect(sound.isEnabled()).toBe(false);
@@ -34,9 +40,7 @@ describe('SoundManager', () => {
   });
 
   it('restores enabled state from sessionStorage', () => {
-    try {
-      sessionStorage.setItem('tower_sound_enabled', 'true');
-    } catch {}
+    sessionStorage.setItem('tower_sound_enabled', 'true');
     const sound = createSoundManager();
     expect(sound.isEnabled()).toBe(true);
   });
