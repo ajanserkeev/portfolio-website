@@ -2,7 +2,7 @@
   "ci": {
     "collect": {
       "startServerCommand": "pnpm preview --port 4322",
-      "url": ["http://localhost:4322/"],
+      "url": ["http://localhost:4322/", "http://localhost:4322/?tier=static"],
       "numberOfRuns": 3
     },
     "assert": {

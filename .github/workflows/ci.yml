@@ -14,3 +14,6 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium webkit
       - run: xvfb-run --auto-servernum pnpm verify
       - run: pnpm dlx @lhci/cli@0.15.1 autorun
+      # Scores and the biggest main-thread costs as annotations on the commit's checks.
+      - if: always()
+        run: pnpm tsx scripts/lighthouse-summary.ts
