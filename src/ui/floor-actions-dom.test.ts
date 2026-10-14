@@ -16,6 +16,7 @@ function fakeDocument(scrolled: string[]) {
     querySelector: (selector: string) => ({
       scrollIntoView: () => scrolled.push(selector),
     }),
+    documentElement: { dataset: {} as DOMStringMap },
   } as unknown as Document;
   const click = (attrs: Record<string, string> | null) => {
     const button = attrs && { getAttribute: (name: string) => attrs[name] ?? null };
@@ -59,5 +60,15 @@ describe('initFloorActions', () => {
     initFloorActions(doc, { bus, vibrate: () => {} });
     bus.emit({ type: 'hotspot:activated', level: 'booking', action: 'open-booking' });
     expect(scrolled).toEqual(['#booking .level__widget']);
+  });
+
+  it('leaves a note for a chat that has not loaded yet when the agents action fires', () => {
+    const bus = new TowerBus();
+    const { doc } = fakeDocument([]);
+    initFloorActions(doc, { bus, vibrate: () => {} });
+    bus.emit({ type: 'hotspot:activated', level: 'crm', action: 'run-deal' });
+    expect('chatRequested' in doc.documentElement.dataset).toBe(false);
+    bus.emit({ type: 'hotspot:activated', level: 'agents', action: 'open-chat' });
+    expect('chatRequested' in doc.documentElement.dataset).toBe(true);
   });
 });

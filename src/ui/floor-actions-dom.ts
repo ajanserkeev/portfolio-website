@@ -32,6 +32,8 @@ export function initFloorActions(doc: Document, options: FloorActionsOptions = {
   };
 
   const offBooking = bus.on('hotspot:activated', (e) => {
+    // The chat island hydrates when the page is idle: leave it a note it reads when it mounts.
+    if (e.action === 'open-chat') doc.documentElement.dataset.chatRequested = '';
     if (e.action !== 'open-booking') return;
     doc
       .querySelector('#booking .level__widget')
