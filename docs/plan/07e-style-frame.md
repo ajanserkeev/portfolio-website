@@ -50,7 +50,7 @@
 
 **Files:** Create `art/blender/towerlib/kit/decor.py` (`wallpaper(ctx, tone)`, `wainscot(ctx, tone)`, `carpet(ctx, tone)`, `desk_lamp(ctx, name, at)`); `art/tests/blender/test_decor.py`.
 
-- [ ] Blender-тесты: обои перед задней стеной и не дальше её внутренней грани; ковролин на полу и не в шахте; настольная лампа даёт свет (`area`) и светящийся абажур (`glow`). Commit `feat(art): floor tone kit — wallpaper, wainscot, carpet and desk lamps`.
+- [x] Blender-тесты: обои перед задней стеной и не дальше её внутренней грани; ковролин на полу от стены до стены (`shell-carpet` — часть оболочки, как перекрытие: кабина лифта стоит на нём); настольная лампа даёт свет (`area`) и светящийся абажур (`glow`). Commit `feat(art): floor tone kit — wallpaper, wainscot, carpet and desk lamps`.
 
 ### Task 4: Роботы ×1,3
 

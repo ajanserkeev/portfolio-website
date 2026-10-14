@@ -2,14 +2,12 @@
 along the front of the slab. Bricks are face colours on one grid per wall (one lightmap island)."""
 from __future__ import annotations
 
-import bmesh
 import bpy
 
 from ..core.bricks import brick_grid, shade
 from ..core.coords import Vec3
 from ..core.spec import BuildContext
-from .materials import ALBEDO
-from .primitives import finish, rounded_box
+from .primitives import face_grid, rounded_box
 from .scene import join
 
 # Panels sit this far in front of the wall face, so they never z-fight with it.
@@ -23,20 +21,13 @@ def brick_panel(ctx: BuildContext, name: str, size: tuple[float, float], *, at: 
     p = ctx.palette
     tones = (p["brick"], p["brick-dark"], p["brick-light"])
     grid = brick_grid(width, height)
-    bm = bmesh.new()
-    rows = [[bm.verts.new((x - width / 2, 0.0, y)) for x in grid.xs] for y in grid.ys]
     colors = []
     for r in range(len(grid.ys) - 1):
         for c in range(len(grid.xs) - 1):
-            bm.faces.new((rows[r][c], rows[r][c + 1], rows[r + 1][c + 1], rows[r + 1][c]))
             brick = grid.cell(c, r)
             colors.append(p["mortar"] if brick is None else tones[shade(brick)])
-    obj = finish(name, bm, p["mortar"], at=at, yaw_deg=yaw_deg)
-    flat = []
-    for polygon, color in zip(obj.data.polygons, colors):
-        flat += [*color, 1.0] * polygon.loop_total
-    obj.data.color_attributes[ALBEDO].data.foreach_set("color", flat)
-    return obj
+    xs = [x - width / 2 for x in grid.xs]
+    return face_grid(name, xs, grid.ys, colors, at=at, yaw_deg=yaw_deg)
 
 
 def frame(ctx: BuildContext, *, kind: str, wall: float) -> list:

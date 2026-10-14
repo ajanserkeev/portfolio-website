@@ -131,6 +131,37 @@ def tube(name: str, points: list[Vec3], *, radius: float, color: Color, segments
     return finish(name, bm, color, **place)
 
 
+def face_grid(
+    name: str,
+    xs: list[float],
+    ys: list[float],
+    colors: list[Color],
+    *,
+    horizontal: bool = False,
+    **place,
+) -> bpy.types.Object:
+    """One connected grid of quads (a single lightmap island) with a colour per cell.
+
+    Vertical: faces +Z (the camera), x across and y up from y=0. Horizontal: faces up, x across and
+    `ys` along three.js z. `colors` lists the cells row by row (row = consecutive `ys`).
+    """
+    bm = bmesh.new()
+    if horizontal:
+        rows = [[bm.verts.new((x, -z, 0.0)) for x in xs] for z in ys]
+    else:
+        rows = [[bm.verts.new((x, 0.0, y)) for x in xs] for y in ys]
+    for r in range(len(ys) - 1):
+        for c in range(len(xs) - 1):
+            quad = [rows[r][c], rows[r][c + 1], rows[r + 1][c + 1], rows[r + 1][c]]
+            bm.faces.new(quad if not horizontal else list(reversed(quad)))
+    obj = finish(name, bm, colors[0], **place)
+    flat: list[float] = []
+    for polygon, color in zip(obj.data.polygons, colors):
+        flat += [*color, 1.0] * polygon.loop_total
+    obj.data.color_attributes[ALBEDO].data.foreach_set("color", flat)
+    return obj
+
+
 def screen_plane(
     name: str,
     size: tuple[float, float],
