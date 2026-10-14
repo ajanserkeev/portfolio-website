@@ -177,7 +177,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
     if (options.shot !== undefined) return;
     const goal = liftPosition(window.scrollY, travels);
     lastGoal = goal;
-    rig.setGoal(goal, motion.camera === 'cut');
+    rig.setGoal(goal, motion.camera === 'cut' || !live); // not live yet: nobody sees a flight
     levels.update(rig.position, goal);
     loop.setContinuous('camera', true);
     loop.invalidate();
