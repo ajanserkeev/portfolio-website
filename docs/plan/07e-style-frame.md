@@ -70,4 +70,4 @@
 
 ### Task 6: Ворота — показать команде
 
-- [ ] Blender-превью (`pnpm art:preview agents`), скриншоты сайта (телефон и десктоп), видео 15 с (Playwright: проезд к этажу, тап по роботу, открытие чата) → `docs/qa/style-frame-<дата>/`. Постеры `pnpm posters`. Commit `docs: style frame for approval`. **Стоп до одобрения.**
+- [x] Blender-превью (`pnpm art:preview agents`), скриншоты сайта (телефон и десктоп), видео 15 с (Playwright: проезд к этажу, тап по роботу, открытие чата) → `docs/qa/style-frame-<дата>/`. Постеры `pnpm posters`. Commit `docs: style frame for approval`. **Стоп до одобрения.**
