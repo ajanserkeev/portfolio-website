@@ -15,5 +15,13 @@
   "white": "#FBF8F2",
   "whatsapp": "#25D366",
   "telegram": "#2AABEE",
-  "instagram": "#E1306C"
+  "instagram": "#E1306C",
+  "brick": "#B4573A",
+  "brick-dark": "#9C4630",
+  "brick-light": "#C66B4B",
+  "mortar": "#D8C7AA",
+  "wallpaper-teal": "#3C978D",
+  "wallpaper-teal-dark": "#327F77",
+  "carpet-teal": "#24535A",
+  "carpet-border": "#C9A15B"
 }
