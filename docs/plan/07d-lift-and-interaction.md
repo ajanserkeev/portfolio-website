@@ -82,7 +82,9 @@
 
 Поведение: чип с пульсирующей точкой над объектом; виден, только когда лифт стоит, объект в кадре и не под карточкой текста (`elementFromPoint` в центре чипа — не `.level__content`), пока посетитель ни разу не активировал это действие за сессию (`sessionStorage` в `try/catch`). Клик по чипу = `hotspot:activated`. Для скринридеров чип скрыт (`aria-hidden`, `tabindex=-1`): доступный двойник — кнопка в тексте этажа.
 
-- [ ] Тесты `pins.test.ts` (фейковый DOM): позиция из события, скрытие по `visible:false`, по сессии, по перекрытию карточкой. e2e: на `#crm` в 3D подсказка видна и клик по ней запускает сделку; в Static подсказок нет. Commit: `feat(ui): hint chips over each floor's main object`.
+*При реализации:* проекция — `src/engine/interaction/hints.ts` (`projectHint`, `createHintEmitter`), а вызывает её `HotspotManager.updateHint(position, settled)`: менеджер уже знает камеру, канвас и хитбоксы загруженных этажей. Главное действие этажа — из `FLOOR_ACTIONS`. Перекрытие проверяется через `elementsFromPoint` без слоя подсказок (иначе чип перекрывает сам себя). Чистая логика `pins.ts` (решение и `sessionStorage`) — в юнит-тестах, DOM — в e2e.
+
+- [x] Тесты `pins.test.ts` (фейковый DOM): позиция из события, скрытие по `visible:false`, по сессии, по перекрытию карточкой. e2e: на `#crm` в 3D подсказка видна и клик по ней запускает сделку; в Static подсказок нет. Commit: `feat(ui): hint chips over each floor's main object`.
 
 ### Task 6: Реакции на тап
 

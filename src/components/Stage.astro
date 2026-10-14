@@ -4,9 +4,11 @@
   import { initAnalytics } from '../ui/analytics';
   import { initFloorActions } from '../ui/floor-actions-dom';
   import { initKeyboardNavigation } from '../ui/keyboard';
+  import { initPins } from '../ui/pins';
 
   initKeyboardNavigation();
   initFloorActions(document);
+  initPins(document);
   initAnalytics();
   void boot();
 </script>

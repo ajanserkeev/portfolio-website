@@ -143,6 +143,15 @@ export const ru = {
     'next-stage': 'Следующий этап: макет → код → прод',
     'test-capsule': 'Отправить капсулу на пульт',
   },
+  /** Chips over each floor's main 3D object (src/ui/pins.ts): what to tap. */
+  hints: {
+    'toggle-agent': 'Потяните рычаг',
+    'open-chat': 'Нажмите на экран',
+    'run-deal': 'Нажмите кнопку',
+    'open-booking': 'Подойдите к стойке',
+    'next-stage': 'Сдвиньте ползунок',
+    'test-capsule': 'Отправьте капсулу',
+  },
   mode: { toStatic: 'Режим без 3D', toLive: 'Включить 3D' },
   menu: { label: 'Меню' },
   sound: { on: 'Включить звук', off: 'Выключить звук' },

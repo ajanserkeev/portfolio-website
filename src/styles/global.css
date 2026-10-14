@@ -439,6 +439,88 @@ html[data-tier="static"] .action-chip[data-needs-3d] {
   display: none;
 }
 
+/* Hint chip over the floor's main 3D object (src/ui/pins.ts); its tail points at the object. */
+.pins {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.pin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.25rem;
+  padding: 0 0.875rem 0 0.75rem;
+  border: 1px solid rgb(28 27 34 / 0.18);
+  border-radius: 999px;
+  background: rgb(251 248 242 / 0.94);
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 8px 18px -10px rgb(28 27 34 / 0.6);
+  transform: translate(calc(var(--pin-x, 0px) - 50%), calc(var(--pin-y, 0px) - 100% - 0.75rem));
+  animation: pin-in 240ms ease-out;
+}
+
+.pin[hidden] {
+  display: none;
+}
+
+.pin::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-right: 1px solid rgb(28 27 34 / 0.18);
+  border-bottom: 1px solid rgb(28 27 34 / 0.18);
+  background: inherit;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.pin__dot {
+  position: relative;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--color-signal);
+}
+
+.pin__dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--color-signal);
+  animation: action-pulse 1.6s ease-out infinite;
+}
+
+@keyframes pin-in {
+  from {
+    opacity: 0;
+  }
+}
+
+html[data-motion="reduced"] .pin,
+html[data-motion="reduced"] .pin__dot::after {
+  animation: none;
+}
+
+html[data-tier="static"] .pins,
+html[data-shot] .pins {
+  display: none;
+}
+
 .hero__more .action-chip {
   margin-top: 0;
 }

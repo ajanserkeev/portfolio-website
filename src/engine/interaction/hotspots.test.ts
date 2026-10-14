@@ -132,6 +132,24 @@ describe('HotspotManager', () => {
 
     manager.dispose();
   });
+  it('reports where the main object of the floor the lift stands at is on screen', () => {
+    const hints: Array<TowerEventOf<'hint:moved'>> = [];
+    bus.on('hint:moved', (ev) => hints.push(ev));
+    const manager = createHotspotManager({ canvas, camera, bus, vibrate: vibrateMock });
+    const deal = new Mesh(new BoxGeometry(2, 2, 2), new MeshBasicMaterial());
+    deal.name = 'hit__deal';
+    deal.userData.action = 'run-deal';
+    deal.updateMatrixWorld(true);
+    manager.registerLevel('crm', [deal]);
+
+    manager.updateHint(2, true);
+    expect(hints.at(-1)).toMatchObject({ level: 'crm', action: 'run-deal', visible: true, x: 400 });
+    manager.updateHint(1.6, false);
+    expect(hints.at(-1)?.visible).toBe(false);
+    // A floor without its main hit box loaded shows no hint.
+    manager.updateHint(1, true);
+    expect(hints).toHaveLength(2);
+  });
 });
 
 describe('syncLevelHits', () => {

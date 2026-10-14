@@ -145,6 +145,15 @@ export const en = {
     'next-stage': 'Next stage: mockup → code → live',
     'test-capsule': 'Send a capsule to the desk',
   },
+  /** Chips over each floor's main 3D object (src/ui/pins.ts): what to tap. */
+  hints: {
+    'toggle-agent': 'Pull the lever',
+    'open-chat': 'Tap the screen',
+    'run-deal': 'Press the button',
+    'open-booking': 'Step up to the desk',
+    'next-stage': 'Slide to the next stage',
+    'test-capsule': 'Send a capsule',
+  },
   menu: { label: 'Menu' },
   sound: { on: 'Turn sound on', off: 'Turn sound off' },
   mode: { toStatic: 'No-3D mode', toLive: 'Turn on 3D' },

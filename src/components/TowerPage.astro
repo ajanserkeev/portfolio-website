@@ -16,6 +16,7 @@ const { locale } = Astro.props;
 const floors = LEVEL_IDS.slice(1);
 ---
 <Stage />
+<div class="pins" data-pins data-labels={JSON.stringify(dict(locale).hints)} aria-hidden="true"></div>
 <TopBar locale={locale} />
 <ElevatorPanel locale={locale} />
 <main class="tower">

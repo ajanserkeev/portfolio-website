@@ -7,6 +7,8 @@ export type TowerEvent =
   | { type: 'level:reached'; level: LevelId }
   /** The lift stopped at a floor (passing through does not count): doors, chime. */
   | { type: 'lift:arrived'; level: LevelId }
+  /** Where the current floor's main object is on screen (CSS px), for the HTML hint chip. */
+  | { type: 'hint:moved'; level: LevelId; action: string; x: number; y: number; visible: boolean }
   | { type: 'tier:changed'; tier: 'high' | 'lite' | 'static' }
   | { type: 'capsule:selected'; pain: PainId }
   | { type: 'hotspot:activated'; level: LevelId; action: string }

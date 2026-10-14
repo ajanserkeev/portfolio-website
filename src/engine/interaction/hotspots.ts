@@ -1,6 +1,8 @@
 import { type Camera, type Object3D, Raycaster, Vector2 } from 'three';
-import type { LevelId } from '../config';
+import { FLOOR_ACTIONS } from '../../ui/floor-actions';
+import { LEVEL_IDS, type LevelId } from '../config';
 import { bus as defaultBus, type TowerBus } from '../events';
+import { createHintEmitter, projectHint } from './hints';
 
 export interface HotspotManagerOptions {
   canvas: HTMLCanvasElement;
@@ -15,6 +17,8 @@ export interface HotspotManager {
   trigger(levelId: LevelId, action: string): void;
   handlePointerDown(event: MouseEvent | PointerEvent): boolean;
   handlePointerMove(event: MouseEvent | PointerEvent): boolean;
+  /** After a render: emits `hint:moved` for the main object of the floor the lift stands at. */
+  updateHint(position: number, settled: boolean): void;
   dispose(): void;
 }
 
@@ -26,6 +30,14 @@ function defaultVibrate(ms: number): void {
       // Haptics not allowed or unsupported in context
     }
   }
+}
+
+/** How close to a whole floor the lift must stand for its hint to show. */
+const AT_FLOOR = 0.01;
+
+function actionOf(hit: Object3D): string {
+  const action = (hit.userData as Record<string, unknown> | undefined)?.action;
+  return action !== undefined ? String(action) : hit.name.replace(/^hit__/, '');
 }
 
 export function createHotspotManager(options: HotspotManagerOptions): HotspotManager {
@@ -89,12 +101,7 @@ export function createHotspotManager(options: HotspotManagerOptions): HotspotMan
     const target = raycastHits();
     if (!target) return false;
 
-    const action =
-      (target.hit.userData as Record<string, unknown> | undefined)?.action !== undefined
-        ? String(target.hit.userData.action)
-        : target.hit.name.replace(/^hit__/, '');
-
-    trigger(target.levelId, action);
+    trigger(target.levelId, actionOf(target.hit));
     return true;
   }
 
@@ -120,6 +127,18 @@ export function createHotspotManager(options: HotspotManagerOptions): HotspotMan
   canvas.addEventListener?.('pointerdown', onPointerDown as EventListener);
   canvas.addEventListener?.('pointermove', onPointerMove as EventListener);
 
+  const emitHint = createHintEmitter((event) => bus.emit(event));
+
+  function updateHint(position: number, settled: boolean): void {
+    const level = LEVEL_IDS[Math.round(position)];
+    if (!level) return;
+    const action = FLOOR_ACTIONS[level];
+    const hit = levelHits.get(level)?.find((h) => actionOf(h) === action);
+    const standing = settled && Math.abs(position - Math.round(position)) < AT_FLOOR;
+    const point = standing && hit ? projectHint(hit, camera, canvas.getBoundingClientRect()) : null;
+    emitHint({ level, action, x: point?.x ?? 0, y: point?.y ?? 0, visible: point !== null });
+  }
+
   function registerLevel(levelId: LevelId, hits: readonly Object3D[]): void {
     levelHits.set(levelId, hits);
   }
@@ -141,6 +160,7 @@ export function createHotspotManager(options: HotspotManagerOptions): HotspotMan
     trigger,
     handlePointerDown,
     handlePointerMove,
+    updateHint,
     dispose,
   };
 }

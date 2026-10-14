@@ -96,11 +96,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
       loop.invalidate();
     },
   });
-  const hotspots = createHotspotManager({
-    canvas: renderer.domElement,
-    camera: rig.camera,
-    bus,
-  });
+  const hotspots = createHotspotManager({ canvas: renderer.domElement, camera: rig.camera, bus });
 
   const capsules = createCapsulePool(tower, shared.matcap);
   scene.add(capsules.mesh);
@@ -143,6 +139,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
     capsules.update(timeMs / 1000, rig.position);
     loop.setContinuous('doors', elevator.update(dt, rig.position, !moving));
     renderer.render(scene, rig.camera);
+    hotspots.updateHint(rig.position, !moving);
     frames += 1;
     bus.emit({ type: 'lift:moved', position: rig.position });
     announceFloors(rig.position, !moving);
