@@ -1,5 +1,12 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { fontFaceCss, fontFileName, parseGoogleFontsCss } from './fonts-lib';
+import {
+  fallbackFaceCss,
+  fontFaceCss,
+  fontFileName,
+  parseGoogleFontsCss,
+  readWoff2Metrics,
+} from './fonts-lib';
 
 const face = (subset: string, url: string, range: string) => `/* ${subset} */
 @font-face {
@@ -57,5 +64,50 @@ describe('parseGoogleFontsCss', () => {
   it('writes the unicode-range from the source CSS', () => {
     const [cyr] = parseGoogleFontsCss(css);
     expect(cyr && fontFaceCss(cyr)).toContain('unicode-range: U+0301, U+0400-045F;');
+  });
+});
+
+describe('readWoff2Metrics', () => {
+  it('reads the vertical metrics from a WOFF2 file', () => {
+    // Manrope: 2000 units per em, ascender 2132, descender -600 (its published metrics).
+    expect(readWoff2Metrics(readFileSync('public/fonts/manrope-400-700-latin.woff2'))).toEqual({
+      unitsPerEm: 2000,
+      ascender: 2132,
+      descender: -600,
+      lineGap: 0,
+    });
+  });
+
+  it('rejects files that are not WOFF2', () => {
+    expect(() => readWoff2Metrics(Buffer.from('not a font at all, really'))).toThrow(/WOFF2/);
+  });
+});
+
+describe('fallbackFaceCss', () => {
+  const metrics = { unitsPerEm: 2048, ascender: 1854, descender: -434, lineGap: 67 };
+
+  it('scales Arial to the web font and gives it the web font line metrics', () => {
+    const css = fallbackFaceCss('Wide', metrics, { sizeAdjust: 2 });
+    expect(css).toContain('font-family: "Wide Fallback";');
+    expect(css).toContain('local("Arial")');
+    expect(css).toContain('local("Liberation Sans")');
+    expect(css).toContain('size-adjust: 200.00%;');
+    // The overrides apply to the adjusted size, so they are divided by it.
+    expect(css).toContain('ascent-override: 45.26%;');
+    expect(css).toContain('descent-override: 10.60%;');
+    expect(css).toContain('line-gap-override: 1.64%;');
+    expect(css).not.toContain('unicode-range');
+    expect(css).not.toContain('font-weight');
+  });
+
+  it('stands in with Arial Bold for a bold face and covers only its subset', () => {
+    const css = fallbackFaceCss('Wide', metrics, {
+      sizeAdjust: 1.3,
+      bold: true,
+      unicodeRange: 'U+0400-045F',
+    });
+    expect(css).toContain('local("Arial Bold")');
+    expect(css).toContain('font-weight: 700;');
+    expect(css).toContain('unicode-range: U+0400-045F;');
   });
 });

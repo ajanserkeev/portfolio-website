@@ -12,8 +12,9 @@
   --color-mustard: #f2b33d;
   --color-brass: #c9a15b;
 
-  --font-heading: "Unbounded", system-ui, sans-serif;
-  --font-body: "Manrope", system-ui, -apple-system, sans-serif;
+  /* "… Fallback": local Arial sized to the web font (src/styles/fonts.css), so the swap does not shift text. */
+  --font-heading: "Unbounded", "Unbounded Fallback", system-ui, sans-serif;
+  --font-body: "Manrope", "Manrope Fallback", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 }
 
