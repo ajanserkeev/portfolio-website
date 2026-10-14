@@ -29,26 +29,29 @@ test.describe('with the 3D scene', () => {
     'WebGL runs on SwiftShader in Chromium',
   );
 
-  async function framesAfterClick(
-    page: import('@playwright/test').Page,
-  ): Promise<[number, number]> {
+  /** Clicks the deal action once the scene is idle; returns the frame count before the click. */
+  async function clickDealWhenIdle(page: import('@playwright/test').Page): Promise<number> {
     await page.goto('/?tier=lite&debug=1#crm');
     await expect(page.locator('#stage')).toHaveAttribute('data-state', 'live');
     await page.waitForTimeout(6000);
     const before = (await towerState(page))?.frames ?? 0;
     await page.locator('button[data-hotspot="run-deal"]').click();
-    await page.waitForTimeout(1500);
-    return [before, (await towerState(page))?.frames ?? 0];
+    return before;
   }
 
+  // Within the 4.5 s interaction window: an idle scene would not draw these frames on its own.
+  // Polled rather than sampled once, because software WebGL in CI draws only a few frames a second.
+  const framesSince = (page: import('@playwright/test').Page, before: number) =>
+    expect
+      .poll(async () => ((await towerState(page))?.frames ?? 0) - before, { timeout: 4000 })
+      .toBeGreaterThan(10);
+
   test('an action keeps rendering after the scene went idle', async ({ page }) => {
-    const [before, after] = await framesAfterClick(page);
-    expect(after).toBeGreaterThan(before + 10);
+    await framesSince(page, await clickDealWhenIdle(page));
   });
 
   test('an action still animates with reduced motion', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    const [before, after] = await framesAfterClick(page);
-    expect(after).toBeGreaterThan(before + 10);
+    await framesSince(page, await clickDealWhenIdle(page));
   });
 });

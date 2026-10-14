@@ -22,8 +22,10 @@ test.describe('with the 3D scene', () => {
     const before = (await towerState(page))?.frames ?? 0;
     await chip.click();
     await expect(chip).toBeHidden();
-    await page.waitForTimeout(1500);
-    expect((await towerState(page))?.frames ?? 0).toBeGreaterThan(before + 10);
+    // The deal animates: polled, because software WebGL in CI draws only a few frames a second.
+    await expect
+      .poll(async () => ((await towerState(page))?.frames ?? 0) - before, { timeout: 4000 })
+      .toBeGreaterThan(10);
     // Used once this session: the chip stays away after a reload.
     await page.reload();
     await expect(page.locator('#stage')).toHaveAttribute('data-state', 'live');
