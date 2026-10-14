@@ -47,7 +47,7 @@ def _breaks(total: float, period: float, length: float, shift: float) -> list[fl
         k += 1
 
 
-def brick_grid(width: float, height: float, *, brick: tuple[float, float] = (0.36, 0.15), mortar: float = 0.025) -> BrickGrid:
+def brick_grid(width: float, height: float, *, brick: tuple[float, float] = (0.5, 0.2), mortar: float = 0.03) -> BrickGrid:
     length, tall = brick
     period = length + mortar
     xs = sorted({0.0, width, *_breaks(width, period, length, 0.0), *_breaks(width, period, length, period / 2)})

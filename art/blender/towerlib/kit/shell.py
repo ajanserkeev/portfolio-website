@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from ..core.spec import BuildContext
+from . import facade
 from .primitives import rounded_box, tube
 
 WALL = 0.2
@@ -13,13 +14,13 @@ def level_shell(ctx: BuildContext, *, kind: str) -> list:
     parts = [rounded_box("shell-floor", (d.width, d.slab, d.depth), color=p["slab"], radius=0.03, at=(0.0, -d.slab, 0.0))]
     if kind == "roof":
         parts.append(rounded_box("shell-parapet", (d.width, 0.5, WALL), color=p["sand-dark"], radius=0.03, at=(0.0, 0.0, -d.depth / 2 + WALL / 2)))
-        return parts
+        return parts + facade.frame(ctx, kind=kind, wall=WALL)
     parts += [
         rounded_box("shell-back", (d.width, inner, WALL), color=p["sand"], radius=0.03, at=(0.0, 0.0, -d.depth / 2 + WALL / 2)),
         rounded_box("shell-left", (WALL, inner, d.depth), color=p["sand-dark"], radius=0.03, at=(-d.width / 2 + WALL / 2, 0.0, 0.0)),
         rounded_box("shell-right", (WALL, inner, d.depth), color=p["sand-dark"], radius=0.03, at=(d.width / 2 - WALL / 2, 0.0, 0.0)),
     ]
-    return parts
+    return parts + facade.frame(ctx, kind=kind, wall=WALL)
 
 
 def back_wall_z(ctx: BuildContext, gap: float = 0.035) -> float:
