@@ -78,15 +78,15 @@ def trash_bin(ctx: BuildContext, name: str, at: Vec3) -> list:
     ]
 
 
-def wall_phone(ctx: BuildContext, name: str, at: Vec3) -> list:
+def wall_phone(ctx: BuildContext, name: str, at: Vec3, *, scale: float = 1.0) -> list:
     """Giant phone on the back wall: the live chat hotspot."""
-    info, p = ctx.screens["phone"], ctx.palette
+    info, p, k = ctx.screens["phone"], ctx.palette, scale
     parts = [
-        rounded_box(f"{name}-body", (1.1, 2.0, 0.12), color=p["ink"], radius=0.12, segments=3, at=at),
-        screen_plane(f"screen-{name}", (0.96, 1.8), uv=info.rect, glow=info.glow, at=(at[0], at[1] + 0.1, at[2] + 0.062)),
+        rounded_box(f"{name}-body", (1.1 * k, 2.0 * k, 0.12), color=p["ink"], radius=0.12 * k, segments=3, at=at),
+        screen_plane(f"screen-{name}", (0.96 * k, 1.8 * k), uv=info.rect, glow=info.glow, at=(at[0], at[1] + 0.1 * k, at[2] + 0.062)),
     ]
-    hitbox(name, (1.1, 2.0, 0.3), at, action="open-chat")
-    anchor(f"{name}-screen", (at[0], at[1] + 1.0, at[2] + 0.07))
+    hitbox(name, (1.1 * k, 2.0 * k, 0.3), at, action="open-chat")
+    anchor(f"{name}-screen", (at[0], at[1] + 1.0 * k, at[2] + 0.07))
     return parts
 
 

@@ -12,8 +12,8 @@ function camera(): PerspectiveCamera {
   return cam;
 }
 
-function box(x: number, y: number, z: number): Mesh {
-  const mesh = new Mesh(new BoxGeometry(2, 2, 2), new MeshBasicMaterial());
+function box(x: number, y: number, z: number, height = 1): Mesh {
+  const mesh = new Mesh(new BoxGeometry(2, height, 2), new MeshBasicMaterial());
   mesh.position.set(x, y, z);
   mesh.updateMatrixWorld(true);
   return mesh;
@@ -32,6 +32,13 @@ describe('projectHint', () => {
     const point = projectHint(box(0, 0, 0), camera(), { ...rect, left: 20, top: 10 });
     expect(point?.x).toBeCloseTo(420, 0);
     expect(projectHint(box(0, 0, 20), camera(), rect)).toBeNull();
+  });
+});
+
+describe('projectHint on tall objects', () => {
+  it('points at the middle of a tall object (a wall phone), not its top near the ceiling', () => {
+    const point = projectHint(box(0, 0, 0, 3), camera(), rect);
+    expect(point?.y).toBeCloseTo(300, 0);
   });
 });
 

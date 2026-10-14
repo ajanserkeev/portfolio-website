@@ -10,12 +10,15 @@ interface Rect {
   height: number;
 }
 
+/** Taller than this (a wall phone, a board), a hint points at the middle: the top is near the ceiling. */
+const TALL = 1.5;
+
 const bounds = new Box3();
 const point = new Vector3();
 
 /**
  * CSS-pixel point of `object` on a canvas at `rect` (the top centre of its bounding box, or the
- * middle with `at: 'centre'`); null when it is outside the camera's depth range.
+ * middle with `at: 'centre'` or when the object is tall); null when outside the depth range.
  */
 export function projectHint(
   object: Object3D,
@@ -26,7 +29,7 @@ export function projectHint(
   bounds.setFromObject(object);
   if (bounds.isEmpty()) return null;
   bounds.getCenter(point);
-  if (at === 'top') point.y = bounds.max.y;
+  if (at === 'top' && bounds.max.y - bounds.min.y <= TALL) point.y = bounds.max.y;
   point.project(camera);
   if (point.z < -1 || point.z > 1) return null;
   return {
