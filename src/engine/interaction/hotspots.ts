@@ -144,3 +144,16 @@ export function createHotspotManager(options: HotspotManagerOptions): HotspotMan
     dispose,
   };
 }
+
+/** Registers the hit boxes of every loaded level and drops those of unloaded ones. */
+export function syncLevelHits(
+  hotspots: Pick<HotspotManager, 'registerLevel' | 'unregisterLevel'>,
+  levelIds: readonly LevelId[],
+  hitsOf: (index: number) => readonly Object3D[] | undefined,
+): void {
+  levelIds.forEach((id, index) => {
+    const hits = hitsOf(index);
+    if (hits) hotspots.registerLevel(id, hits);
+    else hotspots.unregisterLevel(id);
+  });
+}

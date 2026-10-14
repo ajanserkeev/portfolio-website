@@ -1,24 +1,25 @@
-import { Color, DirectionalLight, HemisphereLight, Scene, WebGLRenderer } from 'three';
 import { createAmbientManager } from './ambient';
 import { castUrl, levelFiles, textureUrl } from './assets';
 import { CameraRig } from './camera-rig';
 import { createCapsulePool } from './capsules/capsule-pool';
-import type { CapsuleChannel } from './capsules/types';
 import { type CastLibrary, loadCastLibrary } from './cast/cast-library';
-import { tower } from './config';
-import type { PainId } from './events';
+import { LEVEL_IDS, tower } from './config';
+import { installDebugHandle } from './debug-handle';
 import { bus } from './events';
-import { median, sampleFrameIntervals } from './fps-probe';
 import { createGlbSource } from './glb-source';
 import { greyboxSource } from './greybox';
-import { createHotspotManager } from './interaction/hotspots';
+import { createHotspotManager, syncLevelHits } from './interaction/hotspots';
 import { type LevelSource, withFallback } from './level-asset';
 import { LevelManager } from './level-manager';
 import { liftPosition, type Travel } from './lift';
 import { RenderLoop } from './loop';
 import { createSharedMaterials, loadSharedTextures } from './materials/shared';
+import { bindPage } from './page-bindings';
+import { createRendererAndScene, signalShotReady } from './scene-setup';
 import { measureTravels } from './scroll-binding';
-import { adjustTierByFps, type MotionPolicy, pixelRatioFor, type Tier } from './tiers';
+import { probeTier } from './tier-probe';
+import { type MotionPolicy, pixelRatioFor, type Tier } from './tiers';
+import { wireTowerEvents } from './tower-wiring';
 
 export type LiveTier = Exclude<Tier, 'static'>;
 
@@ -42,25 +43,6 @@ export interface TowerHandle {
   destroy(): void;
 }
 
-export interface TowerDebug {
-  readonly position: number;
-  readonly tier: LiveTier;
-  readonly ready: number[];
-  readonly drawCalls: number;
-  readonly triangles: number;
-  readonly frames: number;
-  /** People from the cast currently in the scene. */
-  readonly actors: number;
-  readonly sources: Record<number, string>;
-  loseContext(): void;
-}
-
-declare global {
-  interface Window {
-    __tower?: TowerDebug;
-  }
-}
-
 export async function startTower(options: StartOptions): Promise<TowerHandle> {
   const { stage, motion } = options;
   let tier = options.tier;
@@ -71,20 +53,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   /** Until this time the floors animate even when ambient motion is off (reduced motion, idle). */
   let interactionUntilMs = 0;
 
-  const renderer = new WebGLRenderer({
-    antialias: tier === 'high',
-    powerPreference: 'high-performance',
-  });
-  renderer.setPixelRatio(pixelRatioFor(tier, window.devicePixelRatio));
-  renderer.setSize(stage.clientWidth, stage.clientHeight, false);
-  stage.append(renderer.domElement);
-
-  const scene = new Scene();
-  scene.background = new Color('#f3ebdd');
-  scene.add(new HemisphereLight('#fff7ea', '#b9a58c', 2.2));
-  const sun = new DirectionalLight('#ffffff', 1.4);
-  sun.position.set(-6, 10, 8);
-  scene.add(sun);
+  const { renderer, scene } = createRendererAndScene(stage, tier);
 
   // Deep links are aligned by src/ui/hash-anchor.ts once the layout settles.
   const rig = new CameraRig(tower, { width: stage.clientWidth, height: stage.clientHeight });
@@ -137,54 +106,19 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   const capsules = createCapsulePool(tower, shared.matcap);
   scene.add(capsules.mesh);
 
-  const painChannelMap: Record<PainId, CapsuleChannel> = {
-    'lost-leads': 'whatsapp',
-    'manual-routine': 'telegram',
-    'need-site': 'default',
-    'need-booking': 'instagram',
-    browsing: 'default',
-  };
-
-  const unbindPain = bus.on('capsule:selected', (e) => {
-    ambient.markActivity();
-    const channel = painChannelMap[e.pain] ?? 'default';
-    capsules.setPersonalCapsule(rig.position, channel);
-    capsules.launchCapsule({ channel });
-    loop.invalidate(2);
-  });
-
-  // Any hotspot (3D click or its DOM twin) wakes the loop so the floor's animation plays.
-  const unbindHotspot = bus.on('hotspot:activated', (e) => {
-    ambient.markActivity();
-    interactionUntilMs = performance.now() + INTERACTION_MS;
-    if (e.action === 'sort-demo') capsules.launchCapsule({ channel: 'default', durationSec: 2.0 });
-    loop.setContinuous('interaction', true);
-    loop.invalidate(2);
-  });
-
-  const unbindDeal = bus.on('deal:run', () => {
-    ambient.markActivity();
-    capsules.launchCapsule({ channel: 'default', durationSec: 2.0 });
-    loop.invalidate(2);
-  });
-
-  const unbindChat = bus.on('chat:user-message', () => {
-    ambient.markActivity();
-    capsules.launchCapsule({ channel: 'telegram', durationSec: 2.0 });
-    loop.invalidate(2);
+  const unbindEvents = wireTowerEvents({
+    ambient,
+    capsules,
+    liftPosition: () => rig.position,
+    invalidate: () => loop.invalidate(2),
+    onInteraction: () => {
+      interactionUntilMs = performance.now() + INTERACTION_MS;
+      loop.setContinuous('interaction', true);
+    },
   });
 
   const levels = new LevelManager(scene, source, tower.levels.length, () => {
-    for (let i = 0; i < tower.levels.length; i++) {
-      const levelId = tower.levels[i]?.id;
-      if (!levelId) continue;
-      const asset = levels.asset(i);
-      if (asset) {
-        hotspots.registerLevel(levelId, asset.hits);
-      } else {
-        hotspots.unregisterLevel(levelId);
-      }
-    }
+    syncLevelHits(hotspots, LEVEL_IDS, (i) => levels.asset(i)?.hits);
     const animated = levels.ready().some((i) => levels.asset(i)?.update !== undefined);
     ambient.setAnimated(animated);
     loop.invalidate();
@@ -209,22 +143,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
       live = true;
       stage.dataset.state = 'live';
       if (options.probeFps) void probe();
-      if (options.shot !== undefined) {
-        // A still frame includes the people: wait for the cast (they spawn when it resolves).
-        void castLibrary.then(() => {
-          loop.invalidate(2);
-          requestAnimationFrame(() =>
-            requestAnimationFrame(() => {
-              let people = 0;
-              scene.traverse((node) => {
-                if (node.userData.castMember) people += 1;
-              });
-              document.documentElement.dataset.shotPeople = String(people);
-              document.documentElement.dataset.shotReady = 'true';
-            }),
-          );
-        });
-      }
+      if (options.shot !== undefined) signalShotReady(scene, castLibrary, () => loop.invalidate(2));
     }
   }
 
@@ -236,25 +155,21 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
     if (id) bus.emit({ type: 'level:reached', level: id });
   }
 
-  async function probe(): Promise<void> {
-    for (let attempt = 0; attempt < 2 && !destroyed; attempt += 1) {
-      loop.setContinuous('probe', true);
-      const intervals = await sampleFrameIntervals(60);
-      loop.setContinuous('probe', false);
-      if (destroyed) return;
-      const next = adjustTierByFps(tier, median(intervals));
-      if (next === tier) return;
-      if (next === 'static') {
-        options.onFallback();
-        return;
-      }
-      tier = next;
-      renderer.setPixelRatio(pixelRatioFor(tier, window.devicePixelRatio));
-      renderer.setSize(stage.clientWidth, stage.clientHeight, false);
-      document.documentElement.dataset.tier = tier;
-      bus.emit({ type: 'tier:changed', tier });
-      loop.invalidate();
-    }
+  function probe(): Promise<void> {
+    return probeTier({
+      loop,
+      tier: () => tier,
+      stopped: () => destroyed,
+      fallback: options.onFallback,
+      apply(next) {
+        tier = next;
+        renderer.setPixelRatio(pixelRatioFor(tier, window.devicePixelRatio));
+        renderer.setSize(stage.clientWidth, stage.clientHeight, false);
+        document.documentElement.dataset.tier = tier;
+        bus.emit({ type: 'tier:changed', tier });
+        loop.invalidate();
+      },
+    });
   }
 
   function onScroll(): void {
@@ -280,97 +195,60 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
     onScroll();
   }
 
-  function onVisibility(): void {
-    if (document.hidden) loop.stop();
-    else {
-      loop.start();
-      loop.invalidate();
-    }
-  }
-
-  function onContextLost(event: Event): void {
-    event.preventDefault();
-    options.onFallback();
-  }
-
-  const stageObserver = new ResizeObserver(onStageResize);
-  const layoutObserver = new ResizeObserver(onLayoutChange);
-  stageObserver.observe(stage);
-  const main = document.querySelector('main.tower');
-  if (main) layoutObserver.observe(main);
-  window.addEventListener('scroll', onScroll, { passive: true });
-  document.addEventListener('visibilitychange', onVisibility);
-  renderer.domElement.addEventListener('webglcontextlost', onContextLost);
+  const unbindPage = bindPage(document, stage, renderer.domElement, {
+    onScroll,
+    onStageResize,
+    onLayoutChange,
+    onVisibility(hidden) {
+      if (hidden) loop.stop();
+      else {
+        loop.start();
+        loop.invalidate();
+      }
+    },
+    onContextLost: options.onFallback,
+  });
 
   rig.setGoal(lastGoal, true);
   levels.update(rig.position, lastGoal, options.shot !== undefined ? 0 : 1);
   loop.start();
   loop.invalidate();
 
-  if (options.debug) {
-    window.__tower = {
-      get position() {
-        return rig.position;
-      },
-      get tier() {
-        return tier;
-      },
-      get ready() {
-        return levels.ready();
-      },
-      get drawCalls() {
-        return renderer.info.render.calls;
-      },
-      get triangles() {
-        return renderer.info.render.triangles;
-      },
-      get frames() {
-        return frames;
-      },
-      get actors() {
-        let count = 0;
-        scene.traverse((node) => {
-          if (node.userData.castMember) count += 1;
-        });
-        return count;
-      },
-      get sources() {
-        return Object.fromEntries(
-          levels
-            .ready()
-            .map((i) => [i, String(levels.asset(i)?.root.userData.source ?? 'greybox')]),
-        );
-      },
-      loseContext: () => renderer.getContext().getExtension('WEBGL_lose_context')?.loseContext(),
-    };
-    void import('./debug-hud').then(({ mountDebugHud }) => mountDebugHud(document.body));
-  }
+  const uninstallDebug = options.debug
+    ? installDebugHandle({
+        renderer,
+        scene,
+        position: () => rig.position,
+        tier: () => tier,
+        ready: () => levels.ready(),
+        frames: () => frames,
+        sources: () =>
+          Object.fromEntries(
+            levels
+              .ready()
+              .map((i) => [i, String(levels.asset(i)?.root.userData.source ?? 'greybox')]),
+          ),
+      })
+    : () => {};
 
   return {
     destroy(): void {
       if (destroyed) return;
       destroyed = true;
       loop.stop();
-      stageObserver.disconnect();
-      layoutObserver.disconnect();
-      window.removeEventListener('scroll', onScroll);
-      document.removeEventListener('visibilitychange', onVisibility);
-      renderer.domElement.removeEventListener('webglcontextlost', onContextLost);
+      unbindPage();
       levels.dispose();
       void castLibrary.then((library) => library?.dispose());
       ambient.dispose();
       for (const item of shared.keep) (item as { dispose?: () => void }).dispose?.();
-      unbindHotspot();
+      unbindEvents();
       hotspots.dispose();
-      unbindPain();
-      unbindDeal();
-      unbindChat();
       capsules.mesh.removeFromParent();
       capsules.dispose();
       renderer.dispose();
       renderer.domElement.remove();
       stage.dataset.state = 'poster';
-      if (options.debug) delete window.__tower;
+      uninstallDebug();
     },
   };
 }

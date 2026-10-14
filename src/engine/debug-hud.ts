@@ -1,4 +1,4 @@
-import type { TowerDebug } from './app';
+import type { TowerDebug } from './debug-handle';
 
 export interface HudStats {
   fps: number;

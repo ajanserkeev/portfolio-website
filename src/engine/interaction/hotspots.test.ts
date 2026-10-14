@@ -133,3 +133,16 @@ describe('HotspotManager', () => {
     manager.dispose();
   });
 });
+
+describe('syncLevelHits', () => {
+  it('registers loaded levels and unregisters the rest', async () => {
+    const { syncLevelHits } = await import('./hotspots');
+    const calls: string[] = [];
+    const fake = {
+      registerLevel: (id: string) => calls.push(`+${id}`),
+      unregisterLevel: (id: string) => calls.push(`-${id}`),
+    };
+    syncLevelHits(fake, ['roof', 'agents'], (i) => (i === 0 ? [] : undefined));
+    expect(calls).toEqual(['+roof', '-agents']);
+  });
+});

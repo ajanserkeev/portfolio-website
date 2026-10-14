@@ -45,7 +45,7 @@
 
 - `debug-handle.ts`: `installDebugHandle(state: DebugState): () => void` — всё про `window.__tower` и HUD.
 - `tower-wiring.ts`: `wireTowerEvents(deps): () => void` — подписки на шину (капсулы по `capsule:selected`/`deal:run`/`chat:user-message`, окно взаимодействия по `hotspot:activated`), возвращает отписку.
-- [ ] Поведение не меняется: существующие e2e (`engine`, `floor-actions`, `cast`, `shot`) — защита. `app.ts` ≤ 250 строк. `pnpm verify`. Commit: `refactor(engine): split debug handle and event wiring out of app.ts`.
+- [x] Поведение не меняется: существующие e2e (`engine`, `floor-actions`, `cast`, `shot`) — защита. `app.ts` ≤ 250 строк. `pnpm verify`. Commit: `refactor(engine): split debug handle and event wiring out of app.ts`.
 
 ### Task 2: Прибытие лифта
 
