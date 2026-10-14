@@ -89,9 +89,13 @@ export function createGlbSource(
     root.userData.source = 'glb';
     const baked = createBakedMaterial(lightmap);
     const { anchors, hits } = prepareLevel(root, baked, shared);
-    const actors = findRobots(root).map(
-      (robot) => new RobotActor(robot, shared.faces, seedFrom(robot.name)),
-    );
+    const robots = findRobots(root);
+    const actors = robots.map((robot) => new RobotActor(robot, shared.faces, seedFrom(robot.name)));
+    const robotTaps = robots.map((robot, i) => ({
+      id: robot.name.replace(/^dyn__/, ''),
+      object: robot,
+      react: () => actors[i]?.react(),
+    }));
     const people = populateLevel(anchors, cast.library, cast.onReady);
     const roofCtrl = id === 'roof' ? createRoofController({ root }) : undefined;
     const crmCtrl = id === 'crm' ? createCrmController({ root }) : undefined;
@@ -111,6 +115,9 @@ export function createGlbSource(
       root,
       anchors,
       hits,
+      get tappables() {
+        return [...robotTaps, ...people.tappables];
+      },
       update: hasUpdate
         ? (timeSec: number) => {
             for (const actor of actors) actor.update(timeSec);

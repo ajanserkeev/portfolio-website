@@ -25,6 +25,28 @@ export function seedFrom(name: string): number {
   return (hash >>> 0) % 1000;
 }
 
+/** A tapped robot: a hop with both arms up, or (annoyed) a head shake on the spot. */
+export function reactionPose(pose: RobotPose, progress: number, annoyed: boolean): RobotPose {
+  const arc = Math.sin(Math.PI * progress);
+  if (annoyed) {
+    return {
+      ...pose,
+      headYaw: 0.35 * Math.sin(progress * Math.PI * 6),
+      headPitch: 0.1,
+      armL: -0.1,
+      armR: -0.1,
+      face: 'annoyed',
+    };
+  }
+  return {
+    ...pose,
+    hover: pose.hover + 0.3 * arc,
+    armL: -2.6 * arc,
+    armR: -2.6 * arc,
+    face: 'happy',
+  };
+}
+
 export function robotPose(timeSec: number, seed: number, activity: RobotActivity): RobotPose {
   const t = timeSec + seed * 1.7;
   const hover = 0.04 * Math.sin(t * 1.6);

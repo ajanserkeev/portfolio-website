@@ -90,7 +90,9 @@
 
 **Files:** Create `src/engine/interaction/reactions.ts`, `.test.ts`; Modify `src/engine/cast/actor.ts` (`react(clip, seconds)`), `src/engine/actors/robot.ts` (`react()`: подпрыгнуть и улыбнуться на 1,2 с; на пятый тап подряд — лицо `annoyed`, пасхалка из брифа), `src/engine/interaction/hotspots.ts` (луч по людям и роботам, если не попал в хитбокс), `src/engine/events.ts` (`{ type: 'actor:tapped'; level; actor }`).
 
-- [ ] Тесты: человек — `wave` на 2 с, затем исходный клип; повторный тап во время реакции продлевает, а не наслаивает; робот — счётчик тапов сбрасывается через 4 с, на 5-й — `annoyed`. e2e: тап по основателю в подвале → `actor:tapped` (через `__tower.lastTap`). Commit: `feat(engine): people wave and robots react when tapped`.
+*При реализации:* этажи отдают `LevelAsset.tappables` (`{ id, object, react }`: люди — по слоту каста `lead`, `creative`…, роботы — по имени без `dyn__`); менеджер хотспотов проверяет луч по их bounding box (дёшево и щедро для пальца), если не попал в хитбокс. Нашёлся старый баг: секции `.level` (z-index 1) перекрывали канвас целиком, и 3D-хотспоты не получали кликов вообще — работали только DOM-двойники. Теперь `.tower` пропускает указатель, а карточки текста (`.level__content`, `.hero__more`) — нет. Канвас слушает `click`, а не `pointerdown`: свайп, начатый на роботе, листает страницу, а не тапает. Для e2e — `__tower.tapTargets` (экранные точки людей и роботов) и `__tower.lastTap`.
+
+- [x] Тесты: человек — `wave` на 2 с, затем исходный клип; повторный тап во время реакции продлевает, а не наслаивает; робот — счётчик тапов сбрасывается через 4 с, на 5-й — `annoyed`. e2e: тап по основателю в подвале → `actor:tapped` (через `__tower.lastTap`). Commit: `feat(engine): people wave and robots react when tapped`.
 
 ### Task 7: Визуальный прогон и документация
 

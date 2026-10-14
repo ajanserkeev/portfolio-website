@@ -175,6 +175,7 @@ export type TowerEvent =
   | { type: 'lift:moved'; position: number }
   | { type: 'level:reached'; level: LevelId }   // лифт поравнялся с этажом (в том числе проездом)
   | { type: 'lift:arrived'; level: LevelId }    // лифт остановился на этаже: двери, «дзынь»
+  | { type: 'actor:tapped'; level: LevelId; actor: string }   // тап по человеку (слот каста) или роботу
   | { type: 'hint:moved'; level: LevelId; action: string; x: number; y: number; visible: boolean }
     // где на экране (CSS px) главный объект этажа — для HTML-подсказки src/ui/pins.ts
   | { type: 'tier:changed'; tier: 'high' | 'lite' | 'static' }

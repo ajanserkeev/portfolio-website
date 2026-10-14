@@ -45,6 +45,11 @@ export function wireTowerEvents(deps: WiringDeps): () => void {
       }
       wake();
     }),
+    // A tapped person or robot reacts: let the floor animate for a moment.
+    bus.on('actor:tapped', () => {
+      deps.onInteraction();
+      wake();
+    }),
     bus.on('deal:run', () => {
       deps.capsules.launchCapsule({ channel: 'default', durationSec: 2.0 });
       wake();

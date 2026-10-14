@@ -54,4 +54,28 @@ describe('createActor', () => {
     actor.update(0.5);
     expect(torso.position.x).toBe(x);
   });
+
+  it('reacts with a clip for a while, then returns to its own clip', () => {
+    const { root, clips } = rig();
+    const actor = createActor(root, clips, { clip: 'idle', speed: 1, phase: 0 });
+    actor.react('wave', 2);
+    expect(actor.clip).toBe('wave');
+    actor.update(1.5);
+    // A second tap extends the wave rather than starting another one.
+    actor.react('wave', 2);
+    actor.update(1.5);
+    expect(actor.clip).toBe('wave');
+    actor.update(0.6);
+    expect(actor.clip).toBe('idle');
+  });
+
+  it('lets the floor take over in the middle of a reaction', () => {
+    const { root, clips } = rig();
+    const actor = createActor(root, clips, { clip: 'wave', speed: 1, phase: 0 });
+    actor.react('idle', 2);
+    actor.play('wave');
+    expect(actor.clip).toBe('wave');
+    actor.update(3);
+    expect(actor.clip).toBe('wave');
+  });
 });

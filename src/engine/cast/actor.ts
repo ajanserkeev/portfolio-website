@@ -1,4 +1,5 @@
 import { type AnimationAction, type AnimationClip, AnimationMixer, type Object3D } from 'three';
+import { createReactionTimer } from '../interaction/reactions';
 
 export interface ActorOptions {
   clip: string;
@@ -12,10 +13,15 @@ export interface Actor {
   readonly root: Object3D;
   readonly clip: string;
   update(dtSeconds: number): void;
-  /** Cross-fades to another clip; unknown names fall back to 'idle'. */
+  /** Cross-fades to another clip; unknown names fall back to 'idle'. Ends a reaction. */
   play(clip: string, fadeSeconds?: number): void;
+  /** Plays `clip` for `seconds` (a tap), then returns to the clip set by play(). */
+  react(clip: string, seconds: number): void;
   dispose(): void;
 }
+
+/** Cross-fade into and out of a tap reaction. */
+const REACTION_FADE = 0.2;
 
 /** One person from the cast: an AnimationMixer over a cloned skeleton. */
 export function createActor(
@@ -28,10 +34,13 @@ export function createActor(
   let disposed = false;
   let name = '';
   let action: AnimationAction | null = null;
+  /** The clip the floor asked for; reactions return to it. */
+  let base = options.clip;
+  const reaction = createReactionTimer(0);
 
   const resolve = (clip: string) => (clips.has(clip) ? clip : 'idle');
 
-  function play(clip: string, fadeSeconds = 0): void {
+  function show(clip: string, fadeSeconds = 0): void {
     const next = resolve(clip);
     const source = clips.get(next);
     if (disposed || !source || next === name) return;
@@ -42,7 +51,7 @@ export function createActor(
     name = next;
   }
 
-  play(options.clip);
+  show(options.clip);
   // Pose the first frame now: until the floor animates (or forever with reduced motion) the
   // person stands in a pose instead of the rig's T-pose. (play() assigned `action`.)
   const first = action as AnimationAction | null;
@@ -55,9 +64,18 @@ export function createActor(
       return name;
     },
     update(dtSeconds: number): void {
-      if (!disposed) mixer.update(dtSeconds);
+      if (disposed) return;
+      if (reaction.update(dtSeconds)) show(base, REACTION_FADE);
+      mixer.update(dtSeconds);
     },
-    play,
+    play(clip, fadeSeconds) {
+      base = clip;
+      reaction.cancel();
+      show(clip, fadeSeconds);
+    },
+    react(clip, seconds) {
+      if (reaction.trigger(seconds)) show(clip, REACTION_FADE);
+    },
     dispose(): void {
       if (disposed) return;
       disposed = true;

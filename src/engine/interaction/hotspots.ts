@@ -1,7 +1,8 @@
-import { type Camera, type Object3D, Raycaster, Vector2 } from 'three';
+import { Box3, type Camera, type Object3D, Raycaster, Vector2, Vector3 } from 'three';
 import { FLOOR_ACTIONS } from '../../ui/floor-actions';
 import { LEVEL_IDS, type LevelId } from '../config';
 import { bus as defaultBus, type TowerBus } from '../events';
+import type { LevelAsset, Tappable } from '../level-asset';
 import { createHintEmitter, projectHint } from './hints';
 
 export interface HotspotManagerOptions {
@@ -12,11 +13,17 @@ export interface HotspotManagerOptions {
 }
 
 export interface HotspotManager {
-  registerLevel(levelId: LevelId, hits: readonly Object3D[]): void;
+  registerLevel(
+    levelId: LevelId,
+    hits: readonly Object3D[],
+    tappables?: () => readonly Tappable[],
+  ): void;
   unregisterLevel(levelId: LevelId): void;
   trigger(levelId: LevelId, action: string): void;
   handlePointerDown(event: MouseEvent | PointerEvent): boolean;
   handlePointerMove(event: MouseEvent | PointerEvent): boolean;
+  /** Debug and e2e: where each loaded person and robot is on screen. */
+  tapTargets(): Array<{ level: LevelId; id: string; x: number; y: number }>;
   /** After a render: emits `hint:moved` for the main object of the floor the lift stands at. */
   updateHint(position: number, settled: boolean): void;
   dispose(): void;
@@ -46,6 +53,9 @@ export function createHotspotManager(options: HotspotManagerOptions): HotspotMan
   const vibrate = options.vibrate ?? defaultVibrate;
 
   const levelHits = new Map<LevelId, readonly Object3D[]>();
+  const levelTappables = new Map<LevelId, () => readonly Tappable[]>();
+  const bounds = new Box3();
+  const point = new Vector3();
   const raycaster = new Raycaster();
   const pointerNdc = new Vector2();
 
@@ -91,6 +101,25 @@ export function createHotspotManager(options: HotspotManagerOptions): HotspotMan
     }
   }
 
+  /** The nearest person or robot under the pointer (their bounding boxes: generous on phones). */
+  function raycastTappables(): { tappable: Tappable; levelId: LevelId } | null {
+    raycaster.setFromCamera(pointerNdc, camera);
+    let best: { tappable: Tappable; levelId: LevelId } | null = null;
+    let bestDistance = Number.POSITIVE_INFINITY;
+    for (const [levelId, list] of levelTappables) {
+      for (const tappable of list()) {
+        bounds.setFromObject(tappable.object);
+        if (!raycaster.ray.intersectBox(bounds, point)) continue;
+        const distance = point.distanceTo(raycaster.ray.origin);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          best = { tappable, levelId };
+        }
+      }
+    }
+    return best;
+  }
+
   function trigger(levelId: LevelId, action: string): void {
     vibrate(10);
     bus.emit({ type: 'hotspot:activated', level: levelId, action });
@@ -99,15 +128,21 @@ export function createHotspotManager(options: HotspotManagerOptions): HotspotMan
   function handlePointerDown(event: MouseEvent | PointerEvent): boolean {
     if (!toNdc(event)) return false;
     const target = raycastHits();
-    if (!target) return false;
-
-    trigger(target.levelId, actionOf(target.hit));
+    if (target) {
+      trigger(target.levelId, actionOf(target.hit));
+      return true;
+    }
+    const someone = raycastTappables();
+    if (!someone) return false;
+    vibrate(10);
+    someone.tappable.react();
+    bus.emit({ type: 'actor:tapped', level: someone.levelId, actor: someone.tappable.id });
     return true;
   }
 
   function handlePointerMove(event: MouseEvent | PointerEvent): boolean {
     if (!toNdc(event)) return false;
-    const target = raycastHits();
+    const target = raycastHits() ?? raycastTappables();
     if (target) {
       canvas.style.cursor = 'pointer';
       return true;
@@ -124,7 +159,8 @@ export function createHotspotManager(options: HotspotManagerOptions): HotspotMan
     handlePointerMove(ev);
   };
 
-  canvas.addEventListener?.('pointerdown', onPointerDown as EventListener);
+  // `click`, not `pointerdown`: a swipe that starts on a robot scrolls the page instead of tapping it.
+  canvas.addEventListener?.('click', onPointerDown as EventListener);
   canvas.addEventListener?.('pointermove', onPointerMove as EventListener);
 
   const emitHint = createHintEmitter((event) => bus.emit(event));
@@ -139,19 +175,36 @@ export function createHotspotManager(options: HotspotManagerOptions): HotspotMan
     emitHint({ level, action, x: point?.x ?? 0, y: point?.y ?? 0, visible: point !== null });
   }
 
-  function registerLevel(levelId: LevelId, hits: readonly Object3D[]): void {
+  function tapTargets(): Array<{ level: LevelId; id: string; x: number; y: number }> {
+    const rect = canvas.getBoundingClientRect();
+    return [...levelTappables].flatMap(([level, list]) =>
+      list().flatMap((t) => {
+        const at = projectHint(t.object, camera, rect, 'centre');
+        return at ? [{ level, id: t.id, ...at }] : [];
+      }),
+    );
+  }
+
+  function registerLevel(
+    levelId: LevelId,
+    hits: readonly Object3D[],
+    tappables: () => readonly Tappable[] = () => [],
+  ): void {
     levelHits.set(levelId, hits);
+    levelTappables.set(levelId, tappables);
   }
 
   function unregisterLevel(levelId: LevelId): void {
     levelHits.delete(levelId);
+    levelTappables.delete(levelId);
   }
 
   function dispose(): void {
-    canvas.removeEventListener?.('pointerdown', onPointerDown as EventListener);
+    canvas.removeEventListener?.('click', onPointerDown as EventListener);
     canvas.removeEventListener?.('pointermove', onPointerMove as EventListener);
     canvas.style.cursor = '';
     levelHits.clear();
+    levelTappables.clear();
   }
 
   return {
@@ -161,19 +214,20 @@ export function createHotspotManager(options: HotspotManagerOptions): HotspotMan
     handlePointerDown,
     handlePointerMove,
     updateHint,
+    tapTargets,
     dispose,
   };
 }
 
-/** Registers the hit boxes of every loaded level and drops those of unloaded ones. */
+/** Registers the hit boxes and tappables of every loaded level and drops those of unloaded ones. */
 export function syncLevelHits(
   hotspots: Pick<HotspotManager, 'registerLevel' | 'unregisterLevel'>,
   levelIds: readonly LevelId[],
-  hitsOf: (index: number) => readonly Object3D[] | undefined,
+  assetOf: (index: number) => Pick<LevelAsset, 'hits' | 'tappables'> | null | undefined,
 ): void {
   levelIds.forEach((id, index) => {
-    const hits = hitsOf(index);
-    if (hits) hotspots.registerLevel(id, hits);
+    const asset = assetOf(index);
+    if (asset) hotspots.registerLevel(id, asset.hits, () => asset.tappables ?? []);
     else hotspots.unregisterLevel(id);
   });
 }

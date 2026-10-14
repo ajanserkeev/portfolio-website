@@ -121,7 +121,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   });
 
   const levels = new LevelManager(scene, source, tower.levels.length, () => {
-    syncLevelHits(hotspots, LEVEL_IDS, (i) => levels.asset(i)?.hits);
+    syncLevelHits(hotspots, LEVEL_IDS, (i) => levels.asset(i));
     elevator.showLevels(levels.ready());
     ambient.setAnimated(levels.ready().some((i) => levels.asset(i)?.update !== undefined));
     loop.invalidate();
@@ -220,6 +220,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
         levels,
         frames: () => frames,
         lift: () => ({ doors: elevator.openness, cabinY: elevator.cabinY }),
+        hotspots,
       })
     : () => {};
 

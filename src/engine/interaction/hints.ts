@@ -13,16 +13,20 @@ interface Rect {
 const bounds = new Box3();
 const point = new Vector3();
 
-/** CSS-pixel point at the top centre of `hit` on a canvas at `rect`; null when off the depth range. */
+/**
+ * CSS-pixel point of `object` on a canvas at `rect` (the top centre of its bounding box, or the
+ * middle with `at: 'centre'`); null when it is outside the camera's depth range.
+ */
 export function projectHint(
-  hit: Object3D,
+  object: Object3D,
   camera: Camera,
   rect: Rect,
+  at: 'top' | 'centre' = 'top',
 ): { x: number; y: number } | null {
-  bounds.setFromObject(hit);
+  bounds.setFromObject(object);
   if (bounds.isEmpty()) return null;
   bounds.getCenter(point);
-  point.y = bounds.max.y;
+  if (at === 'top') point.y = bounds.max.y;
   point.project(camera);
   if (point.z < -1 || point.z > 1) return null;
   return {

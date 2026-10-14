@@ -1,11 +1,21 @@
 import type { Material, Mesh, Object3D, Texture } from 'three';
 
+/** Someone on a floor who reacts to a tap: a person from the cast or a robot. */
+export interface Tappable {
+  /** Cast slot or robot name, e.g. `founder-lead`, `op-1`. */
+  readonly id: string;
+  readonly object: Object3D;
+  react(): void;
+}
+
 export interface LevelAsset {
   readonly root: Object3D;
   /** Anchor nodes by name without the 'anchor__' prefix. */
   readonly anchors: ReadonlyMap<string, Object3D>;
   /** Invisible hit boxes for pointer interaction. */
   readonly hits: readonly Object3D[];
+  /** People and robots that react to a tap (people appear once the cast has loaded). */
+  readonly tappables?: readonly Tappable[];
   /** Per-frame animation of this level (robots and the like). */
   update?(timeSec: number): void;
   dispose(): void;

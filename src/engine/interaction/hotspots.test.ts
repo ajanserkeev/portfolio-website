@@ -150,6 +150,41 @@ describe('HotspotManager', () => {
     manager.updateHint(1, true);
     expect(hints).toHaveLength(2);
   });
+  it('lets people and robots react to a tap when no hotspot is under the pointer', () => {
+    const taps: Array<TowerEventOf<'actor:tapped'>> = [];
+    const activated: unknown[] = [];
+    bus.on('actor:tapped', (ev) => taps.push(ev));
+    bus.on('hotspot:activated', (ev) => activated.push(ev));
+    const manager = createHotspotManager({ canvas, camera, bus, vibrate: vibrateMock });
+    const person = new Mesh(new BoxGeometry(1, 2, 1), new MeshBasicMaterial());
+    person.updateMatrixWorld(true);
+    const react = vi.fn();
+    manager.registerLevel('basement', [], () => [{ id: 'founder-lead', object: person, react }]);
+
+    expect(manager.handlePointerDown({ clientX: 400, clientY: 300 } as PointerEvent)).toBe(true);
+    expect(react).toHaveBeenCalledTimes(1);
+    expect(taps).toEqual([{ type: 'actor:tapped', level: 'basement', actor: 'founder-lead' }]);
+    expect(activated).toEqual([]);
+    // Off to the side: nobody there.
+    expect(manager.handlePointerDown({ clientX: 20, clientY: 20 } as PointerEvent)).toBe(false);
+  });
+
+  it('prefers the hotspot when a person stands in front of it', () => {
+    const activated: unknown[] = [];
+    bus.on('hotspot:activated', (ev) => activated.push(ev));
+    const manager = createHotspotManager({ canvas, camera, bus, vibrate: vibrateMock });
+    const hit = new Mesh(new BoxGeometry(2, 2, 2), new MeshBasicMaterial());
+    hit.name = 'hit__deal';
+    hit.updateMatrixWorld(true);
+    const person = new Mesh(new BoxGeometry(1, 2, 1), new MeshBasicMaterial());
+    person.position.z = 3;
+    person.updateMatrixWorld(true);
+    const react = vi.fn();
+    manager.registerLevel('crm', [hit], () => [{ id: 'clerk', object: person, react }]);
+    manager.handlePointerDown({ clientX: 400, clientY: 300 } as PointerEvent);
+    expect(activated).toHaveLength(1);
+    expect(react).not.toHaveBeenCalled();
+  });
 });
 
 describe('syncLevelHits', () => {
@@ -160,7 +195,7 @@ describe('syncLevelHits', () => {
       registerLevel: (id: string) => calls.push(`+${id}`),
       unregisterLevel: (id: string) => calls.push(`-${id}`),
     };
-    syncLevelHits(fake, ['roof', 'agents'], (i) => (i === 0 ? [] : undefined));
+    syncLevelHits(fake, ['roof', 'agents'], (i) => (i === 0 ? { hits: [] } : undefined));
     expect(calls).toEqual(['+roof', '-agents']);
   });
 });

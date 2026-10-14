@@ -194,6 +194,13 @@ pre,
   position: relative;
   z-index: 1;
   padding-bottom: 7rem;
+  /* The open space between the text cards belongs to the 3D scene underneath (taps, hover). */
+  pointer-events: none;
+}
+
+.level__content,
+.hero__more {
+  pointer-events: auto;
 }
 
 /* padding-bottom keeps the lift standing while the text scrolls away, so deep links never land mid-travel. */

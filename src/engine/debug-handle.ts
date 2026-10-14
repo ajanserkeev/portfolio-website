@@ -1,4 +1,7 @@
 import type { Scene, WebGLRenderer } from 'three';
+import type { LevelId } from './config';
+import { bus } from './events';
+import type { HotspotManager } from './interaction/hotspots';
 import type { LevelManager } from './level-manager';
 import type { Tier } from './tiers';
 
@@ -15,6 +18,10 @@ export interface TowerDebug {
   readonly sources: Record<number, string>;
   /** The 3D lift: how open its doors are (0…1) and where the cabin floor is. */
   readonly lift: { doors: number; cabinY: number };
+  /** The last person or robot tapped. */
+  readonly lastTap: { level: LevelId; actor: string } | null;
+  /** Where each loaded person and robot is on screen (CSS px). */
+  readonly tapTargets: ReturnType<HotspotManager['tapTargets']>;
   loseContext(): void;
 }
 
@@ -32,6 +39,7 @@ export interface DebugSources {
   levels: Pick<LevelManager, 'ready' | 'asset'>;
   frames(): number;
   lift(): { doors: number; cabinY: number };
+  hotspots: Pick<HotspotManager, 'tapTargets'>;
 }
 
 /** People from the cast in `scene` (each spawned root carries userData.castMember). */
@@ -44,6 +52,10 @@ export function countActors(scene: Scene): number {
 }
 
 export function installDebugHandle(s: DebugSources): () => void {
+  let lastTap: TowerDebug['lastTap'] = null;
+  const offTap = bus.on('actor:tapped', (e) => {
+    lastTap = { level: e.level, actor: e.actor };
+  });
   window.__tower = {
     get position() {
       return s.position();
@@ -76,10 +88,17 @@ export function installDebugHandle(s: DebugSources): () => void {
     get lift() {
       return s.lift();
     },
+    get lastTap() {
+      return lastTap;
+    },
+    get tapTargets() {
+      return s.hotspots.tapTargets();
+    },
     loseContext: () => s.renderer.getContext().getExtension('WEBGL_lose_context')?.loseContext(),
   };
   void import('./debug-hud').then(({ mountDebugHud }) => mountDebugHud(document.body));
   return () => {
+    offTap();
     delete window.__tower;
   };
 }

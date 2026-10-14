@@ -1,5 +1,23 @@
 import { describe, expect, it } from 'vitest';
-import { parseActivity, robotPose, seedFrom } from './robot-pose';
+import { parseActivity, reactionPose, robotPose, seedFrom } from './robot-pose';
+
+describe('reactionPose', () => {
+  const base = robotPose(1, 1, 'typing');
+
+  it('hops with both arms up and a happy face', () => {
+    const pose = reactionPose(base, 0.5, false);
+    expect(pose.hover).toBeGreaterThan(base.hover + 0.2);
+    expect(pose.armL).toBeLessThan(-2);
+    expect(pose.face).toBe('happy');
+    expect(reactionPose(base, 0, false).hover).toBeCloseTo(base.hover);
+  });
+
+  it('shakes its head without a hop when annoyed', () => {
+    const pose = reactionPose(base, 0.5, true);
+    expect(pose.face).toBe('annoyed');
+    expect(pose.hover).toBeCloseTo(base.hover);
+  });
+});
 
 describe('robotPose', () => {
   it('is deterministic for the same time and seed', () => {

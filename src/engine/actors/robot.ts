@@ -1,6 +1,14 @@
 import type { Mesh, MeshBasicMaterial, Object3D, Texture } from 'three';
+import { createReactionTimer, createTapCounter } from '../interaction/reactions';
 import { faceUvOffset } from './faces';
-import { parseActivity, type RobotActivity, robotPose } from './robot-pose';
+import { parseActivity, type RobotActivity, reactionPose, robotPose } from './robot-pose';
+
+/** How long a tapped robot reacts, and how many taps in a row it takes to annoy it. */
+const REACTION_SECONDS = 1.2;
+const ANNOYED_AT = 5;
+const TAP_WINDOW_SECONDS = 4;
+/** Longest gap one frame may advance a reaction by (the floor may have been idle). */
+const MAX_STEP_SECONDS = 0.1;
 
 /** Robot roots carry extras.role === 'robot' (set by the factory's build_robot). */
 export function findRobots(root: Object3D): Object3D[] {
@@ -21,6 +29,10 @@ export class RobotActor {
   private readonly armR: Object3D | undefined;
   private readonly faceTexture: Texture | null;
   private readonly faceMaterial: MeshBasicMaterial | null;
+  private readonly reaction = createReactionTimer(REACTION_SECONDS);
+  private readonly taps = createTapCounter(TAP_WINDOW_SECONDS);
+  private annoyed = false;
+  private lastTime: number | undefined;
 
   constructor(root: Object3D, faces: MeshBasicMaterial, seed: number) {
     this.root = root;
@@ -44,8 +56,20 @@ export class RobotActor {
     }
   }
 
+  /** A tap: hop and smile; the fifth tap in a row gets an annoyed look instead. */
+  react(nowSeconds: number = performance.now() / 1000): void {
+    this.annoyed = this.taps.tap(nowSeconds) >= ANNOYED_AT;
+    this.reaction.trigger();
+  }
+
   update(timeSec: number): void {
-    const pose = robotPose(timeSec, this.seed, this.activity);
+    const step = this.lastTime === undefined ? 0 : timeSec - this.lastTime;
+    this.lastTime = timeSec;
+    this.reaction.update(Math.min(Math.max(step, 0), MAX_STEP_SECONDS));
+    const own = robotPose(timeSec, this.seed, this.activity);
+    const pose = this.reaction.active
+      ? reactionPose(own, this.reaction.progress, this.annoyed)
+      : own;
     this.root.position.y = this.baseY + pose.hover;
     if (this.head) {
       this.head.rotation.y = pose.headYaw;
