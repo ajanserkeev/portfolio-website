@@ -96,4 +96,4 @@
 
 ### Task 7: Визуальный прогон и документация
 
-- [ ] Скриншоты всех этажей (телефон, десктоп) с лифтом; постеры `pnpm posters`; `docs/plan/07-redesign.md` — статус этапа 3. Commit: `docs: record stage 3`.
+- [x] Скриншоты всех этажей (телефон, десктоп) с лифтом; постеры `pnpm posters`; `docs/plan/07-redesign.md` — статус этапа 3. Commit: `docs: record stage 3`.
