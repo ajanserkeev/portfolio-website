@@ -67,12 +67,14 @@
 
 ### Task 4: Шахта и кабина
 
-**Files:** Create `src/engine/elevator/elevator-model.ts` (геометрия), `src/engine/elevator/elevator.ts` (склейка: позиция кабины = `levelBaseY(position)`, двери, стрелка); Modify `scene/tower.json` (`"shaft": { "x": -5.2, "z": 2.2, "width": 1.15, "depth": 1.15 }`), `src/engine/config.ts` (+ тест схемы), `scene/camera-fixtures.json`, `src/engine/app.ts`, `art/blender/levels/{agents,booking,workshop}.py` (фикусы из угла шахты), `art/blender/levels/*` — общий тест: ни один предмет этажа не заходит в объём шахты, `docs/02-implementation-plan.md` (3.1 — `shaft`).
+**Files:** Create `src/engine/elevator/elevator-model.ts` (геометрия), `src/engine/elevator/elevator.ts` (склейка: позиция кабины = `levelBaseY(position)`, двери, стрелка); Modify `scene/tower.json` (`"shaft": { "x": -5.2, "z": 2.2, "width": 1.15, "depth": 1.15 }`), `src/engine/config.ts` (+ тест схемы), `scene/camera-fixtures.json`, `src/engine/app.ts`, `art/blender/levels/{agents,booking,workshop,basement}.py` (фикусы и кофейная стойка подвала — из угла шахты), `art/blender/levels/*` — общий тест: ни один предмет этажа не заходит в объём шахты, `docs/02-implementation-plan.md` (3.1 — `shaft`).
 
-Модель: четыре латунные стойки на всю высоту башни, рамы-кольца на уровне каждого перекрытия, «машинное отделение» над крышей; кабина — пол, потолок с лампой (glow), задняя и боковые стенки цвета чернил, две латунные створки спереди; над проёмом — кремовый циферблат с чернильной стрелкой. Всё — `mergeGeometries` с цветом в вершинах: шахта 1 draw call, кабина 1, створки 1 (`InstancedMesh` × 2), стрелка 1.
+Модель: четыре латунные стойки, рамы-кольца на уровне каждого перекрытия, «машинное отделение» над крышей; кабина — чернильные пол и потолок со светлой панелью-лампой, кремовая обшивка с латунным поручнем, латунные косяки, две латунные створки спереди; над проёмом — кремовый циферблат с чернильной стрелкой. Всё — `mergeGeometries` с цветом в вершинах: шахта 1 draw call, кабина 1, створки 2, стрелка 1.
 
-- [ ] Тесты: `elevatorModel(cfg)` — bounding box шахты в заданном объёме и по высоте от пола подвала до крыши + 2,8 м; кабина целиком внутри шахты. Blender-тест: `assert_clear_of_shaft(level)` для всех шести этажей. e2e: `?tier=lite&debug=1` на этажах 0, 3, 5 — draw calls ≤ 60; `__tower.lift` (`{ doors, cabinY }`) — двери открыты после остановки.
-- [ ] `pnpm art:build agents booking workshop`, `pnpm fixtures:camera`, `pnpm verify`. Commit: `feat(engine): a brass lift shaft with a cabin that rides with the camera`.
+*Расхождения при реализации:* стенки кабины цвета чернил через открытые двери читались как чёрная дыра — обшивка кремовая. Лампа — цвет в вершинах, а не материал `glow`: лишний материал = лишний draw call. Шахта собрана поэтажно сверху вниз, и `showLevels(ready)` через `drawRange` рисует только этажи, которые загружены: иначе стойки висели в пустоте ниже и выше загруженных этажей. Монтаж в сцену — `mountElevator()` в `elevator.ts`, чтобы `app.ts` остался ≤ 250 строк.
+
+- [x] Тесты: `elevatorModel(cfg)` — bounding box шахты в заданном объёме и по высоте от пола подвала до крыши + 2,8 м; кабина целиком внутри шахты. Blender-тест: `assert_clear_of_shaft(level)` для всех шести этажей. e2e: `?tier=lite&debug=1` на этажах 0, 3, 5 — draw calls ≤ 60; `__tower.lift` (`{ doors, cabinY }`) — двери открыты после остановки.
+- [x] `pnpm art:build agents booking workshop`, `pnpm fixtures:camera`, `pnpm verify`. Commit: `feat(engine): a brass lift shaft with a cabin that rides with the camera`.
 
 ### Task 5: Подсказки над объектами
 

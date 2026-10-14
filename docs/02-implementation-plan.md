@@ -114,6 +114,7 @@
 - **Уровень** `index` (0 — крыша, 5 — подвал): верх пола на `y = -index × level.height`, центр пола в `x = 0, z = 0`. Пол занимает `x ∈ [-width/2, width/2]`, `z ∈ [-depth/2, depth/2]`, задняя стена на `z = -depth/2`.
 - **Порядок `levels`** фиксирован: `roof, agents, crm, booking, workshop, basement`.
 - **Камера:** `fovDeg` (вертикальный), `pitchDeg`, `yawDeg`, `targetHeight`, `travelBulge` (отъезд камеры в середине перегона), правила кадра `portrait` / `landscape`.
+- **Шахта лифта** `shaft: { x, z, width, depth }` — объём в переднем левом углу каждого этажа, через всю высоту башни. Её строит движок (план 07d); на этажах в этом объёме ничего не ставится (тест `art/tests/blender/test_shaft_clearance.py`).
 - Python переводит координаты в систему Blender функцией `to_blender((x, y, z)) = (x, -z, y)` (обратная к экспорту glTF «+Y up»).
 
 ### 3.2. GLB-этаж

@@ -31,6 +31,12 @@ const schema = z.object({
     landscape: frameRule,
   }),
   tube: z.object({ x: z.number(), z: z.number(), radius: z.number().positive() }),
+  shaft: z.object({
+    x: z.number(),
+    z: z.number(),
+    width: z.number().positive(),
+    depth: z.number().positive(),
+  }),
 });
 
 describe('scene/tower.json', () => {
@@ -67,5 +73,13 @@ describe('level helpers', () => {
   it('keeps the tower clear of the desktop text column, which starts at 60vw', () => {
     const { centerX, fitWidth } = tower.camera.landscape;
     expect(centerX + fitWidth / 2).toBeLessThanOrEqual(0.56);
+  });
+
+  it('keeps the lift shaft inside the floor footprint, in the open front half', () => {
+    const { shaft, level } = tower;
+    expect(shaft.x - shaft.width / 2).toBeGreaterThanOrEqual(-level.width / 2);
+    expect(shaft.x + shaft.width / 2).toBeLessThanOrEqual(level.width / 2);
+    expect(shaft.z - shaft.depth / 2).toBeGreaterThan(0);
+    expect(shaft.z + shaft.depth / 2).toBeLessThanOrEqual(level.depth / 2);
   });
 });

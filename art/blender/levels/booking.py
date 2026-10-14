@@ -37,7 +37,7 @@ def build(ctx: BuildContext) -> None:
     props.wall_clock(ctx, "clock", (-5.45, 2.4, 0.2), yaw_deg=90.0)
 
     # Atmosphere: decorative plants and ceiling lamps
-    props.plant(ctx, "plant-1", (-5.2, 0.0, 1.8))
+    props.plant(ctx, "plant-1", (-5.2, 0.0, 0.8))  # clear of the lift shaft (front-left corner)
     props.plant(ctx, "plant-2", (5.2, 0.0, -2.2))
     for i, x in enumerate((-3.6, 0.0, 3.4)):
         props.ceiling_lamp(ctx, f"lamp-{i}", (x, 3.55, -0.6))

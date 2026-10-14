@@ -7,6 +7,7 @@ export interface TowerState {
   drawCalls: number;
   triangles: number;
   frames: number;
+  lift: { doors: number; cabinY: number };
 }
 
 export function towerState(page: Page): Promise<TowerState | null> {
@@ -20,6 +21,7 @@ export function towerState(page: Page): Promise<TowerState | null> {
           drawCalls: t.drawCalls,
           triangles: t.triangles,
           frames: t.frames,
+          lift: { ...t.lift },
         }
       : null;
   });

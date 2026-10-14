@@ -30,6 +30,8 @@ export interface TowerConfig {
   levels: ReadonlyArray<{ id: LevelId; kind: LevelKind }>;
   camera: CameraConfig;
   tube: { x: number; z: number; radius: number };
+  /** Lift shaft footprint (front-left corner of every floor): x/z centre, width along x, depth along z. */
+  shaft: { x: number; z: number; width: number; depth: number };
 }
 
 /** Shape is validated by config.test.ts; the cast is safe while that test passes. */

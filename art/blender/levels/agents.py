@@ -55,6 +55,6 @@ def build(ctx: BuildContext) -> None:
     props.server_rack(ctx, "rack", (-5.35, 0.0, -2.35))
     props.coffee_counter(ctx, "coffee", (2.6, 0.0, -2.45))
     props.plant(ctx, "plant-1", (5.2, 0.0, -2.35))
-    props.plant(ctx, "plant-2", (-5.3, 0.0, 1.9))
+    props.plant(ctx, "plant-2", (-5.3, 0.0, 0.8))  # clear of the lift shaft (front-left corner)
     for i, x in enumerate((-3.6, 0.0, 3.4)):
         props.ceiling_lamp(ctx, f"lamp-{i}", (x, 3.55, -0.6))

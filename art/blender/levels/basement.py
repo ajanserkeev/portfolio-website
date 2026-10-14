@@ -42,7 +42,7 @@ def build(ctx: BuildContext) -> None:
 
     props.server_rack(ctx, "rack-1", (-5.35, 0.0, -2.35))
     props.server_rack(ctx, "rack-2", (5.35, 0.0, -2.35))
-    props.coffee_counter(ctx, "coffee", (-4.2, 0.0, 1.2), yaw_deg=45.0)
+    props.coffee_counter(ctx, "coffee", (-3.6, 0.0, 0.9), yaw_deg=30.0)  # clear of the lift shaft
     props.plant(ctx, "plant-1", (4.8, 0.0, 1.5))
     for i, x in enumerate((-3.6, 0.0, 3.4)):
         props.ceiling_lamp(ctx, f"lamp-{i}", (x, 3.55, -0.6))

@@ -6,6 +6,7 @@ import { type CastLibrary, loadCastLibrary } from './cast/cast-library';
 import { LEVEL_IDS, tower } from './config';
 import { installDebugHandle } from './debug-handle';
 import { createLiftAnnouncer } from './elevator/arrival';
+import { mountElevator } from './elevator/elevator';
 import { bus } from './events';
 import { createGlbSource } from './glb-source';
 import { greyboxSource } from './greybox';
@@ -89,10 +90,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   const ambient = createAmbientManager({
     motion,
     glowMaterial: shared.glow,
-    mediaQuery:
-      typeof window !== 'undefined'
-        ? window.matchMedia('(prefers-reduced-motion: reduce)')
-        : undefined,
+    mediaQuery: window.matchMedia('(prefers-reduced-motion: reduce)'),
     onActiveChange: (active) => {
       loop.setContinuous('ambient', active);
       loop.invalidate();
@@ -107,6 +105,14 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
   const capsules = createCapsulePool(tower, shared.matcap);
   scene.add(capsules.mesh);
 
+  // The lift: a brass shaft in the front-left corner and a cabin that rides with the camera.
+  const elevator = mountElevator(
+    scene,
+    { shaft: tower.shaft, levelHeight: tower.level.height, levels: tower.levels.length },
+    shared.matcap,
+    motion.camera === 'cut' || options.shot !== undefined,
+  );
+
   const unbindEvents = wireTowerEvents({
     ambient,
     capsules,
@@ -120,8 +126,8 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
 
   const levels = new LevelManager(scene, source, tower.levels.length, () => {
     syncLevelHits(hotspots, LEVEL_IDS, (i) => levels.asset(i)?.hits);
-    const animated = levels.ready().some((i) => levels.asset(i)?.update !== undefined);
-    ambient.setAnimated(animated);
+    elevator.showLevels(levels.ready());
+    ambient.setAnimated(levels.ready().some((i) => levels.asset(i)?.update !== undefined));
     loop.invalidate();
   });
 
@@ -135,6 +141,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
     }
     if (!interacting) loop.setContinuous('interaction', false);
     capsules.update(timeMs / 1000, rig.position);
+    loop.setContinuous('doors', elevator.update(dt, rig.position, !moving));
     renderer.render(scene, rig.camera);
     frames += 1;
     bus.emit({ type: 'lift:moved', position: rig.position });
@@ -213,14 +220,9 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
         scene,
         position: () => rig.position,
         tier: () => tier,
-        ready: () => levels.ready(),
+        levels,
         frames: () => frames,
-        sources: () =>
-          Object.fromEntries(
-            levels
-              .ready()
-              .map((i) => [i, String(levels.asset(i)?.root.userData.source ?? 'greybox')]),
-          ),
+        lift: () => ({ doors: elevator.openness, cabinY: elevator.cabinY }),
       })
     : () => {};
 
@@ -238,6 +240,7 @@ export async function startTower(options: StartOptions): Promise<TowerHandle> {
       hotspots.dispose();
       capsules.mesh.removeFromParent();
       capsules.dispose();
+      elevator.dispose();
       renderer.dispose();
       renderer.domElement.remove();
       stage.dataset.state = 'poster';
