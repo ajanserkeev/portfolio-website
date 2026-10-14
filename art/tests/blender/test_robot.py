@@ -51,3 +51,23 @@ def test_unknown_accessory_is_rejected():
         assert "crown" in str(error)
     else:
         raise AssertionError("expected ValueError")
+
+
+def _world_height(root):
+    from mathutils import Vector
+
+    bpy.context.view_layer.update()
+    zs = []
+    for obj in root.children_recursive:
+        if obj.type == "MESH":
+            zs += [(obj.matrix_world @ Vector(c)).z for c in obj.bound_box]
+    return min(zs), max(zs)
+
+
+def test_a_scaled_robot_is_taller_and_still_hovers_above_the_floor():
+    low, high = _world_height(_build())
+    for obj in list(bpy.data.objects):
+        bpy.data.objects.remove(obj)
+    big_low, big_high = _world_height(_build(scale=1.3))
+    assert abs((big_high - big_low) / (high - low) - 1.3) < 0.01
+    assert 0.0 < big_low < 0.5

@@ -27,6 +27,8 @@ class RobotSpec:
     body: str = "robot"
     accent: str = "teal"
     hover: float = 0.25
+    # Whole-robot size (the root node's scale): the engine moves only the root, so parts follow.
+    scale: float = 1.0
 
 
 def _accessory(spec: RobotSpec, ctx: BuildContext, head) -> list:
@@ -65,6 +67,7 @@ def build_robot(spec: RobotSpec, ctx: BuildContext) -> bpy.types.Object:
     root.empty_display_type = "PLAIN_AXES"
     root.location = to_blender(spec.at)
     root.rotation_euler = (0.0, 0.0, math.radians(spec.yaw_deg))
+    root.scale = (spec.scale, spec.scale, spec.scale)
     root["role"] = "robot"
     root["activity"] = spec.activity
     root["accessory"] = spec.accessory

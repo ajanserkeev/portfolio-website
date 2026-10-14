@@ -56,7 +56,7 @@
 
 **Files:** Modify `art/blender/towerlib/kit/robot.py` (`RobotSpec.scale`), `art/tests/blender/test_robot.py`.
 
-- [ ] Тест: робот с `scale=1.3` выше на 30 % и стоит на полу (низ на `y ≈ hover`). Commit `feat(art): scalable robots`.
+- [x] Тест: робот с `scale=1.3` выше на 30 % и стоит на полу (низ на `y ≈ hover`). Commit `feat(art): scalable robots`.
 
 ### Task 5: «Диспетчерская»
 
