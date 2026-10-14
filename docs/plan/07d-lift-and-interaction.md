@@ -61,7 +61,9 @@
 
 **Interfaces:** `createDoors({ openSeconds = 0.6, instant = false }): { open(): void; close(): void; update(dt): number /* 0 закрыто … 1 открыто */ }` с плавностью `easeInOutQuad`; `dialAngle(position, total)` переиспользует `needleAngleDeg` из `src/ui/elevator.ts`.
 
-- [ ] Тесты: открытие за 0,6 с; закрытие с середины начинается с текущего значения; `instant` — сразу 0/1. → FAIL → PASS → commit `feat(engine): door and dial logic for the lift cabin`.
+*При реализации:* у дверей есть ещё флаг `moving` (цикл рендера крутится, пока створки едут); отдельная `dialAngle` не понадобилась — `elevator.ts` (задача 4) зовёт `needleAngleDeg` напрямую.
+
+- [x] Тесты: открытие за 0,6 с; закрытие с середины начинается с текущего значения; `instant` — сразу 0/1. → FAIL → PASS → commit `feat(engine): door and dial logic for the lift cabin`.
 
 ### Task 4: Шахта и кабина
 
